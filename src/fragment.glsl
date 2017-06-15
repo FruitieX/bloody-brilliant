@@ -173,13 +173,15 @@ vec2 bloodCellField(vec3 p) {
   return res;
 }
 
-vec2 bloodVein(vec3 pos) {
+vec2 bloodVein(vec3 p) {
+
+  pR(p.xy, a/2.);
   return vec2(
     // tunnel shape
-    sdTorus(pos + vec3(14.,0.,0.))
+    sdTorus(p + vec3(14.,0.5,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (pos.z - a))),
+    - 0.05 * (1. + sin(3.0 * (p.z - a*2.))),
 
     // color
     54.0
@@ -187,6 +189,12 @@ vec2 bloodVein(vec3 pos) {
 }
 
 // SCENES
+
+// Scene list
+// Scene 0 = Intro, Normal day at blood work
+// Scene 1 = Virus drives past camera, makes everything funky color
+// scene 2 = Blood canal chase begins
+// scene 3 = Final destination in my heart. Virus dies. Boss fight?
 
 vec2 scene0(vec3 pos) {
   return opBlend(
@@ -251,7 +259,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  // return scene0(pos);
+  return scene0(pos);
 
   /* ---------- SCENES --------- */
 
@@ -442,6 +450,7 @@ void main() {
     // cr = camera rotation
     //vec3 ro = vec3( -.5+3.5*cos(.1*a), 1.0, .5 + 4.0*sin(.1*a) );
     vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
+    // vec3 ro = vec3( -.5+2., 1.+.5, 2. );
     vec3 ta = vec3( .0 );
     // camera-to-world transformation
     mat3 ca = setCamera( ro, ta, .0 );
