@@ -248,6 +248,17 @@ vec2 virus(vec3 pos, float v) {
   return vec2(res, 95.);
 }
 
+vec2 vessel(vec3 pos) {
+  float spikeLen = 1.5;
+  float spikeThickness = 0.03;
+  float blend = 10.;
+
+  float res = sdSphere(pos, 0.5);
+  res += length(min(vec3(0.5), pow(sin(50. * pos), vec3(0.2))));
+
+  return vec2(res, 95.);
+}
+
 // Scene list
 // Scene 0 = Intro, Normal day at blood work
 // Scene 1 = Virus drives past camera, makes everything funky color
@@ -303,6 +314,13 @@ vec2 scene3(vec3 pos) {
 
   // virus
   return virus(pos,.5);
+}
+
+vec2 scene4(vec3 pos) {
+  pos += vec3(sin(a) / 4.,1.,.2);
+
+  // vessel
+  return vessel(pos);
 }
 
 vec2 map(in vec3 pos, in vec3 origin) {
