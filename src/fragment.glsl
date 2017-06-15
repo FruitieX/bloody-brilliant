@@ -192,7 +192,6 @@ vec2 virus(vec3 pos) {
   float spikeLen = 1.5;
   float spikeThickness = 0.03;
   float blend = 10.;
-  pos += vec3(sin(a) / 4.,.75,.0);
 
   float res = sdSphere(pos, 1.0);
 
@@ -282,6 +281,8 @@ vec2 scene2(vec3 pos) {
 
 
 vec2 scene3(vec3 pos) {
+  pos += vec3(sin(a) / 4.,1.,.2);
+
   // virus
   return virus(pos);
 }
@@ -297,7 +298,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene0(pos);
+  return scene3(pos);
 
   /* ---------- SCENES --------- */
 
