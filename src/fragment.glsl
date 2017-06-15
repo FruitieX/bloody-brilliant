@@ -16,6 +16,8 @@ uniform float f;
 
 float PI = 3.14;
 
+float displacement = .0;
+
 float calcPlasma(float x, float y, float z, float t) {
   // horizontal sinusoid
   float sine1 = sin(x * 10. + t * 2.);
@@ -158,16 +160,28 @@ float pModPolar(inout vec2 p, float repetitions) {
 }
 
 vec2 bloodCellField(vec3 p, float v) {
-  p += vec3(.0, .0, e + a);
+  // old
+  // p += vec3(.0, .0, e + a * v);
+  // simulate the heartbeat
+  displacement = floor(a/1.411764)*.841;
+  float pumping = mod(a,1.4118);
+  if (pumping > .53) {
+    pumping = .841;
+  } else {
+    pumping = sqrt(sin(pumping / .53 * 3. * PI / 4.));
+  }
+  p += vec3(.0, .0, pumping + displacement + a * v);
 
   vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
 
+  // rotate next batch of blood cells and give them some more velocity
   pR(p.xy, 1.);
-  p += vec3(.0, .0, a * v);
+  p += vec3(.0, .0, a * .2);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
 
+  // repeat the above with a new batch of blood cells
   pR(p.yz, 1.);
-  p += vec3(.0, .0, a * v);
+  p += vec3(.0, .0, a * .2);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
 
   return res;
@@ -247,14 +261,14 @@ vec2 scene0(vec3 pos) {
     vec2(sdSphere(pos,.01),45.5),
       opBlend(
         bloodVein(pos),
-        bloodCellField(pos, .1),
+        bloodCellField(pos, .3),
         9.
       )
   );
 }
 
 vec2 scene1(vec3 pos) {
-  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos, .1), 9.);
+  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos, -.8), 9.);
   res = opU(res, vec2(sdSphere(pos,.01),45.5));
   res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
   return res;
@@ -281,8 +295,7 @@ vec2 scene2(vec3 pos) {
   54.);
   */
 
-  return bloodCellField(pos, .1);
-}
+  return bloodCellField(pos, .1); }
 
 
 vec2 scene3(vec3 pos) {
@@ -481,6 +494,7 @@ mat3 setCamera(in vec3 ro, in vec3 ta, float cr) {
 }
 
 void main() {
+
   vec3 tot = vec3(.0);
   for( int m=0; m<2; m++ )   // 2x AA
   for( int n=0; n<2; n++ ) { // 2x AA
@@ -496,7 +510,12 @@ void main() {
     float y = sin(a/2.);
     float z = sin(a/2.)/2.+.5;
 
-    vec3 pos = vec3(x,y,z); vec3 ro = pos.xzy*2.; vec3 ta = vec3( .0 );
+    // rotating camera
+    vec3 pos = vec3(x,y,z);
+    // vec3 ro = pos.xzy*2.;
+    // static camera
+    vec3 ro = vec3(.0,.0,1.);
+    vec3 ta = vec3( .0 );
     // camera-to-world transformation
     mat3 ca = setCamera( ro, ta, .0 );
     // ray direction
