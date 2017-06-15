@@ -178,7 +178,7 @@ vec2 bloodVein(vec3 p) {
   // pR(p.xy, a/2.);
   return vec2(
     // tunnel shape
-    abs(sdTorus(p + vec3(14.,0.,1.5)))
+    sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
     - 0.05 * (1. + sin(3.0 * (p.z - a*2.))),
