@@ -197,10 +197,13 @@ vec2 bloodVein(vec3 p) {
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 
 vec2 scene0(vec3 pos) {
-  return opBlend(
-    bloodVein(pos),
-    bloodCellField(pos),
-    9.
+  return opU(
+    vec2(sdSphere(pos,.01),45.5), 
+      opBlend(
+        bloodVein(pos),
+        bloodCellField(pos),
+        9.
+      )
   );
 }
 
@@ -449,7 +452,17 @@ void main() {
     // ta = camera direction (where the camera is looking)
     // cr = camera rotation
     //vec3 ro = vec3( -.5+3.5*cos(.1*a), 1.0, .5 + 4.0*sin(.1*a) );
-    vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
+    float r = 1.;
+    float angle = a/(2.*PI);
+    float cos_phi = cos(angle);
+    float sin_phi = sin(angle);
+
+    float cos_theta = .5;
+    float sin_theta = .86;
+
+    vec3 pos = vec3(r*cos_theta*sin_phi, r * sin_theta * sin_phi, r*cos_phi);
+    vec3 ro = pos.xzy;
+    // vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
     // vec3 ro = vec3( -.5+2., 1.+.5, 2. );
     vec3 ta = vec3( .0 );
     // camera-to-world transformation
