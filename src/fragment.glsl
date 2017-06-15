@@ -163,7 +163,7 @@ vec2 bloodCellField(vec3 p) {
   vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
 
   pR(p.xy, 1.);
-  p += vec3(.0, .0, a * .1);
+  p += vec3(.0, .0, a * .2);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
 
   pR(p.yz, 1.);
@@ -189,11 +189,12 @@ vec2 bloodVein(vec3 p) {
 }
 
 vec2 virus(vec3 pos) {
-  float spikeLen = 1.5;
+  pos.z += a*.5;
+  float spikeLen = 1.;
   float spikeThickness = 0.03;
   float blend = 10.;
 
-  float res = sdSphere(pos, 1.0);
+  float res = sdSphere(pos, .5);
 
   pModPolar(pos.yz, 7.);
 
@@ -235,6 +236,7 @@ vec2 virus(vec3 pos) {
 // Scene 1 = Virus drives past camera, makes everything funky color
 // scene 2 = Blood canal chase begins
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
+// scene 4 = Greetings
 
 // SCENES
 vec2 scene0(vec3 pos) {
@@ -251,7 +253,7 @@ vec2 scene0(vec3 pos) {
 vec2 scene1(vec3 pos) {
   vec2 res = opBlend(bloodVein(pos), bloodCellField(pos), 9.);
   res = opU(res, vec2(sdSphere(pos,.01),45.5));
-  // res = opU(res, )
+  res = opU(res, virus(pos));
   return res;
 }
 
@@ -489,9 +491,9 @@ void main() {
     // cr = camera rotation
     float x = cos(a/2.);
     float y = sin(a/2.);
-    float z = cos(a/3.);
+    float z = sin(a/2.)/2.+.5;
 
-    vec3 pos = vec3(x,y,z); vec3 ro = pos.xzy; vec3 ta = vec3( .0 );
+    vec3 pos = vec3(x,y,z); vec3 ro = pos.xzy*2.; vec3 ta = vec3( .0 );
     // camera-to-world transformation
     mat3 ca = setCamera( ro, ta, .0 );
     // ray direction
