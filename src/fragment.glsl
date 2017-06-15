@@ -54,8 +54,8 @@ vec2 opS(vec2 d1, vec2 d2) {
 }
 
 // TODO: remove all _1 functions (take in float instead of vec2)
-float opBlend_1( float d1, float d2 ) {
-    return smin( d1, d2, 32. );
+float opBlend_1( float d1, float d2, float k ) {
+    return smin( d1, d2, k );
 }
 
 vec2 opBlend( vec2 d1, vec2 d2, float k ) {
@@ -188,7 +188,48 @@ vec2 bloodVein(vec3 p) {
   );
 }
 
-// SCENES
+vec2 virus(vec3 pos) {
+  float spikeLen = 1.5;
+  float spikeThickness = 0.03;
+  float blend = 10.;
+  pos += vec3(sin(a) / 4.,.75,.0);
+
+  float res = sdSphere(pos, 1.0);
+
+  pModPolar(pos.yz, 7.);
+
+  res = opBlend_1(
+    res,
+    fCapsule(pos, spikeThickness, spikeLen),
+    blend
+  );
+
+  pR(pos.xy, PI/4.);
+
+  res = opBlend_1(
+    res,
+    fCapsule(pos, spikeThickness, spikeLen),
+    blend
+  );
+
+  pR(pos.xy, PI/4.);
+
+  res = opBlend_1(
+    res,
+    fCapsule(pos, spikeThickness, spikeLen),
+    blend
+  );
+
+  pR(pos.xy, PI/4.);
+
+  res = opBlend_1(
+    res,
+    fCapsule(pos, spikeThickness, spikeLen),
+    blend
+  );
+
+  return vec2(res, 95.);
+}
 
 // Scene list
 // Scene 0 = Intro, Normal day at blood work
@@ -196,9 +237,10 @@ vec2 bloodVein(vec3 p) {
 // scene 2 = Blood canal chase begins
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 
+// SCENES
 vec2 scene0(vec3 pos) {
   return opU(
-    vec2(sdSphere(pos,.01),45.5), 
+    vec2(sdSphere(pos,.01),45.5),
       opBlend(
         bloodVein(pos),
         bloodCellField(pos),
@@ -241,14 +283,7 @@ vec2 scene2(vec3 pos) {
 
 vec2 scene3(vec3 pos) {
   // virus
-  vec3 offs = vec3(sin(a) / 4.,.75,.0);
-  return vec2(.5 *
-    sdSphere(
-      pos - offs, .5
-    )
-    + .01 * sin(100. * pos.x) * sin(100. * pos.y) * sin(100. * pos.z),
-    .0
-  );
+  return virus(pos);
 }
 
 vec2 map(in vec3 pos, in vec3 origin) {
