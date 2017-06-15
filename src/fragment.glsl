@@ -208,10 +208,10 @@ vec2 scene0(vec3 pos) {
 }
 
 vec2 scene1(vec3 pos) {
-  return opU(
-    heart(pos),
-    bloodCellField(pos)
-  );
+  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos), 9.);
+  res = opU(res, vec2(sdSphere(pos,.01),45.5));
+  // res = opU(res, )
+  return res;
 }
 
 vec2 scene2(vec3 pos) {
@@ -262,7 +262,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene0(pos);
+  return scene1(pos);
 
   /* ---------- SCENES --------- */
 
