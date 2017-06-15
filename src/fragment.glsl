@@ -175,10 +175,10 @@ vec2 bloodCellField(vec3 p) {
 
 vec2 bloodVein(vec3 p) {
 
-  pR(p.xy, a/2.);
+  // pR(p.xy, a/2.);
   return vec2(
     // tunnel shape
-    sdTorus(p + vec3(14.,0.5,1.5))
+    abs(sdTorus(p + vec3(14.,0.,1.5)))
 
     // blobby surface
     - 0.05 * (1. + sin(3.0 * (p.z - a*2.))),
@@ -198,7 +198,7 @@ vec2 bloodVein(vec3 p) {
 
 vec2 scene0(vec3 pos) {
   return opU(
-    vec2(sdSphere(pos,.01),45.5), 
+    vec2(sdSphere(pos,.01),45.5),
       opBlend(
         bloodVein(pos),
         bloodCellField(pos),
@@ -445,11 +445,11 @@ void main() {
   for( int n=0; n<2; n++ ) { // 2x AA
     // pixel coordinates
     vec2 o = vec2(float(m),float(n)) / float(2) - .5;
-    vec2 p = (-b.xy + 3.*(gl_FragCoord.xy+o))/b.y;
+    vec2 p = (-b.xy + 2.*(gl_FragCoord.xy+o))/b.y;
 
     // camera
     // ro = ray origin = where the camera is
-    // ta = camera direction (where the camera is looking)
+    // ta = camera direction (point which the camera is looking at)
     // cr = camera rotation
     //vec3 ro = vec3( -.5+3.5*cos(.1*a), 1.0, .5 + 4.0*sin(.1*a) );
     float r = 1.;
@@ -457,10 +457,15 @@ void main() {
     float cos_phi = cos(angle);
     float sin_phi = sin(angle);
 
-    float cos_theta = .5;
-    float sin_theta = .86;
+    float cos_theta = .86;
+    float sin_theta = .5;
+
+    float x = cos(a/2.);
+    float y = sin(a/2.);
+    float z = cos(a/3.);
 
     vec3 pos = vec3(r*cos_theta*sin_phi, r * sin_theta * sin_phi, r*cos_phi);
+    pos = vec3(x,y,z);
     vec3 ro = pos.xzy;
     // vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
     // vec3 ro = vec3( -.5+2., 1.+.5, 2. );
