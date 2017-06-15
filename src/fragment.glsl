@@ -455,11 +455,7 @@ void main() {
     float y = sin(a/2.);
     float z = cos(a/3.);
 
-    vec3 pos = vec3(x,y,z);
-    vec3 ro = pos.xzy;
-    // vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
-    // vec3 ro = vec3( -.5+2., 1.+.5, 2. );
-    vec3 ta = vec3( .0 );
+    vec3 pos = vec3(x,y,z); vec3 ro = pos.xzy; vec3 ta = vec3( .0 );
     // camera-to-world transformation
     mat3 ca = setCamera( ro, ta, .0 );
     // ray direction
