@@ -157,17 +157,17 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-vec2 bloodCellField(vec3 p) {
+vec2 bloodCellField(vec3 p, float v) {
   p += vec3(.0, .0, e + a);
 
   vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
 
   pR(p.xy, 1.);
-  p += vec3(.0, .0, a * .2);
+  p += vec3(.0, .0, a * v);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
 
   pR(p.yz, 1.);
-  p += vec3(.0, .0, a * .1);
+  p += vec3(.0, .0, a * v);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
 
   return res;
@@ -188,13 +188,16 @@ vec2 bloodVein(vec3 p) {
   );
 }
 
-vec2 virus(vec3 pos) {
-  pos.z += a*.5;
-  float spikeLen = 1.;
-  float spikeThickness = 0.03;
+vec2 virus(vec3 pos, float v) {
+  // velocity
+  pos.z += v;
+
+  float scale = 1.;
+  float spikeLen = 1.*scale;
+  float spikeThickness = 0.03*scale;
   float blend = 10.;
 
-  float res = sdSphere(pos, .5);
+  float res = sdSphere(pos, .5*scale);
 
   pModPolar(pos.yz, 7.);
 
@@ -244,16 +247,16 @@ vec2 scene0(vec3 pos) {
     vec2(sdSphere(pos,.01),45.5),
       opBlend(
         bloodVein(pos),
-        bloodCellField(pos),
+        bloodCellField(pos, .1),
         9.
       )
   );
 }
 
 vec2 scene1(vec3 pos) {
-  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos), 9.);
+  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos, .1), 9.);
   res = opU(res, vec2(sdSphere(pos,.01),45.5));
-  res = opU(res, virus(pos));
+  res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
   return res;
 }
 
@@ -278,7 +281,7 @@ vec2 scene2(vec3 pos) {
   54.);
   */
 
-  return bloodCellField(pos);
+  return bloodCellField(pos, .1);
 }
 
 
@@ -286,7 +289,7 @@ vec2 scene3(vec3 pos) {
   pos += vec3(sin(a) / 4.,1.,.2);
 
   // virus
-  return virus(pos);
+  return virus(pos,.5);
 }
 
 vec2 map(in vec3 pos, in vec3 origin) {
