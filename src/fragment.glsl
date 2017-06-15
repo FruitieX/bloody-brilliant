@@ -451,21 +451,11 @@ void main() {
     // ro = ray origin = where the camera is
     // ta = camera direction (point which the camera is looking at)
     // cr = camera rotation
-    //vec3 ro = vec3( -.5+3.5*cos(.1*a), 1.0, .5 + 4.0*sin(.1*a) );
-    float r = 1.;
-    float angle = a/(2.*PI);
-    float cos_phi = cos(angle);
-    float sin_phi = sin(angle);
-
-    float cos_theta = .86;
-    float sin_theta = .5;
-
     float x = cos(a/2.);
     float y = sin(a/2.);
     float z = cos(a/3.);
 
-    vec3 pos = vec3(r*cos_theta*sin_phi, r * sin_theta * sin_phi, r*cos_phi);
-    pos = vec3(x,y,z);
+    vec3 pos = vec3(x,y,z);
     vec3 ro = pos.xzy;
     // vec3 ro = vec3( -.5+2.*sin(.25*a), 1.+.5*cos(.25*a), 2. );
     // vec3 ro = vec3( -.5+2., 1.+.5, 2. );
