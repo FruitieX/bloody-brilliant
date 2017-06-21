@@ -1,6 +1,6 @@
 // potato level for PC, higher = faster :-)
 // TODO: remove in production
-potato = 8;
+potato = 4;
 c.width = 1920 / potato;
 c.height = 1080 / potato;
 

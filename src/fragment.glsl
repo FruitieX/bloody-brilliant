@@ -93,14 +93,12 @@ vec3 opRep(vec3 p, vec3 c) {
   return mod(p,c)-.5*c;
 }
 
-/*
 vec3 opTwist(vec3 p) {
   float  c = cos(p.y);
   float  s = sin(p.y);
   mat2   m = mat2(c,-s,s,c);
   return vec3(m*p.xz,p.y);
 }
-*/
 
 // Rotate around a coordinate axis (i.e. in a plane perpendicular to that axis) by angle <a>.
 // Read like this: R(p.xz, a) rotates "x towards z".
@@ -230,8 +228,7 @@ vec2 virus(vec3 pos, float v) {
 
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
-    res,
+  res = opBlend_1( res,
     fCapsule(pos, spikeThickness, spikeLen),
     blend
   );
@@ -239,15 +236,51 @@ vec2 virus(vec3 pos, float v) {
   return vec2(res, 95.);
 }
 
+float udBox( vec3 p, vec3 b ) {
+  return length(max(abs(p)-b,0.0));
+}
+
+float sdTorus2(vec3 p) {
+  // the first constant sets size of torus
+  // second sets size of middle
+  return length(vec2(length(p.xz)-.5,p.y)) - 0.1;
+}
+
 vec2 vessel(vec3 pos) {
-  float spikeLen = 1.5;
-  float spikeThickness = 0.03;
-  float blend = 10.;
+  vec3 origPos = pos;
+  //float res = udBox(pos, vec3(0.5, 0.05, 0.5));
+  //res -= 0.02 * pow(sin(20. * pos), vec3(5.0)).y;
+  pR(pos.xy, PI/2.);
+  //float res = opBlend_1( res,
+  float res = sdTorus2(pos + vec3(0., 0.5, 0.));
+    //30.
+  //);
 
-  float res = sdSphere(pos, 0.5);
-  res += length(min(vec3(0.5), pow(sin(50. * pos), vec3(0.2))));
+  res = opBlend_1( res,
+    fCapsule(pos + vec3(0., -0.5, 0.), 0.4, 0.5),
+    30.
+  );
 
-  return vec2(res, 95.);
+  pModPolar(pos.xz, 4.);
+  pR(pos.xy, PI/4.);
+
+  res = opBlend_1(
+    res,
+    fCapsule(pos + vec3(0., .2, 0.), 0.02, 0.5),
+    40.
+  );
+
+  // spiral thing
+  /*
+  pR(pos.xz, PI/2.);
+  res = opBlend_1(
+    res,
+    fCapsule(opTwist(origPos + vec3(0., 1., 0.)), 0.02, 0.5),
+    40.
+  );
+  */
+
+  return vec2(res, 25.);
 }
 
 // Scene list
@@ -308,8 +341,10 @@ vec2 scene3(vec3 pos) {
 }
 
 vec2 scene4(vec3 pos) {
-  pos += vec3(sin(a) / 4.,1.,.2);
+  pos += vec3(sin(a) / 4.,0.3,1.);
 
+  pR(pos.xz, a / 2.);
+  pR(pos.zy, a);
   // vessel
   return vessel(pos);
 }
@@ -325,7 +360,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene1(pos);
+  return scene4(pos);
 
   /* ---------- SCENES --------- */
 
