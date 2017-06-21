@@ -28,8 +28,9 @@ r = t => {
   // run fft
   // analyser.getByteFrequencyData(analyserArray);
 
+
   // set the "a" time variable
-  g.uniform1f(g.getUniformLocation(P, 'a'), soundbox.audioCtx.currentTime);
+  g.uniform1f(g.getUniformLocation(P, 'a'), a = soundbox.audioCtx.currentTime);
 
   // set the "b" resolution variable
   g.uniform2f(g.getUniformLocation(P, 'b'), g.canvas.width, g.canvas.height);
@@ -38,8 +39,10 @@ r = t => {
   g.uniform1f(g.getUniformLocation(P, 'c'), bPeak);
   // set the "d" treble volume variable
   g.uniform1f(g.getUniformLocation(P, 'd'), treble);
-  // accumulated bass for bass synced blood cell movement
-  g.uniform1f(g.getUniformLocation(P, 'e'), bAcc = 0.9 * bAcc + 0.1 * bPeak * d);
+  // simulate heart pumping the blood rythm
+  lBeat = 1.411764;
+  bFlow = Math.floor(a/lBeat)*.841 + (a % lBeat > .53 ? .841 : Math.sqrt(Math.sin(a % lBeat / .53 * 3. * Math.PI / 4.)));
+  g.uniform1f(g.getUniformLocation(P, 'e'), bFlow);
   // frequency of lead synth
   g.uniform1f(g.getUniformLocation(P, 'f'), fAcc = 0.9 * fAcc + 0.1 * s.tracks[5][0].osc1.frequency.value * d);
 

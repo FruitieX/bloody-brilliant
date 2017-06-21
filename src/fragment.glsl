@@ -160,17 +160,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 }
 
 vec2 bloodCellField(vec3 p, float v) {
-  // old
-  // p += vec3(.0, .0, e + a * v);
-  // simulate the heartbeat
-  displacement = floor(a/1.411764)*.841;
-  float pumping = mod(a,1.4118);
-  if (pumping > .53) {
-    pumping = .841;
-  } else {
-    pumping = sqrt(sin(pumping / .53 * 3. * PI / 4.));
-  }
-  p += vec3(.0, .0, pumping + displacement + a * v);
+  p += vec3(.0,.0, a * v + e);
 
   vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
 
