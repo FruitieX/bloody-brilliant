@@ -127,7 +127,7 @@ float sdBloodCell(vec3 p) {
 float sdTorus(vec3 p) {
   // the first constant sets size of torus
   // second sets size of middle
-  return -(length(vec2(length(p.xz)-14.,p.y)) - 3. * (1. - c * .1));
+  return -(length(vec2(length(p.xz)-14.,p.y)) - 3.);
 }
 
 vec2 heart(vec3 p) {
@@ -189,7 +189,8 @@ vec2 bloodCellField(vec3 p, float v) {
 
 vec2 bloodVein(vec3 p) {
 
-  // pR(p.xy, a/2.);
+  // rotate
+  // pR(p.xy, a/5.);
   return vec2(
     // tunnel shape
     sdTorus(p + vec3(14.,0.,1.5))
