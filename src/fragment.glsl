@@ -404,12 +404,26 @@ vec4 scene3(vec3 pos) {
 }
 
 vec4 scene4(vec3 pos) {
-  pos += vec3(sin(a) / 4.,0.3,1.);
 
-  pR(pos.xz, a / 2.);
+  //pR(pos.xz, a / 2.);
+  pR(pos.xy, -.4);
+  pR(pos.xz, -.4);
+  pos += vec3(sin(a) / 4.,1.,4.);
   //pR(pos.zy, a);
   // vessel
-  return vessel(pos);
+  vec4 res = opBlend(
+    heart(pos),
+    virus(pos + vec3(.5), .0),
+    50.
+  );
+
+  pR(pos.yz, a / 8.);
+  pR(pos.xy, PI / 8.);
+  return opBlend(
+    res,
+    vessel(pos - vec3(4. - a / 4., .0, .5)),
+    10.
+  );
 }
 
 vec4 map(in vec3 pos, in vec3 origin) {
