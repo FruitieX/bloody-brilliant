@@ -201,8 +201,8 @@ vec4 bloodCellField(vec3 p, float v) {
 
   vec4 res = bloodCellWall(p);
   // duplicate wall
-  pR(p.xy, 1.);
-  res = opU(res, bloodCellWall(p));
+  // pR(p.xy, 1.);
+  // res = opU(res, bloodCellWall(p));
   return res;
 }
 
@@ -376,6 +376,9 @@ vec4 scene2(vec3 pos) {
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
+  pR(pos.yx,.5);
+  res = opU(res, bloodCellField(pos,v*.8));
+
 
   // res = opU(
   //   res,
