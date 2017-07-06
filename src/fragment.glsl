@@ -335,7 +335,7 @@ vec4 vessel(vec3 pos) {
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 // scene 4 = Greetings
 
-float v = -1.;
+float v = 4.;
 // SCENES
 vec4 scene0(vec3 pos) {
   return opBlend(
@@ -346,26 +346,12 @@ vec4 scene0(vec3 pos) {
 }
 
 vec4 scene1(vec3 pos) {
-  vec4 res = opBlend(
-    bloodVein(pos,v),
-    bloodCellField(pos, -.8),
-    9.
-  );
+  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
 
-  res = opU(
-    res,
-    vec4(
-      sdSphere(pos,.01),
-      0.7, 0.5, 0.3
-    )
-  );
-
-  // res = opU(
-  //   res,
-  //   virus(
-  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
-  //     cos(a/2.)
-  //   )
+  res = opU(res, bloodVein(pos,v));
+  res = opU(res, bloodCellField(pos,v));
+  pR(pos.yx,.5);
+  res = opU(res, bloodCellField(pos,v*.8));
   // );
 
   return res;
@@ -380,13 +366,13 @@ vec4 scene2(vec3 pos) {
   res = opU(res, bloodCellField(pos,v*.8));
 
 
-  // res = opU(
-  //   res,
-  //   virus(
-  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
-  //     cos(a/2.)
-  //   )
-  // );
+  res = opU(
+    res,
+    virus(
+      vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
+      cos(a/2.)
+    )
+  );
 
   return res;
 }
