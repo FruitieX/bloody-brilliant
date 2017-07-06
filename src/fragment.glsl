@@ -157,7 +157,33 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+vec2 bloodCellWall(vec3 p, float v) {
+  // set up the correct rotation axis
+  p.z += 3.;
+  p.x += 15.; // move rotational origo to center of blood vein
+  pR(p.xz, (a * v + e) / 10.); // give speed to blood wall
+  pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
+  p -= vec3(15.,0.,0.);
+
+  // p.y += .5;
+  p.x -= 1.;
+  pR(p.yx, 2.);
+  vec2 res = vec2(sdBloodCell(p), 54.);
+
+  // rotate next batch of blood cells and give them some more velocity
+  // pR(p.xy, 1.);
+  // p += vec3(.0, .0, a * .2);
+  // res = opBlend(res, vec2(sdBloodCell(p), 54.), 9.);
+
+  // repeat the above with a new batch of blood cells
+  // pR(p.yz, 1.);
+  // p += vec3(.0, .0, a * .2);
+  // res = opBlend(res, vec2(sdBloodCell(p), 54.), 9.);
+  return res;
+}
+
 vec2 bloodCellField(vec3 p, float v) {
+  p.x += a/v*.1;
   p += vec3(.0,.0, a * v + e);
 
   vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
@@ -169,13 +195,12 @@ vec2 bloodCellField(vec3 p, float v) {
 
   // repeat the above with a new batch of blood cells
   pR(p.yz, 1.);
-  p += vec3(.0, .0, a * .2);
+  // p += vec3(.0, .0, a * .2);
   res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
-
   return res;
 }
 
-vec2 bloodVein(vec3 p) {
+vec2 bloodVein(vec3 p, float v) {
 
   // rotate
   // pR(p.xy, a/5.);
@@ -184,7 +209,7 @@ vec2 bloodVein(vec3 p) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (p.z - a*2.))),
+    - 0.05 * (1. + sin(3.0 * (p.z + a*v))),
 
     // color
     54.0
@@ -290,12 +315,13 @@ vec2 vessel(vec3 pos) {
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 // scene 4 = Greetings
 
+float v = -1.;
 // SCENES
 vec2 scene0(vec3 pos) {
   return opU(
     vec2(sdSphere(pos,.01),45.5),
       opBlend(
-        bloodVein(pos),
+        bloodVein(pos,v),
         bloodCellField(pos, .3),
         9.
       )
@@ -303,34 +329,24 @@ vec2 scene0(vec3 pos) {
 }
 
 vec2 scene1(vec3 pos) {
-  vec2 res = opBlend(bloodVein(pos), bloodCellField(pos, -.8), 9.);
+  vec2 res = opBlend(bloodVein(pos,v), bloodCellField(pos, -.8), 9.);
   res = opU(res, vec2(sdSphere(pos,.01),45.5));
   res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
   return res;
 }
 
 vec2 scene2(vec3 pos) {
-  // Blood cell thing
-  // hue 80.0 = water ish
-  // hue 240.0 = green ish
-  /*
-  float plasmaBlood = calcPlasma(pos.x, pos.y, pos.z, a / 10.);
-  //vec2(sdSphere(pos-offs, .5 - 0.01 * sin(20.0* pos.x + 15.0*pos.y + a * 3.0)), 80.0)
-
-  return vec2(sdBloodCell(
-    opRep(
-      pos,
-      vec3(1.5)
-    )
-  )
-  // blobby surface
-  + d * .005 * sin(30. * pos.x) * sin(30. * pos.y) * sin(30. * pos.z) * sin(plasmaBlood),
-
-  // color
-  54.);
-  */
-
-  return bloodCellField(pos, .1); }
+  // vec2 res = opBlend(
+  //   bloodVein(pos,v),
+  //   bloodCellField(pos, v), 9.)
+    // ;
+  vec2 res = vec2(sdSphere(pos,.01),45.5);
+  // vec2 res2 = bloodVein(pos,v);
+  // res = opU(res,res2);
+  res = opU(res, opBlend(bloodCellWall(pos,v),bloodVein(pos, v), 9.));
+  // res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
+  return res;
+}
 
 
 vec2 scene3(vec3 pos) {
@@ -360,7 +376,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene4(pos);
+  return scene2(pos);
 
   /* ---------- SCENES --------- */
 
