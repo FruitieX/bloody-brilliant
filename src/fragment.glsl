@@ -109,6 +109,10 @@ void pR(inout vec2 p, float a) {
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
 
+vec2 pRvec(inout vec2 p, float a) {
+	return cos(a)*p + sin(a)*vec2(p.y, -p.x);
+}
+
 float fCapsule(vec3 p, float r, float c) {
 	return mix(length(p.xz) - r, length(vec3(p.x, abs(p.y) - c, p.z)) - r, step(c, abs(p.y)));
 }
@@ -159,51 +163,50 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-vec4 bloodCellWall(vec3 p, float v) {
-  // set up the correct rotation axis
-  p.z += 3.;
-  p.x += 15.; // move rotational origo to center of blood vein
-  pR(p.xz, (a * v + e) / 10.); // give speed to blood wall
-  pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
-  p -= vec3(15.,0.,0.);
-
-  // p.y += .5;
-  p.x -= 1.;
-  pR(p.yx, 2.);
+vec4 bloodCellWall(vec3 p) {
+  p -= vec3(1.,0.,0.);
+  pR(p.xy, 1.);
   vec4 res = vec4(sdBloodCell(p), 1.,.0,.0);
 
-  // rotate next batch of blood cells and give them some more velocity
-  // pR(p.xy, 1.);
-  // p += vec3(.0, .0, a * .2);
-  // res = opBlend(res, vec2(sdBloodCell(p), 54.), 9.);
+  // repeat
+  p -= vec3(0.,2.,0.);
+  pR(p.yz, 2.);
+  res = opU(res,vec4(sdBloodCell(p), 1.,.0,.0));
 
-  // repeat the above with a new batch of blood cells
-  // pR(p.yz, 1.);
-  // p += vec3(.0, .0, a * .2);
-  // res = opBlend(res, vec2(sdBloodCell(p), 54.), 9.);
+  // repeat
+  p -= vec3(-1.,-1.,-1.);
+  pR(p.xy, 1.);
+  res = opU(res,vec4(sdBloodCell(p), 1.,.0,.0));
+
+  // repeat
+  p -= vec3(0.,1.,4.0);
+  pR(p.yz, 1.);
+  res = opU(res,vec4(sdBloodCell(p), 1.,.0, 0.));
+
+  // repeat
+  p -= vec3(0.,-2.,-2.0);
+  pR(p.xy, 1.);
+  res = opU(res,vec4(sdBloodCell(p), 1.,.0, 0.));
+
   return res;
 }
 
 vec4 bloodCellField(vec3 p, float v) {
-  p.x += a/v*.1;
-  p += vec3(.0,.0, a * v + e);
+  // set up the correct rotation axis
+  p.z += 3.;
+  p.x += 15.; // move rotational origo to center of blood vein
+  pR(p.xz, -(a * v + e) / 20.); // give speed to blood wall
+  pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
+  p -= vec3(15.,0.,0.);
 
-  float res = sdBloodCell(opRep(p, vec3(3.)));
-
-  // rotate next batch of blood cells and give them some more velocity
+  vec4 res = bloodCellWall(p);
+  // duplicate wall
   pR(p.xy, 1.);
-  p += vec3(.0, .0, a * .2);
-  res = opBlend_1(res, sdBloodCell(opRep(p, vec3(3.))), 9.);
-
-  // repeat the above with a new batch of blood cells
-  pR(p.yz, 1.);
-  p += vec3(.0, .0, a * .2);
-  res = opBlend_1(res, sdBloodCell(opRep(p, vec3(3.))), 9.);
-
-  return vec4(res, 1., 0., 0.);
+  res = opU(res, bloodCellWall(p));
+  return res;
 }
 
-vec4 bloodVein(vec3 p) {
+vec4 bloodVein(vec3 p,float v) {
 
   // rotate
   // pR(p.xy, a/5.);
@@ -212,7 +215,7 @@ vec4 bloodVein(vec3 p) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (p.z + a*2.))),
+    - 0.05 * (1. + sin(3.0 * (p.z + a*v))),
 
     // color
     .7, 0.1, 0.1
@@ -336,7 +339,7 @@ float v = -1.;
 // SCENES
 vec4 scene0(vec3 pos) {
   return opBlend(
-    bloodVein(pos),
+    bloodVein(pos,v),
     bloodCellField(pos, .3),
     9.
   );
@@ -344,7 +347,7 @@ vec4 scene0(vec3 pos) {
 
 vec4 scene1(vec3 pos) {
   vec4 res = opBlend(
-    bloodVein(pos),
+    bloodVein(pos,v),
     bloodCellField(pos, -.8),
     9.
   );
@@ -357,27 +360,31 @@ vec4 scene1(vec3 pos) {
     )
   );
 
-  res = opU(
-    res,
-    virus(
-      vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
-      cos(a/2.)
-    )
-  );
+  // res = opU(
+  //   res,
+  //   virus(
+  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
+  //     cos(a/2.)
+  //   )
+  // );
 
   return res;
 }
 
 vec4 scene2(vec3 pos) {
-  // vec2 res = opBlend(
-  //   bloodVein(pos,v),
-  //   bloodCellField(pos, v), 9.)
-    // ;
   vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
-  // vec2 res2 = bloodVein(pos,v);
-  // res = opU(res,res2);
-  res = opU(res, opU(bloodCellWall(pos,v),bloodVein(pos)));
-  // res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
+
+  res = opU(res, bloodVein(pos,v));
+  res = opU(res, bloodCellField(pos,v));
+
+  // res = opU(
+  //   res,
+  //   virus(
+  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
+  //     cos(a/2.)
+  //   )
+  // );
+
   return res;
 }
 
