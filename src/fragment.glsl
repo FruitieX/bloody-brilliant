@@ -61,10 +61,12 @@ float opBlend_1( float d1, float d2, float k ) {
 }
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
-    return vec4(
-      smin( d1.x, d2.x, k ),
-      d1.x < d2.x ? d1.yzw : d2.yzw // TODO: blend colors as well?
-    );
+  float tot = d1.x + d2.x;
+
+  return vec4(
+    smin( d1.x, d2.x, k ),
+    1. / tot * (d1.yzw * (tot - d1.x) + d2.yzw * (tot - d2.x))
+  );
 }
 
 // t = time to start transition
@@ -134,13 +136,13 @@ vec4 heart(vec3 p) {
 
   return vec4(
     // tunnel shape
-    (1. - c * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 20. * (2. * (sin(a / 20.) + 1.15))
+    (1. - c * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
     + (1. - c) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
 
     // color
-    1., 0., 0.
+    sin(vec3(.7, .2, .1) * plasma1)
   );
 }
 
@@ -197,45 +199,45 @@ vec4 virus(vec3 pos, float v) {
 
   pR(pos.xy, PI/4.);
 
-  float scale = 1.;
+  float scale = 1. + c / 10.;
   float spikeLen = 1.*scale;
-  float spikeThickness = 0.03*scale;
-  float blend = 15.;
+  float spikeThickness = 0.01*scale;
+  float blend = 9.;
 
-  float res = sdSphere(pos, .5*scale);
+  vec4 res = vec4(sdSphere(pos, .5*scale), 0., 1., 0.);
 
   pModPolar(pos.yz, 7.);
 
-  res = opBlend_1(
-    res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
+  vec4 spikes = vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.);
+
+  pR(pos.xy, PI/4.);
+
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
-    res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
+  );
+
+  res = opBlend(
     res,
-    fCapsule(pos, spikeThickness, spikeLen),
+    spikes,
     blend
   );
 
-  pR(pos.xy, PI/4.);
-
-  res = opBlend_1( res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
-  );
-
-  return vec4(res, 0., 1., 0.);
+  return res;
 }
 
 float udBox( vec3 p, vec3 b ) {
@@ -365,14 +367,16 @@ vec4 scene2(vec3 pos) {
 
 
 vec4 scene3(vec3 pos) {
-  pos += vec3(sin(a / 4.) / 4.,0.,.0);
+  // pos += vec3(0., 1., -4.);
 
-  pR(pos.zy, a/20.);
+  //pos += vec3(sin(a / 8.) / 4.,1.,1.);
+  pR(pos.yz, 7.);
   pR(pos.xy, a/20.);
+  pos += vec3(1., 1., 1.);
   return opBlend(
     heart(pos),
-    virus(pos + vec3(-.5, -.5, .2), .5),
-    11.
+    virus(pos + vec3(.5), .0),
+    50.
   );
 }
 
@@ -556,7 +560,7 @@ vec3 render(in vec3 ro, in vec3 rd) {
     col = col*lin;
 
     // fog
-    col = mix( col, vec3(.0), 1.-exp( -.001*t*t*t ) );
+    col = mix( col, vec3(.0), 1.-exp( -.0001*t*t*t*t ) );
 
     /*
     float fade = 1. - min(1., (a - 2.)  / 8.);
