@@ -195,10 +195,12 @@ vec2 virus(vec3 pos, float v) {
   // velocity
   pos.z += v;
 
+  pR(pos.xy, PI/4.);
+
   float scale = 1.;
   float spikeLen = 1.*scale;
   float spikeThickness = 0.03*scale;
-  float blend = 10.;
+  float blend = 15.;
 
   float res = sdSphere(pos, .5*scale);
 
@@ -271,14 +273,12 @@ vec2 vessel(vec3 pos) {
   );
 
   // spiral thing
-  /*
-  pR(pos.xz, PI/2.);
+  pR(pos.yz, PI/5.);
   res = opBlend_1(
     res,
-    fCapsule(opTwist(origPos + vec3(0., 1., 0.)), 0.02, 0.5),
-    40.
+    fCapsule(opTwist(origPos + vec3(0., 1., 0.)), 0.03, 0.5),
+    50.
   );
-  */
 
   return vec2(res, 25.);
 }
@@ -334,10 +334,15 @@ vec2 scene2(vec3 pos) {
 
 
 vec2 scene3(vec3 pos) {
-  pos += vec3(sin(a) / 4.,1.,.2);
+  pos += vec3(sin(a / 4.) / 4.,0.,.0);
 
-  // virus
-  return virus(pos,.5);
+  pR(pos.zy, a/20.);
+  pR(pos.xy, a/20.);
+  return opBlend(
+    heart(pos),
+    virus(pos + vec3(-.5, -.5, .2), .5),
+    11.
+  );
 }
 
 vec2 scene4(vec3 pos) {
