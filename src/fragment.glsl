@@ -60,11 +60,13 @@ float opBlend_1( float d1, float d2, float k ) {
     return smin( d1, d2, k );
 }
 
-vec2 opBlend( vec2 d1, vec2 d2, float k ) {
-    return vec2(
-      smin( d1.x, d2.x, k ),
-      d1.y // TODO: blend colors as well?
-    );
+vec4 opBlend( vec4 d1, vec4 d2, float k ) {
+  float tot = d1.x + d2.x;
+
+  return vec4(
+    smin( d1.x, d2.x, k ),
+    1. / tot * (d1.yzw * (tot - d1.x) + d2.yzw * (tot - d2.x))
+  );
 }
 
 // t = time to start transition
@@ -85,7 +87,7 @@ vec2 opMorph( vec2 d1, vec2 d2, float t, float tt ) {
   );
 }
 
-vec2 opU(vec2 d1, vec2 d2) {
+vec4 opU(vec4 d1, vec4 d2) {
   return (d1.x<d2.x) ? d1 : d2;
 }
 
@@ -128,19 +130,19 @@ float sdTorus(vec3 p) {
   return -(length(vec2(length(p.xz)-14.,p.y)) - 3.);
 }
 
-vec2 heart(vec3 p) {
+vec4 heart(vec3 p) {
   float plasma1 = calcPlasma(p.x, p.y, p.z, a / 10.);
   float hue = sin(plasma1) * 100. + a * 10.;
 
-  return vec2(
+  return vec4(
     // tunnel shape
-    (1. - c * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 20. * (2. * (sin(a / 20.) + 1.15))
+    (1. - c * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
     + (1. - c) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
 
     // color
-    hue / 3.
+    sin(vec3(.7, .2, .1) * plasma1)
   );
 }
 
@@ -157,7 +159,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-vec2 bloodCellWall(vec3 p, float v) {
+vec4 bloodCellWall(vec3 p, float v) {
   // set up the correct rotation axis
   p.z += 3.;
   p.x += 15.; // move rotational origo to center of blood vein
@@ -168,7 +170,7 @@ vec2 bloodCellWall(vec3 p, float v) {
   // p.y += .5;
   p.x -= 1.;
   pR(p.yx, 2.);
-  vec2 res = vec2(sdBloodCell(p), 54.);
+  vec4 res = vec4(sdBloodCell(p), 1.,.0,.0);
 
   // rotate next batch of blood cells and give them some more velocity
   // pR(p.xy, 1.);
@@ -182,83 +184,86 @@ vec2 bloodCellWall(vec3 p, float v) {
   return res;
 }
 
-vec2 bloodCellField(vec3 p, float v) {
+vec4 bloodCellField(vec3 p, float v) {
   p.x += a/v*.1;
   p += vec3(.0,.0, a * v + e);
 
-  vec2 res = vec2(sdBloodCell(opRep(p, vec3(3.))), 54.);
+  float res = sdBloodCell(opRep(p, vec3(3.)));
 
   // rotate next batch of blood cells and give them some more velocity
   pR(p.xy, 1.);
   p += vec3(.0, .0, a * .2);
-  res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
+  res = opBlend_1(res, sdBloodCell(opRep(p, vec3(3.))), 9.);
 
   // repeat the above with a new batch of blood cells
   pR(p.yz, 1.);
-  // p += vec3(.0, .0, a * .2);
-  res = opBlend(res, vec2(sdBloodCell(opRep(p, vec3(3.))), 54.), 9.);
-  return res;
+  p += vec3(.0, .0, a * .2);
+  res = opBlend_1(res, sdBloodCell(opRep(p, vec3(3.))), 9.);
+
+  return vec4(res, 1., 0., 0.);
 }
 
-vec2 bloodVein(vec3 p, float v) {
+vec4 bloodVein(vec3 p) {
 
   // rotate
   // pR(p.xy, a/5.);
-  return vec2(
+  return vec4(
     // tunnel shape
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (p.z + a*v))),
+    - 0.05 * (1. + sin(3.0 * (p.z + a*2.))),
 
     // color
-    54.0
+    .7, 0.1, 0.1
   );
 }
 
-vec2 virus(vec3 pos, float v) {
+vec4 virus(vec3 pos, float v) {
   // velocity
   pos.z += v;
 
-  float scale = 1.;
-  float spikeLen = 1.*scale;
-  float spikeThickness = 0.03*scale;
-  float blend = 10.;
+  pR(pos.xy, PI/4.);
 
-  float res = sdSphere(pos, .5*scale);
+  float scale = 1. + c / 10.;
+  float spikeLen = 1.*scale;
+  float spikeThickness = 0.01*scale;
+  float blend = 9.;
+
+  vec4 res = vec4(sdSphere(pos, .5*scale), 0., 1., 0.);
 
   pModPolar(pos.yz, 7.);
 
-  res = opBlend_1(
-    res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
+  vec4 spikes = vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.);
+
+  pR(pos.xy, PI/4.);
+
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
-    res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
+  spikes = opU(
+    spikes,
+    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
+  );
+
+  res = opBlend(
     res,
-    fCapsule(pos, spikeThickness, spikeLen),
+    spikes,
     blend
   );
 
-  pR(pos.xy, PI/4.);
-
-  res = opBlend_1( res,
-    fCapsule(pos, spikeThickness, spikeLen),
-    blend
-  );
-
-  return vec2(res, 95.);
+  return res;
 }
 
 float udBox( vec3 p, vec3 b ) {
@@ -271,41 +276,53 @@ float sdTorus2(vec3 p) {
   return length(vec2(length(p.xz)-.5,p.y)) - 0.1;
 }
 
-vec2 vessel(vec3 pos) {
+vec4 vessel(vec3 pos) {
   vec3 origPos = pos;
   //float res = udBox(pos, vec3(0.5, 0.05, 0.5));
   //res -= 0.02 * pow(sin(20. * pos), vec3(5.0)).y;
   pR(pos.xy, PI/2.);
   //float res = opBlend_1( res,
-  float res = sdTorus2(pos + vec3(0., 0.5, 0.));
-    //30.
-  //);
 
-  res = opBlend_1( res,
-    fCapsule(pos + vec3(0., -0.5, 0.), 0.4, 0.5),
+  // Ring around propeller
+  vec4 res = vec4(
+    sdTorus2(pos + vec3(0., 0.5, 0.)),
+    .2, .2, .8
+  );
+
+  // Big capsule
+  res = opBlend(
+    res,
+    vec4(
+      fCapsule(pos + vec3(0., -0.5, 0.), 0.4, 0.5),
+      .8, .8, .4
+    ),
     30.
   );
 
   pModPolar(pos.xz, 4.);
   pR(pos.xy, PI/4.);
 
-  res = opBlend_1(
+  // Sticks between capsule & ring
+  res = opBlend(
     res,
-    fCapsule(pos + vec3(0., .2, 0.), 0.02, 0.5),
+    vec4(
+      fCapsule(pos + vec3(0., .2, 0.), 0.02, 0.5),
+      .8, .7, .9
+    ),
     40.
   );
 
   // spiral thing
-  /*
-  pR(pos.xz, PI/2.);
-  res = opBlend_1(
+  pR(pos.yz, PI/5.);
+  res = opU(
     res,
-    fCapsule(opTwist(origPos + vec3(0., 1., 0.)), 0.02, 0.5),
-    40.
+    vec4(
+      fCapsule(opTwist(origPos + vec3(0., -1., 0.)), 0.03, 0.5),
+      .4, .3, .7
+    )
   );
-  */
 
-  return vec2(res, 25.);
+  return res;
 }
 
 // Scene list
@@ -317,55 +334,78 @@ vec2 vessel(vec3 pos) {
 
 float v = -1.;
 // SCENES
-vec2 scene0(vec3 pos) {
-  return opU(
-    vec2(sdSphere(pos,.01),45.5),
-      opBlend(
-        bloodVein(pos,v),
-        bloodCellField(pos, .3),
-        9.
-      )
+vec4 scene0(vec3 pos) {
+  return opBlend(
+    bloodVein(pos),
+    bloodCellField(pos, .3),
+    9.
   );
 }
 
-vec2 scene1(vec3 pos) {
-  vec2 res = opBlend(bloodVein(pos,v), bloodCellField(pos, -.8), 9.);
-  res = opU(res, vec2(sdSphere(pos,.01),45.5));
-  res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
+vec4 scene1(vec3 pos) {
+  vec4 res = opBlend(
+    bloodVein(pos),
+    bloodCellField(pos, -.8),
+    9.
+  );
+
+  res = opU(
+    res,
+    vec4(
+      sdSphere(pos,.01),
+      0.7, 0.5, 0.3
+    )
+  );
+
+  res = opU(
+    res,
+    virus(
+      vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
+      cos(a/2.)
+    )
+  );
+
   return res;
 }
 
-vec2 scene2(vec3 pos) {
+vec4 scene2(vec3 pos) {
   // vec2 res = opBlend(
   //   bloodVein(pos,v),
   //   bloodCellField(pos, v), 9.)
     // ;
-  vec2 res = vec2(sdSphere(pos,.01),45.5);
+  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
   // vec2 res2 = bloodVein(pos,v);
   // res = opU(res,res2);
-  res = opU(res, opBlend(bloodCellWall(pos,v),bloodVein(pos, v), 9.));
+  res = opU(res, opU(bloodCellWall(pos,v),bloodVein(pos)));
   // res = opU(res, virus(vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),cos(a/2.)));
   return res;
 }
 
 
-vec2 scene3(vec3 pos) {
-  pos += vec3(sin(a) / 4.,1.,.2);
+vec4 scene3(vec3 pos) {
+  // pos += vec3(0., 1., -4.);
 
-  // virus
-  return virus(pos,.5);
+  //pos += vec3(sin(a / 8.) / 4.,1.,1.);
+  pR(pos.yz, 7.);
+  pR(pos.xy, a/20.);
+  pos += vec3(1., 1., 1.);
+  return opBlend(
+    heart(pos),
+    virus(pos + vec3(.5), .0),
+    50.
+  );
 }
 
-vec2 scene4(vec3 pos) {
+vec4 scene4(vec3 pos) {
   pos += vec3(sin(a) / 4.,0.3,1.);
 
   pR(pos.xz, a / 2.);
-  pR(pos.zy, a);
+  //pR(pos.zy, a);
   // vessel
   return vessel(pos);
 }
 
-vec2 map(in vec3 pos, in vec3 origin) {
+vec4 map(in vec3 pos, in vec3 origin) {
   vec2 res = vec2(.0);
 
   float transitionTime = 10.;
@@ -380,6 +420,7 @@ vec2 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- SCENES --------- */
 
+  /*
   // first scene
   if (a < end0 + transitionTime) {
     res = scene0(pos);
@@ -431,25 +472,26 @@ vec2 map(in vec3 pos, in vec3 origin) {
   }
 
   return res;
+  */
 }
 
-vec2 castRay(in vec3 ro, in vec3 rd) {
+vec4 castRay(in vec3 ro, in vec3 rd) {
   const int maxIterations = 64;
   float tmin = .02;
   float tmax = 50.;
 
   float t = tmin;
-  float m = -1.;
+  vec3 m = vec3(-1.);
   for( int i=0; i<maxIterations; i++ ) {
     float precis = .000001*t;
-    vec2 res = map( ro+rd*t, ro );
+    vec4 res = map( ro+rd*t, ro );
     if( res.x<precis || t>tmax ) break;
     t += res.x;
-    m = res.y;
+    m = res.yzw;
   }
 
-  if( t>tmax ) m=-1.;
-  return vec2( t, m );
+  if( t>tmax ) m=vec3(-1.);
+  return vec4( t, m );
 }
 
 
@@ -493,16 +535,17 @@ float calcAO(in vec3 pos, in vec3 nor) {
 vec3 render(in vec3 ro, in vec3 rd) {
   vec3 col = vec3(.0);
   //vec3 col = vec3(.05, .05, .05) +rd.y*.1;
-  vec2 res = castRay(ro,rd);
+  vec4 res = castRay(ro,rd);
   float t = res.x;
-  float m = res.y;
-  if( m>-.5 ) {
+  vec3 m = res.yzw;
+  if( length(m)>.1 ) {
     vec3 pos = ro + t*rd;
     vec3 nor = calcNormal( pos );
     vec3 ref = reflect( rd, nor );
 
     // material
-    col = .45 + .35*sin( vec3(.05,.08,.10)*(m-1.0) );
+    //col = .45 + .35*sin( vec3(.05,.08,.10)*(m-1.0) );
+    col = m;
     /*
     if( m<1.5 ) {
       float f = mod( floor(5.0*pos.z) + floor(5.0*pos.x), 2.0);
@@ -533,7 +576,7 @@ vec3 render(in vec3 ro, in vec3 rd) {
     col = col*lin;
 
     // fog
-    col = mix( col, vec3(.0), 1.-exp( -.001*t*t*t ) );
+    col = mix( col, vec3(.0), 1.-exp( -.0001*t*t*t*t ) );
 
     /*
     float fade = 1. - min(1., (a - 2.)  / 8.);
