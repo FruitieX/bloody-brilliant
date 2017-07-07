@@ -335,7 +335,7 @@ vec4 vessel(vec3 pos) {
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 // scene 4 = Greetings
 
-float v = 4.;
+float v = 2.;
 // SCENES
 vec4 scene0(vec3 pos) {
   return opBlend(
@@ -362,6 +362,7 @@ vec4 scene2(vec3 pos) {
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
+  // rotate pos a liiiiitle in order to misalign the next blood cell field
   pR(pos.yx,.5);
   res = opU(res, bloodCellField(pos,v*.8));
 
