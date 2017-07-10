@@ -197,51 +197,39 @@ vec4 bloodCellWall(vec3 p) {
   vec4 res = vec4(sdBloodCell(rotated), col);
 
   // repeat
-  p -= vec3(0.,2.,0.);
-  pR(p.yz, 2.);
+  p += vec3(1.,1.,0.);
   rotated = p;
   pR(rotated.xy, a / 6.);
+  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
+
+  // repeat
+  p -= vec3(0.,4.,0.);
+  rotated = p;
   pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated.yzx), col));
+
+  // repeat
+  p += vec3(1.,1.,0.);
+  rotated = p;
+  pR(rotated.xy, a / 6.);
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
-  p += vec3(1.,1.,1.);
-  pR(p.xy, 1.);
+  p += vec3(0.,2.,.2);
   rotated = p;
-  pR(rotated.xy, a / 6.);
-  pR(rotated.yz, a / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  pR(rotated.xz, a / 6.);
+  res = opU(res, vec4(sdBloodCell(rotated.xzy), col));
 
   // repeat
-  p -= vec3(0.,1.,4.0);
-  pR(p.yz, 1.);
+  p -= vec3(2.,2.,0.);
   rotated = p;
-  pR(rotated.xy, a / 6.);
   pR(rotated.yz, a / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
 
   // repeat
-  p += vec3(0.,2.,2.0);
-  pR(p.zy, 1.);
+  p += vec3(3.,1.,0.);
   rotated = p;
-  pR(rotated.xy, a / 6.);
-  pR(rotated.yz, a / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
-
-  // repeat
-  p += vec3(.2,1.5,0.);
-  pR(p.zy, 1.);
-  rotated = p;
-  pR(rotated.xy, a / 6.);
-  pR(rotated.yz, a / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
-
-  // repeat
-  p -= vec3(1.,0.,3.);
-  pR(p.zy, 1.);
-  rotated = p;
-  pR(rotated.xy, a / 6.);
-  pR(rotated.yz, a / 7.);
+  pR(rotated.xy, -a / 4.);
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   return res;
