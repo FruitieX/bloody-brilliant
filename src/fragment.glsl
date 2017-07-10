@@ -321,24 +321,26 @@ vec4 sdArm(vec3 p, float len_arm, float angle) {
 }
 
 vec4 vessel(vec3 pos, bool laser) {
-  vec3 p = pos;
+  float s = 2.; // scale
+  vec3 col = vec3(.9);
+  vec3 p = pos + vec3(0.,-.4,0.); // position vessel at origo
   pR(p.xz, PI/2.);
 
   pR(p.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(p , vec2(.5,.3)), .9,.9,.9);
+  vec4 res = vec4(sdTriPrism(p , vec2(.5,.3)/s), col);
   pR(p.xz, PI/2.);
-  res = opI(res, vec4(sdTriPrism(p , vec2(.7)), .9,.9,.9));
+  res = opI(res, vec4(sdTriPrism(p , vec2(.7)/s), col));
   pR(p.zy, PI/2.);
-  res = opI(res, vec4(sdHexPrism(p, vec2(.3,.5)), .9,.9,.9));
-  p.z += .5;
-  res = opU(res, vec4(sdHexPrism(p, vec2(.3,.4)), .9,.9,.9));
+  res = opI(res, vec4(sdHexPrism(p, vec2(.3,.5)/s), col));
+  p.z += .3;
+  res = opU(res, vec4(sdHexPrism(p, vec2(.3,.4)/s), col));
 
   pR(p.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(p , vec2(.8,.01)), .9,.9,.9));
+  res = opU(res, vec4(sdTriPrism(p , vec2(.8,.01)/s), col));
   pR(p.xz, PI/2.);
-  p.x += .2;
-  p.y += .15;
-  res = opU(res, vec4(sdTriPrism(p , vec2(.5,.01)), .9,.9,.9));
+  p.x += .1;
+  p.y += .1;
+  res = opU(res, vec4(sdTriPrism(p , vec2(.39,.01)/s), col));
 
   // arms
   // pos = origPos;
@@ -371,7 +373,7 @@ vec4 vessel(vec3 pos, bool laser) {
   // );
 
   if (laser) {
-    p = pos;
+    p = pos + vec3(0.,-.4,0.);
     pR(pos.xy, PI/2.);
     res = opU(
       res,
@@ -416,7 +418,9 @@ vec4 scene1(vec3 pos) {
 
   //vec3 pos_vessel = pos + vec3(.0,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  res = opU(res, vessel(pos + vec3(0.,.5,1.), false));
+  vec3 p_vessel = pos;
+  pR(p_vessel.xy, PI/8.*sin(a));
+  res = opU(res, vessel(p_vessel + vec3(0.,.5,1.), false));
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
