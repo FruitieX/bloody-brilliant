@@ -420,10 +420,6 @@ vec4 scene1(vec3 pos) {
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
-  pos += vec3(.2);
-  pR(pos.yx, .5);
-  res = opU(res, bloodCellField(pos,v*.8));
-  // );
 
   return res;
 }
