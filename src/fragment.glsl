@@ -418,9 +418,10 @@ vec4 scene1(vec3 pos) {
 
   //vec3 pos_vessel = pos + vec3(.0,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  vec3 p_vessel = pos;
-  pR(p_vessel.xy, PI/8.*sin(a));
-  res = opU(res, vessel(p_vessel + vec3(0.,.5,1.), false));
+  vec3 p_vessel = pos + vec3(.1+.2 * sin(a),.6 + .2 * cos(a),1.);
+  pR(p_vessel.xz, PI/12.*(sin(a) - .5));
+  pR(p_vessel.yz, PI/16.*cos(a));
+  res = opU(res, vessel(p_vessel, false));
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
