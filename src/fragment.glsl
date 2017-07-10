@@ -130,13 +130,14 @@ float sdBloodCell(vec3 p) {
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
   float d2 = min(max(d.x,d.y),.0) + length(max(d,.0));
 
-  return smin(d1,d2,32.)
+  return (smin(d1,d2,32.)
 
-  // large bumpiness
-  + .005 * sin(20. * p.x) * sin(20. * p.y) * sin(20. * p.z)
-
-  // smaller bumpiness
-  + .0005 * sin(50. * p.x) * sin(50. * p.y) * sin(50. * p.z);
+  // // large bumpiness
+  // + .005 * sin(20. * p.x) * sin(20. * p.y) * sin(20. * p.z)
+  //
+  // // smaller bumpiness
+  // + .0005 * sin(50. * p.x) * sin(50. * p.y) * sin(50. * p.z)
+  );
 
 }
 
@@ -204,7 +205,7 @@ vec4 bloodCellWall(vec3 p) {
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
-  p -= vec3(-1.,-1.,-1.);
+  p += vec3(1.,1.,1.);
   pR(p.xy, 1.);
   rotated = p;
   pR(rotated.xy, a / 6.);
@@ -220,7 +221,23 @@ vec4 bloodCellWall(vec3 p) {
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
-  p -= vec3(0.,-2.,-2.0);
+  p += vec3(0.,2.,2.0);
+  pR(p.zy, 1.);
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
+
+  // repeat
+  p += vec3(.2,1.5,0.);
+  pR(p.zy, 1.);
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
+
+  // repeat
+  p -= vec3(1.,0.,3.);
   pR(p.zy, 1.);
   rotated = p;
   pR(rotated.xy, a / 6.);
@@ -348,15 +365,15 @@ vec4 vessel(vec3 pos) {
   res = opU(res, vec4(sdTriPrism(pos , vec2(.5,.01)), .9,.9,.9));
 
   // arms
-  pos = origPos;
-  pos.x += .3;
-  pR(pos.xy, PI/2.);
-  pR(pos.yz, PI);
-  // pos.z += .3;
-  pR(pos.yz, -PI/8.);
-  pos.z -= .4;
-  pR(pos.xz, PI/2.);
-  res = opU(res, sdArm(pos, .2, -PI/8.));
+  // pos = origPos;
+  // pos.x += .3;
+  // pR(pos.xy, PI/2.);
+  // pR(pos.yz, PI);
+  // // pos.z += .3;
+  // pR(pos.yz, -PI/8.);
+  // pos.z -= .4;
+  // pR(pos.xz, PI/2.);
+  // res = opU(res, sdArm(pos, .2, -PI/8.));
   // pR(pos.yz, PI/4.);
   // res = opU(res, sdArm(pos + vec3(.0,.0,.3), .3, -PI/8. * a));
   // res = vec4(fCapsule(pos, .03,.5), .1,.1,.1);
@@ -366,16 +383,16 @@ vec4 vessel(vec3 pos) {
   // res = opU(res, vec4(fCapsule(pos, .03,.5), .1,.1,.1));
 
   // propeller thing
-  pos = origPos;
-  pR(pos.yz, a * 10.);
-  pModPolar(pos.yz, 3.);
-  res = opU(
-    res,
-    vec4(
-      fCapsule(pos - vec3(.93, 0., 0.), 0.03, 0.3),
-      .4, .3, .7
-    )
-  );
+  // pos = origPos;
+  // pR(pos.yz, a * 10.);
+  // pModPolar(pos.yz, 3.);
+  // res = opU(
+  //   res,
+  //   vec4(
+  //     fCapsule(pos - vec3(.93, 0., 0.), 0.03, 0.3),
+  //     .4, .3, .7
+  //   )
+  // );
 
   return res;
 }
@@ -421,18 +438,15 @@ vec4 scene2(vec3 pos) {
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
-  // rotate pos a liiiiitle in order to misalign the next blood cell field
-  pR(pos.yx,.5);
-  res = opU(res, bloodCellField(pos,v*.8));
 
 
-  res = opU(
-    res,
-    virus(
-      vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
-      cos(a/2.)
-    )
-  );
+  // res = opU(
+  //   res,
+  //   virus(
+  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
+  //     cos(a/2.)
+  //   )
+  // );
 
   return res;
 }
@@ -493,7 +507,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene1(pos);
+  return scene2(pos);
 
   /* ---------- SCENES --------- */
 
@@ -576,7 +590,7 @@ float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
   float res = 2.;
   float t = mint;
 
-  for( int i=0; i<16; i++ ) {
+  for( int i=0; i<2; i++ ) {
     float h = map( ro + rd*t, ro ).x;
     res = min( res, 8.*h/t );
     t += clamp( h, .02, .10 );
