@@ -315,12 +315,14 @@ vec4 vessel(vec3 pos) {
     40.
   );
 
-  // spiral thing
-  pR(pos.yz, PI/5.);
+  // propeller thing
+  pos = origPos;
+  pR(pos.yz, a * 10.);
+  pModPolar(pos.yz, 3.);
   res = opU(
     res,
     vec4(
-      fCapsule(opTwist(origPos + vec3(0., -1., 0.)), 0.03, 0.5),
+      fCapsule(pos + vec3(-.5, 0., 0.), 0.03, 0.3),
       .4, .3, .7
     )
   );
@@ -414,6 +416,13 @@ vec4 scene4(vec3 pos) {
     vessel(pos - vec3(4. - a / 4., .0, .5)),
     10.
   );
+}
+
+vec4 scene5(vec3 pos) {
+  pos.z += 1.;
+
+  pR(pos.xz, a);
+  return vessel(pos);
 }
 
 vec4 map(in vec3 pos, in vec3 origin) {
