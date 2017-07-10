@@ -321,23 +321,24 @@ vec4 sdArm(vec3 p, float len_arm, float angle) {
 }
 
 vec4 vessel(vec3 pos, bool laser) {
-  vec3 origPos = pos;
+  vec3 p = pos;
+  pR(p.xz, PI/2.);
 
-  pR(pos.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(pos , vec2(.5,.3)), .9,.9,.9);
-  pR(pos.xz, PI/2.);
-  res = opI(res, vec4(sdTriPrism(pos , vec2(.7)), .9,.9,.9));
-  pR(pos.zy, PI/2.);
-  res = opI(res, vec4(sdHexPrism(pos, vec2(.3,.5)), .9,.9,.9));
-  pos.z += .5;
-  res = opU(res, vec4(sdHexPrism(pos, vec2(.3,.4)), .9,.9,.9));
+  pR(p.xy, PI/2.);
+  vec4 res = vec4(sdTriPrism(p , vec2(.5,.3)), .9,.9,.9);
+  pR(p.xz, PI/2.);
+  res = opI(res, vec4(sdTriPrism(p , vec2(.7)), .9,.9,.9));
+  pR(p.zy, PI/2.);
+  res = opI(res, vec4(sdHexPrism(p, vec2(.3,.5)), .9,.9,.9));
+  p.z += .5;
+  res = opU(res, vec4(sdHexPrism(p, vec2(.3,.4)), .9,.9,.9));
 
-  pR(pos.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.8,.01)), .9,.9,.9));
-  pR(pos.xz, PI/2.);
-  pos.x += .2;
-  pos.y += .15;
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.5,.01)), .9,.9,.9));
+  pR(p.yz, PI/2.);
+  res = opU(res, vec4(sdTriPrism(p , vec2(.8,.01)), .9,.9,.9));
+  pR(p.xz, PI/2.);
+  p.x += .2;
+  p.y += .15;
+  res = opU(res, vec4(sdTriPrism(p , vec2(.5,.01)), .9,.9,.9));
 
   // arms
   // pos = origPos;
@@ -370,12 +371,12 @@ vec4 vessel(vec3 pos, bool laser) {
   // );
 
   if (laser) {
-    pos = origPos;
+    p = pos;
     pR(pos.xy, PI/2.);
     res = opU(
       res,
       vec4(
-        fCapsule(pos - vec3(.0, .95, -.35), 0.01, 1.),
+        fCapsule(p - vec3(.0, .95, -.35), 0.01, 1.),
         100., .1, .1
       )
     );
@@ -383,7 +384,7 @@ vec4 vessel(vec3 pos, bool laser) {
     res = opU(
       res,
       vec4(
-        fCapsule(pos - vec3(.0, .95, .35), 0.01, 1.),
+        fCapsule(p - vec3(.0, .95, .35), 0.01, 1.),
         100., .1, .1
       )
     );
@@ -406,17 +407,16 @@ vec4 scene0(vec3 pos) {
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
-  pR(pos.yx,.5);
-  res = opU(res, bloodCellField(pos,v*.8));
   return res;
 }
 
 vec4 scene1(vec3 pos) {
+  v = -2.0;
   vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
 
   //vec3 pos_vessel = pos + vec3(.0,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  //res = opU(res, vessel(pos_vessel));
+  res = opU(res, vessel(pos + vec3(0.,.5,1.), false));
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
@@ -519,7 +519,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene2(pos);
+  return scene1(pos);
 
   /* ---------- SCENES --------- */
 
