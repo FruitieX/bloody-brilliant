@@ -338,18 +338,25 @@ vec4 vessel(vec3 pos) {
 float v = 2.;
 // SCENES
 vec4 scene0(vec3 pos) {
-  return opBlend(
-    bloodVein(pos,v),
-    bloodCellField(pos, .3),
-    9.
-  );
+  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
+
+  res = opU(res, bloodVein(pos,v));
+  res = opU(res, bloodCellField(pos,v));
+  pR(pos.yx,.5);
+  res = opU(res, bloodCellField(pos,v*.8));
+  return res;
 }
 
 vec4 scene1(vec3 pos) {
   vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
 
+  vec3 pos_vessel = pos + vec3(.0,0.,1.);
+  pR(pos_vessel.xz, PI/2.);
+  res = opU(res, vessel(pos_vessel));
+  // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
-  res = opU(res, bloodCellField(pos,v));
+  vec3 pos_bcf = pos;
+  res = opU(res, bloodCellField(pos_bcf,v));
   pR(pos.yx,.5);
   res = opU(res, bloodCellField(pos,v*.8));
   // );
@@ -427,7 +434,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene2(pos);
+  return scene1(pos);
 
   /* ---------- SCENES --------- */
 
