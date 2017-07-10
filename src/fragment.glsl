@@ -271,7 +271,7 @@ vec4 virus(vec3 pos, float size) {
   // velocity
   pR(pos.xy, PI/4.);
 
-  float scale = 1.5 + c / 10.;
+  float scale = 1. + c / 10.;
   scale *= size;
   float spikeLen = 1.*scale;
   float spikeThickness = 0.01*scale;
@@ -505,7 +505,7 @@ vec4 scene4_1(vec3 pos) {
   // vessel
   vec4 res = opBlend(
     heart(pos),
-    virus(pos + vec3(.5), 1. / (1. + a / 10.)),
+    virus(pos + vec3(.5), 1.5 / (1. + a / 10.)),
     50.
   );
 
