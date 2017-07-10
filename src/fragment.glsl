@@ -129,7 +129,15 @@ float sdBloodCell(vec3 p) {
   float d1 = length(vec2(length(p.xz)-.3,p.y)) - .1;
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
   float d2 = min(max(d.x,d.y),.0) + length(max(d,.0));
-  return smin(d1,d2,32.);
+
+  return smin(d1,d2,32.)
+
+  // large bumpiness
+  + .005 * sin(20. * p.x) * sin(20. * p.y) * sin(20. * p.z)
+
+  // smaller bumpiness
+  + .0005 * sin(50. * p.x) * sin(50. * p.y) * sin(50. * p.z);
+
 }
 
 float sdTorus(vec3 p) {
@@ -150,7 +158,6 @@ float sdHexPrism( vec3 p, vec2 h ) {
 
 vec4 heart(vec3 p) {
   float plasma1 = calcPlasma(p.x, p.y, p.z, a / 10.);
-  float hue = sin(plasma1) * 100. + a * 10.;
 
   return vec4(
     // tunnel shape
@@ -179,28 +186,46 @@ float pModPolar(inout vec2 p, float repetitions) {
 
 vec4 bloodCellWall(vec3 p) {
   p -= vec3(1.,0.,0.);
+
+  vec3 col = vec3(1., .1, .1);
+
   pR(p.xy, 1.);
-  vec4 res = vec4(sdBloodCell(p), 1.,.0,.0);
+  vec3 rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  vec4 res = vec4(sdBloodCell(rotated), col);
 
   // repeat
   p -= vec3(0.,2.,0.);
   pR(p.yz, 2.);
-  res = opU(res,vec4(sdBloodCell(p), 1.,.0,.0));
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   p -= vec3(-1.,-1.,-1.);
   pR(p.xy, 1.);
-  res = opU(res,vec4(sdBloodCell(p), 1.,.0,.0));
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   p -= vec3(0.,1.,4.0);
   pR(p.yz, 1.);
-  res = opU(res,vec4(sdBloodCell(p), 1.,.0, 0.));
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   p -= vec3(0.,-2.,-2.0);
-  pR(p.xy, 1.);
-  res = opU(res,vec4(sdBloodCell(p), 1.,.0, 0.));
+  pR(p.zy, 1.);
+  rotated = p;
+  pR(rotated.xy, a / 6.);
+  pR(rotated.yz, a / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   return res;
 }
@@ -221,6 +246,7 @@ vec4 bloodCellField(vec3 p, float v) {
 }
 
 vec4 bloodVein(vec3 p,float v) {
+  float plasma1 = calcPlasma(p.x / 8., p.y / 8., p.z / 8., a / 10.);
 
   // rotate
   // pR(p.xy, a/5.);
@@ -232,7 +258,7 @@ vec4 bloodVein(vec3 p,float v) {
     - 0.05 * (1. + sin(3.0 * (p.z + a*v))),
 
     // color
-    .7, 0.1, 0.1
+    sin(vec3(1., .1, .1) * (plasma1 / 2. + .5))
   );
 }
 
@@ -367,9 +393,9 @@ vec4 scene1(vec3 pos) {
   res = opU(res, vessel(pos_vessel));
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
-  vec3 pos_bcf = pos;
-  res = opU(res, bloodCellField(pos_bcf,v));
-  pR(pos.yx,.5);
+  res = opU(res, bloodCellField(pos,v));
+  pos += vec3(.2);
+  pR(pos.yx, .5);
   res = opU(res, bloodCellField(pos,v*.8));
   // );
 
@@ -453,7 +479,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene5(pos);
+  return scene1(pos);
 
   /* ---------- SCENES --------- */
 
@@ -558,7 +584,7 @@ float calcAO(in vec3 pos, in vec3 nor) {
   float occ = .0;
   float sca = 1.;
 
-  for(int i=0; i<5; i++) {
+  for(int i=0; i<8; i++) {
     float hr = .01 + .12*float(i)/4.;
     vec3 aopos =  nor * hr + pos;
     float dd = map( aopos, pos ).x;
@@ -590,30 +616,29 @@ vec3 render(in vec3 ro, in vec3 rd) {
     }
     */
 
-    // lighitng. Seems Lighit
     float occ = calcAO( pos, nor );
     vec3  lig = normalize( vec3(-.4, .7, -.6) );
     float amb = clamp( .5+.5*nor.y, .0, 1. );
     float dif = clamp( dot( nor, lig ), .0, 1. );
-    float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
+    //float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
     float dom = smoothstep( -.1, .1, ref.y );
     float fre = pow( clamp(1.+dot(nor,rd),.0,1.), 2. );
-    float spe = pow(clamp( dot( ref, lig ), .0, 1. ),16.);
+    float spe = pow(clamp( dot( ref, lig ), .0, 1. ),2.);
 
     dif *= softshadow( pos, lig, .02, 2.5 );
     dom *= softshadow( pos, ref, .02, 2.5 );
 
     vec3 lin = vec3(.0);
-    lin += 1.3*dif*vec3(1.,.8,.55);
-    lin += 2.*spe*vec3(1.,.9,.7)*dif;
-    lin += .4*amb*vec3(.4,.6,1.)*occ;
-    lin += .5*dom*vec3(.4,.6,1.)*occ;
-    lin += .5*bac*vec3(.25,.25,.25)*occ;
-    lin += .25*fre*vec3(1.)*occ;
+    lin += dif;
+    lin += spe*dif;
+    lin += .2*amb*occ;
+    lin += pow(.2*dom*occ, 4.);
+    //lin += .5*bac*occ;
+    lin += .5*fre*occ;
     col = col*lin;
 
     // fog
-    col = mix( col, vec3(.0), 1.-exp( -.0001*t*t*t*t ) );
+    col = mix( col, vec3(.05, .05, .1), 1.-exp( -.001*t*t*t ) );
 
     /*
     float fade = 1. - min(1., (a - 2.)  / 8.);
@@ -665,7 +690,7 @@ void main() {
     vec3 col = render( ro, rd );
 
   	// gamma
-    col = pow( col, vec3(.7) );
+    col = pow( col, vec3(.6) );
 
     tot += col;
   }
