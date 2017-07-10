@@ -293,21 +293,17 @@ float sdTorus2(vec3 p) {
   return length(vec2(length(p.xz)-.5,p.y)) - 0.1;
 }
 
+vec4 sdArm(vec3 p, float len_arm, float angle) {
+  vec4 res = vec4(fCapsule(p, .05,len_arm), .1,.1,.1);
+  p.y += len_arm;
+  pR(p.xy, angle);
+  p.y += len_arm;
+  res = opU(res, vec4(fCapsule(p, .05,len_arm), .1,.1,.1));
+  return res;
+}
+
 vec4 vessel(vec3 pos) {
   vec3 origPos = pos;
-  //float res = udBox(pos, vec3(0.5, 0.05, 0.5));
-  //res -= 0.02 * pow(sin(20. * pos), vec3(5.0)).y;
-  // pR(pos.xy, PI/2.);
-  //float res = opBlend_1( res,
-
-  // vec4 res = vec4(sdTriPrism(pos, vec2(.5)), .9,.9,.9);
-  // pR(pos.xz, PI/.8);
-  // vec4 res = vec4(udBox(pos, vec3(.5,.5,.5)), .9,.9,.9);
-  // pR(pos.xz, PI/.8);
-  // // // pR(pos.yx, PI/.8);
-  // res = opI(res, vec4(udBox(pos, vec3(.3,.5,.3)), .9,.9,.9));
-  // pR(pos.xz, PI/.8);
-  // res = opI(res, vec4(udBox(pos, vec3(.5,.5,.3)), .9,.9,.9));
 
   pR(pos.xy, PI/2.);
   vec4 res = vec4(sdTriPrism(pos , vec2(.5,.3)), .9,.9,.9);
@@ -324,6 +320,24 @@ vec4 vessel(vec3 pos) {
   pos.x += .2;
   pos.y += .15;
   res = opU(res, vec4(sdTriPrism(pos , vec2(.5,.01)), .9,.9,.9));
+
+  // arms
+  pos = origPos;
+  // pos.x += .3;
+  pR(pos.xy, PI/2.);
+  pR(pos.yz, PI);
+  // pos.z += .3;
+  pR(pos.yz, -PI/8.);
+
+  pR(pos.xz, PI/8. * a);
+  res = opU(res, sdArm(pos - vec3(.0,.0,.3), .3, -PI/8.));
+  // pR(pos.yz, PI/4.);
+  // res = opU(res, sdArm(pos + vec3(.0,.0,.3), .3, -PI/8. * a));
+  // res = vec4(fCapsule(pos, .03,.5), .1,.1,.1);
+  // pos.y += .5;
+  // pR(pos.xy, PI/8.);
+  // pos.y += .5;
+  // res = opU(res, vec4(fCapsule(pos, .03,.5), .1,.1,.1));
 
   // propeller thing
   pos = origPos;
