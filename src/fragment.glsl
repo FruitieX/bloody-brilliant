@@ -323,14 +323,14 @@ vec4 vessel(vec3 pos) {
 
   // arms
   pos = origPos;
-  // pos.x += .3;
+  pos.x += .3;
   pR(pos.xy, PI/2.);
   pR(pos.yz, PI);
   // pos.z += .3;
   pR(pos.yz, -PI/8.);
-
-  pR(pos.xz, PI/8. * a);
-  res = opU(res, sdArm(pos - vec3(.0,.0,.3), .3, -PI/8.));
+  pos.z -= .4;
+  pR(pos.xz, PI/2.);
+  res = opU(res, sdArm(pos, .2, -PI/8.));
   // pR(pos.yz, PI/4.);
   // res = opU(res, sdArm(pos + vec3(.0,.0,.3), .3, -PI/8. * a));
   // res = vec4(fCapsule(pos, .03,.5), .1,.1,.1);
@@ -453,7 +453,7 @@ vec4 scene5(vec3 pos) {
   pos.z += 1.;
 
   pR(pos.xz, a);
-  return vessel(pos);
+  return vessel(pos + vec3(.0,.5,.0));
 }
 
 vec4 map(in vec3 pos, in vec3 origin) {
