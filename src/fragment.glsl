@@ -416,13 +416,19 @@ vec4 scene1(vec3 pos) {
   v = -2.0;
   vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
 
+  float T = PI; // period
   //vec3 pos_vessel = pos + vec3(.0,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  vec3 p_vessel = pos + vec3(.1+.2 * sin(a),.6 + .2 * cos(a),1.);
-  pR(p_vessel.xz, PI/12.*(sin(a) - .5));
-  pR(p_vessel.yz, PI/16.*cos(a));
+  vec3 p_vessel = pos + vec3(.1-.2 * sin(a/T),.6 + .2 * cos(a/T),1.);
+  // left-right tilt
+  pR(p_vessel.xz, -PI/12.*cos(a/T));
+  // up-down tilt
+  pR(p_vessel.yz, -PI/16.*sin(a/T));
   res = opU(res, vessel(p_vessel, false));
-  // pR(pos.xz, -3.14/2.);
+
+  // rotation to blood cells and vein
+  pR(pos.xy, a/T);
+  // render blood vein and cells
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
 
