@@ -51,8 +51,12 @@ float opS_1(float d1, float d2) {
 */
 
 // TODO: test me
-vec2 opS(vec2 d1, vec2 d2) {
+vec4 opS(vec4 d1, vec4 d2) {
   return (d1.x<-d2.x) ? d2 : d1;
+}
+
+vec4 opI( vec4 d1, vec4 d2 ) {
+    return (d1.x < d2.x) ? d2 : d1;
 }
 
 // TODO: remove all _1 functions (take in float instead of vec2)
@@ -132,6 +136,16 @@ float sdTorus(vec3 p) {
   // the first constant sets size of torus
   // second sets size of middle
   return -(length(vec2(length(p.xz)-14.,p.y)) - 3.);
+}
+
+float sdTriPrism( vec3 p, vec2 h ) {
+    vec3 q = abs(p);
+    return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
+}
+
+float sdHexPrism( vec3 p, vec2 h ) {
+    vec3 q = abs(p);
+    return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);
 }
 
 vec4 heart(vec3 p) {
@@ -283,37 +297,33 @@ vec4 vessel(vec3 pos) {
   vec3 origPos = pos;
   //float res = udBox(pos, vec3(0.5, 0.05, 0.5));
   //res -= 0.02 * pow(sin(20. * pos), vec3(5.0)).y;
-  pR(pos.xy, PI/2.);
+  // pR(pos.xy, PI/2.);
   //float res = opBlend_1( res,
 
-  // Ring around propeller
-  vec4 res = vec4(
-    sdTorus2(pos + vec3(0., 0.5, 0.)),
-    .2, .2, .8
-  );
+  // vec4 res = vec4(sdTriPrism(pos, vec2(.5)), .9,.9,.9);
+  // pR(pos.xz, PI/.8);
+  // vec4 res = vec4(udBox(pos, vec3(.5,.5,.5)), .9,.9,.9);
+  // pR(pos.xz, PI/.8);
+  // // // pR(pos.yx, PI/.8);
+  // res = opI(res, vec4(udBox(pos, vec3(.3,.5,.3)), .9,.9,.9));
+  // pR(pos.xz, PI/.8);
+  // res = opI(res, vec4(udBox(pos, vec3(.5,.5,.3)), .9,.9,.9));
 
-  // Big capsule
-  res = opBlend(
-    res,
-    vec4(
-      fCapsule(pos + vec3(0., -0.5, 0.), 0.4, 0.5),
-      .8, .8, .4
-    ),
-    30.
-  );
+  pR(pos.xy, PI/2.);
+  vec4 res = vec4(sdTriPrism(pos , vec2(.5,.3)), .9,.9,.9);
+  pR(pos.xz, PI/2.);
+  res = opI(res, vec4(sdTriPrism(pos , vec2(.7)), .9,.9,.9));
+  pR(pos.zy, PI/2.);
+  res = opI(res, vec4(sdHexPrism(pos, vec2(.3,.5)), .9,.9,.9));
+  pos.z += .5;
+  res = opU(res, vec4(sdHexPrism(pos, vec2(.3,.4)), .9,.9,.9));
 
-  pModPolar(pos.xz, 4.);
-  pR(pos.xy, PI/4.);
-
-  // Sticks between capsule & ring
-  res = opBlend(
-    res,
-    vec4(
-      fCapsule(pos + vec3(0., .2, 0.), 0.02, 0.5),
-      .8, .7, .9
-    ),
-    40.
-  );
+  pR(pos.yz, PI/2.);
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.8,.01)), .9,.9,.9));
+  pR(pos.xz, PI/2.);
+  pos.x += .2;
+  pos.y += .15;
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.5,.01)), .9,.9,.9));
 
   // propeller thing
   pos = origPos;
@@ -322,7 +332,7 @@ vec4 vessel(vec3 pos) {
   res = opU(
     res,
     vec4(
-      fCapsule(pos + vec3(-.5, 0., 0.), 0.03, 0.3),
+      fCapsule(pos - vec3(.93, 0., 0.), 0.03, 0.3),
       .4, .3, .7
     )
   );
@@ -443,7 +453,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene1(pos);
+  return scene5(pos);
 
   /* ---------- SCENES --------- */
 
