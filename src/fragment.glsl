@@ -158,7 +158,7 @@ float sdHexPrism( vec3 p, vec2 h ) {
 }
 
 vec4 heart(vec3 p) {
-  float plasma1 = calcPlasma(p.x, p.y, p.z, a / 10.);
+  float plasma1 = calcPlasma(p.x, p.y, p.z, a / 10.) + .5;
 
   return vec4(
     // tunnel shape
@@ -168,7 +168,7 @@ vec4 heart(vec3 p) {
     + (1. - c) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
 
     // color
-    sin(vec3(.7, .2, .1) * plasma1)
+    sin(vec3(1., .2, .1) * plasma1)
   );
 }
 
@@ -267,13 +267,12 @@ vec4 bloodVein(vec3 p,float v) {
   );
 }
 
-vec4 virus(vec3 pos, float v) {
+vec4 virus(vec3 pos, float size) {
   // velocity
-  pos.z += v;
-
   pR(pos.xy, PI/4.);
 
-  float scale = 1. + c / 10.;
+  float scale = 1.5 + c / 10.;
+  scale *= size;
   float spikeLen = 1.*scale;
   float spikeThickness = 0.01*scale;
   float blend = 9.;
@@ -333,7 +332,7 @@ vec4 sdArm(vec3 p, float len_arm, float angle) {
   return res;
 }
 
-vec4 vessel(vec3 pos) {
+vec4 vessel(vec3 pos, bool laser) {
   vec3 origPos = pos;
 
   pR(pos.xy, PI/2.);
@@ -382,6 +381,26 @@ vec4 vessel(vec3 pos) {
   //   )
   // );
 
+  if (laser) {
+    pos = origPos;
+    pR(pos.xy, PI/2.);
+    res = opU(
+      res,
+      vec4(
+        fCapsule(pos - vec3(.0, .95, -.35), 0.01, 1.),
+        100., .1, .1
+      )
+    );
+
+    res = opU(
+      res,
+      vec4(
+        fCapsule(pos - vec3(.0, .95, .35), 0.01, 1.),
+        100., .1, .1
+      )
+    );
+  }
+
   return res;
 }
 
@@ -407,9 +426,9 @@ vec4 scene0(vec3 pos) {
 vec4 scene1(vec3 pos) {
   vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
 
-  vec3 pos_vessel = pos + vec3(.0,0.,1.);
-  pR(pos_vessel.xz, PI/2.);
-  res = opU(res, vessel(pos_vessel));
+  //vec3 pos_vessel = pos + vec3(.0,0.,1.);
+  //pR(pos_vessel.xz, PI/2.);
+  //res = opU(res, vessel(pos_vessel));
   // pR(pos.xz, -3.14/2.);
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
@@ -449,7 +468,7 @@ vec4 scene3(vec3 pos) {
   pos += vec3(1., 1., 1.);
   return opBlend(
     heart(pos),
-    virus(pos + vec3(.5), .0),
+    virus(pos + vec3(.5), 1.),
     50.
   );
 }
@@ -464,16 +483,37 @@ vec4 scene4(vec3 pos) {
   // vessel
   vec4 res = opBlend(
     heart(pos),
-    virus(pos + vec3(.5), .0),
+    virus(pos + vec3(.5), 1.),
     50.
   );
 
-  pR(pos.yz, a / 8.);
+  pR(pos.yz, sin(a / 4.) / 8.);
   pR(pos.xy, PI / 8.);
   return opBlend(
     res,
-    vessel(pos - vec3(4. - a / 4., .0, .5)),
+    vessel(pos - vec3(6. - a / 4., .0, .5), false),
     10.
+  );
+}
+
+vec4 scene4_1(vec3 pos) {
+
+  pR(pos.yz, .6);
+  pR(pos.xz, -3.);
+  pos += vec3(a / 16. - 1.,1.,-1.);
+  //pR(pos.zy, a);
+  // vessel
+  vec4 res = opBlend(
+    heart(pos),
+    virus(pos + vec3(.5), 1. / (1. + a / 10.)),
+    50.
+  );
+
+  pR(pos.xz, PI / 6.);
+  pR(pos.xy, PI / 8.);
+  return opU(
+    res,
+    vessel(pos - vec3(1., .0, -.2), true)
   );
 }
 
@@ -481,7 +521,7 @@ vec4 scene5(vec3 pos) {
   pos.z += 1.;
 
   pR(pos.xz, a);
-  return vessel(pos + vec3(.0,.5,.0));
+  return vessel(pos + vec3(.0,.5,.0), true);
 }
 
 vec4 map(in vec3 pos, in vec3 origin) {
@@ -578,7 +618,7 @@ float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
   float res = 2.;
   float t = mint;
 
-  for( int i=0; i<2; i++ ) {
+  for( int i=0; i<4; i++ ) {
     float h = map( ro + rd*t, ro ).x;
     res = min( res, 8.*h/t );
     t += clamp( h, .02, .10 );
@@ -600,7 +640,7 @@ float calcAO(in vec3 pos, in vec3 nor) {
   float occ = .0;
   float sca = 1.;
 
-  for(int i=0; i<8; i++) {
+  for(int i=0; i<6; i++) {
     float hr = .01 + .12*float(i)/4.;
     vec3 aopos =  nor * hr + pos;
     float dd = map( aopos, pos ).x;
@@ -612,7 +652,7 @@ float calcAO(in vec3 pos, in vec3 nor) {
 }
 
 vec3 render(in vec3 ro, in vec3 rd) {
-  vec3 col = vec3(.0);
+  vec3 col = vec3(.03, .04, .05);
   //vec3 col = vec3(.05, .05, .05) +rd.y*.1;
   vec4 res = castRay(ro,rd);
   float t = res.x;
@@ -633,7 +673,7 @@ vec3 render(in vec3 ro, in vec3 rd) {
     */
 
     float occ = calcAO( pos, nor );
-    vec3  lig = normalize( vec3(-.4, .7, -.6) );
+    vec3  lig = normalize( vec3(.4, .7, .6) );
     float amb = clamp( .5+.5*nor.y, .0, 1. );
     float dif = clamp( dot( nor, lig ), .0, 1. );
     //float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
@@ -647,14 +687,14 @@ vec3 render(in vec3 ro, in vec3 rd) {
     vec3 lin = vec3(.0);
     lin += dif;
     lin += spe*dif;
-    lin += .2*amb*occ;
+    lin += pow(.4*amb*occ, 2.);
     lin += pow(.2*dom*occ, 4.);
     //lin += .5*bac*occ;
     lin += .5*fre*occ;
     col = col*lin;
 
     // fog
-    col = mix( col, vec3(.05, .05, .1), 1.-exp( -.001*t*t*t ) );
+    col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
 
     /*
     float fade = 1. - min(1., (a - 2.)  / 8.);
@@ -706,7 +746,7 @@ void main() {
     vec3 col = render( ro, rd );
 
   	// gamma
-    col = pow( col, vec3(.6) );
+    col = pow( col, vec3(.6, .5, .4) );
 
     tot += col;
   }
