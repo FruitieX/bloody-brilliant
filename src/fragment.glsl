@@ -1,5 +1,6 @@
 precision highp float;
 
+// TODO: put all uniforms in vectors to save space
 // time variable (seconds)
 uniform float a;
 // resolution (1920.0, 1080.0)
@@ -15,8 +16,6 @@ uniform float e;
 uniform float f;
 
 float PI = 3.14;
-
-float displacement = .0;
 
 float calcPlasma(float x, float y, float z, float t) {
   // horizontal sinusoid
@@ -51,18 +50,22 @@ float opS_1(float d1, float d2) {
 */
 
 // TODO: test me
+/*
 vec4 opS(vec4 d1, vec4 d2) {
   return (d1.x<-d2.x) ? d2 : d1;
 }
+*/
 
 vec4 opI( vec4 d1, vec4 d2 ) {
     return (d1.x < d2.x) ? d2 : d1;
 }
 
 // TODO: remove all _1 functions (take in float instead of vec2)
+/*
 float opBlend_1( float d1, float d2, float k ) {
     return smin( d1, d2, k );
 }
+*/
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   float tot = d1.x + d2.x;
@@ -75,13 +78,12 @@ vec4 opBlend( vec4 d1, vec4 d2, float k ) {
 
 // t = time to start transition
 // tt = transition length
+/*
 vec2 opMorph( vec2 d1, vec2 d2, float t, float tt ) {
   float k = (a - t) / tt;
 
-  /*
-  k = min(1., k);
-  k = max(0., k);
-  */
+  //k = min(1., k);
+  //k = max(0., k);
 
   k = clamp(0., k, 1.);
 
@@ -90,21 +92,26 @@ vec2 opMorph( vec2 d1, vec2 d2, float t, float tt ) {
     d1.y * (1. - k) + d2.y * k
   );
 }
+*/
 
 vec4 opU(vec4 d1, vec4 d2) {
   return (d1.x<d2.x) ? d1 : d2;
 }
 
+/*
 vec3 opRep(vec3 p, vec3 c) {
   return mod(p,c)-.5*c;
 }
+*/
 
+/*
 vec3 opTwist(vec3 p) {
   float  c = cos(p.y);
   float  s = sin(p.y);
   mat2   m = mat2(c,-s,s,c);
   return vec3(m*p.xz,p.y);
 }
+*/
 
 // Rotate around a coordinate axis (i.e. in a plane perpendicular to that axis) by angle <a>.
 // Read like this: R(p.xz, a) rotates "x towards z".
@@ -113,9 +120,11 @@ void pR(inout vec2 p, float a) {
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
 
+/*
 vec2 pRvec(inout vec2 p, float a) {
 	return cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
+*/
 
 float fCapsule(vec3 p, float r, float c) {
 	return mix(length(p.xz) - r, length(vec3(p.x, abs(p.y) - c, p.z)) - r, step(c, abs(p.y)));
@@ -530,7 +539,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene1(pos);
+  return scene4(pos);
 
   /* ---------- SCENES --------- */
 
