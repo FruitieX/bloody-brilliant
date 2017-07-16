@@ -5,7 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --host 0.0.0.0",
-    "build": "utils/minify.sh"
+    "build": "utils/minify.sh",
+    "watch": "chokidar --initial src utils -c 'npm run build'"
   },
   "repository": {
     "type": "git",
@@ -21,12 +22,13 @@
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.6.0",
+    "chokidar-cli": "^1.2.0",
     "glslmin": "^0.0.0",
     "html-loader": "^0.4.5",
     "html-webpack-plugin": "^2.29.0",
     "raw-loader": "^0.5.1",
     "regpack": "^5.0.1",
-    "uglify-js": "mishoo/UglifyJS2#harmony",
+    "uglify-es": "^3.0.25",
     "webpack": "^2.7.0",
     "webpack-dev-server": "^2.5.1",
     "webpack-glsl-loader": "^1.0.1",

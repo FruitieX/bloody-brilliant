@@ -1,6 +1,6 @@
 // potato level for PC, higher = faster :-)
 // TODO: remove in production
-potato = 2;
+potato = 6;
 c.width = 1920 / potato;
 c.height = 1080 / potato;
 
@@ -69,11 +69,11 @@ g = c.getContext('webgl');
 P = g.createProgram();
 
 // vertex shader
-g.shaderSource(S=g.createShader(35633), require('./vertex.glsl')); // g.VERTEX_SHADER = 35633
+g.shaderSource(S=g.createShader(35633), require("./vertex.glsl")); // g.VERTEX_SHADER = 35633
 g.compileShader(S);g.attachShader(P,S);
 
 // fragment shader
-g.shaderSource(S=g.createShader(35632), require('./fragment.glsl')); // g.FRAGMENT_SHADER = 35632
+g.shaderSource(S=g.createShader(35632), require("./fragment.glsl")); // g.FRAGMENT_SHADER = 35632
 g.compileShader(S);g.attachShader(P,S);
 
 // Log compilation errors
