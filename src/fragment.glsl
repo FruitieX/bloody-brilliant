@@ -631,6 +631,7 @@ vec3 calcNormal(in vec3 pos) {
     e.xxx*map( pos + e.xxx, pos ).x );
 }
 
+/*
 float calcAO(in vec3 pos, in vec3 nor) {
   float occ = .0;
   float sca = 1.;
@@ -645,6 +646,7 @@ float calcAO(in vec3 pos, in vec3 nor) {
 
   return clamp( 1. - 3.*occ, .0, 1. );
 }
+*/
 
 vec3 render(in vec3 ro, in vec3 rd) {
   vec3 col = vec3(.03, .04, .05);
@@ -667,7 +669,7 @@ vec3 render(in vec3 ro, in vec3 rd) {
     }
     */
 
-    float occ = calcAO( pos, nor );
+    //float occ = calcAO( pos, nor );
     vec3  lig = normalize( vec3(.4, .7, .6) );
     float amb = clamp( .5+.5*nor.y, .0, 1. );
     float dif = clamp( dot( nor, lig ), .0, 1. );
@@ -682,10 +684,10 @@ vec3 render(in vec3 ro, in vec3 rd) {
     vec3 lin = vec3(.0);
     lin += dif;
     lin += spe*dif;
-    lin += pow(.4*amb*occ, 2.);
-    lin += pow(.2*dom*occ, 4.);
+    lin += pow(.4*amb/**occ*/, 2.);
+    lin += pow(.2*dom/**occ*/, 4.);
     //lin += .5*bac*occ;
-    lin += .5*fre*occ;
+    lin += .5*fre/**occ*/;
     col = col*lin;
 
     // fog
