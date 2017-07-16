@@ -6,6 +6,13 @@ mkdir -p dist/temp
 cp mintemplate_safe.html dist/temp/temp1.html
 cd dist
 
+echo "source filesizes:"
+echo "-----------------"
+for file in $(ls ../src); do
+  echo "$file: $(cat ../src/$file | wc -c)b"
+done
+echo
+
 # concat all js together
 cat ../src/song.js ../src/player.js ../src/index.js > temp/temp1.js
 
