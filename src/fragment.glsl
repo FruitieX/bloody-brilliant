@@ -15,17 +15,18 @@ float PI = 3.14;
 
 float calcPlasma(float x, float y, float z, float t) {
   // horizontal sinusoid
-  float sine1 = sin(x * 10. + t * 2.);
+  //float sine1 = sin(x * 10. + t * 2.);
 
   // rotating sinusoid
-  float sine2 = sin(10. * (x * sin(t / 2.) + z * cos(t / 3.)) + t);
+  //float sine2 = sin(10. * (x * sin(t / 2.) + z * cos(t / 3.)) + t);
 
   // circular sinusoid
   float cx = x + .5 * sin(t / 5.);
   float cy = y + .5 * cos(t / 3.);
-  float sine3 = sin(sqrt(100. * (cx * cx + cy * cy) + 1.) + t);
+  float blend = sin(sqrt(100. * (cx * cx + cy * cy) + 1.) + t);
 
-  float blend = sine1 + sine2 + sine3;
+  //float blend = sine1 + sine2 + sine3;
+  //float blend = sine3;
 
   //blend *= 1.0 + sin(t / 4.0) * 2.0;
   //blend *= 3.0;
@@ -524,14 +525,16 @@ vec4 scene5(vec3 pos) {
   return vessel(pos + vec3(.0,.5,.0), true);
 }
 
-vec4 map(in vec3 pos, in vec3 origin) {
-  vec2 res = vec2(.0);
+vec4 map(vec3 pos, vec3 origin) {
+  vec2 res; // = vec2(.0);
 
+  /*
   float transitionTime = 10.;
   float end0 = 20.;
   float end1 = 34.;
   float end2 = 50.;
   float end3 = 70.;
+  */
 
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
@@ -594,22 +597,21 @@ vec4 map(in vec3 pos, in vec3 origin) {
   */
 }
 
-vec4 castRay(in vec3 ro, in vec3 rd) {
-  const int maxIterations = 64;
-  float tmin = .02;
-  float tmax = 50.;
+// TODO: inline
+vec4 castRay(vec3 ro, vec3 rd) {
+  //float tmax = 50.;
 
-  float t = tmin;
-  vec3 m = vec3(-1.);
-  for( int i=0; i<maxIterations; i++ ) {
-    float precis = .000001*t;
+  float t = .02; // tmin
+  vec3 m; // = vec3(-1.);
+  for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
+    //float precis = .000001*t;
     vec4 res = map( ro+rd*t, ro );
-    if( res.x<precis || t>tmax ) break;
+    //if( res.x<precis || t>tmax ) break;
     t += res.x;
     m = res.yzw;
   }
 
-  if( t>tmax ) m=vec3(-1.);
+  //if( t>tmax ) m=vec3(-1.);
   return vec4( t, m );
 }
 
@@ -630,12 +632,16 @@ float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
 }
 */
 
-vec3 calcNormal(in vec3 pos) {
-  vec2 e = vec2(1.,-1.)*.5773*.0005;
-  return normalize( e.xyy*map( pos + e.xyy, pos ).x +
-    e.yyx*map( pos + e.yyx, pos ).x +
-    e.yxy*map( pos + e.yxy, pos ).x +
-    e.xxx*map( pos + e.xxx, pos ).x );
+// TODO: inline
+vec3 calcNormal(vec3 pos) {
+  //vec2 e = vec2(1.,-1.)*.5773*.0005;
+  vec2 e = vec2(1e-4, -1e-4);
+  return normalize(
+    e.xyy * map(pos + e.xyy, pos).x +
+    e.yyx * map(pos + e.yyx, pos).x +
+    e.yxy * map(pos + e.yxy, pos).x +
+    e.xxx * map(pos + e.xxx, pos).x
+  );
 }
 
 /*
@@ -655,7 +661,8 @@ float calcAO(in vec3 pos, in vec3 nor) {
 }
 */
 
-vec3 render(in vec3 ro, in vec3 rd) {
+// TODO: inline
+vec3 render(vec3 ro, vec3 rd) {
   vec3 col = vec3(.03, .04, .05);
   //vec3 col = vec3(.05, .05, .05) +rd.y*.1;
   vec4 res = castRay(ro,rd);
@@ -709,9 +716,11 @@ vec3 render(in vec3 ro, in vec3 rd) {
   return vec3( clamp(col,.0,1.) );
 }
 
-mat3 setCamera(in vec3 ro, in vec3 ta, float cr) {
-	vec3 cw = normalize(ta-ro);
-	vec3 cp = vec3(sin(cr), cos(cr),.0);
+// TODO: inline
+mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
+	//vec3 cw = normalize(ta-ro);
+	vec3 cw = normalize(-ro);
+	vec3 cp = vec3(0., 1.,.0);
 	vec3 cu = normalize( cross(cw,cp) );
 	vec3 cv = normalize( cross(cu,cw) );
 
@@ -721,38 +730,41 @@ mat3 setCamera(in vec3 ro, in vec3 ta, float cr) {
 void main() {
 
   vec3 tot = vec3(.0);
-  for( int m=0; m<2; m++ )   // 2x AA
-  for( int n=0; n<2; n++ ) { // 2x AA
+  for( float m=0.; m<2.; m++ )   // 2x AA
+  for( float n=0.; n<2.; n++ ) { // 2x AA
     // pixel coordinates
-    vec2 o = vec2(float(m),float(n)) / float(2) - .5;
+    vec2 o = vec2(m,n) / 2. - .5;
     vec2 p = (-a.xy + 2.*(gl_FragCoord.xy+o))/a.y;
 
     // camera
     // ro = ray origin = where the camera is
     // ta = camera direction (point which the camera is looking at)
     // cr = camera rotation
-    float x = cos(a.z/2.);
-    float y = sin(a.z/2.);
-    float z = sin(a.z/2.)/2.+.5;
 
     // rotating camera
-    vec3 pos = vec3(x,y,z);
+    vec3 pos = vec3(
+      cos(a.z/2.),
+      sin(a.z/2.),
+      sin(a.z/2.)/2.+.5
+    );
     // vec3 ro = pos.xzy*2.;
     // static camera
     vec3 ro = vec3(.0,.0,1.);
-    vec3 ta = vec3( .0 );
-    // camera-to-world transformation
-    mat3 ca = setCamera( ro, ta, .0 );
+    //vec3 ta = vec3( .0 );
+
     // ray direction
-    vec3 rd = ca * normalize( vec3(p.xy,2.) );
+    vec3 rd =
+      // camera-to-world transformation
+      setCamera(ro/*, ta*/) *
 
-    // render
-    vec3 col = render( ro, rd );
+      normalize(vec3(p.xy,2.));
 
-  	// gamma
-    col = pow( col, vec3(.6, .5, .4) );
+    tot += pow(
+      render(ro, rd),
 
-    tot += col;
+    	// gamma
+      vec3(.6, .5, .4)
+    );
   }
 
   tot /= 4.; // AA * AA
