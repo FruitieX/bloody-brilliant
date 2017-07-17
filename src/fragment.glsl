@@ -597,23 +597,23 @@ vec4 map(vec3 pos, vec3 origin) {
   */
 }
 
-// TODO: inline
-vec4 castRay(vec3 ro, vec3 rd) {
-  //float tmax = 50.;
-
-  float t = .02; // tmin
-  vec3 m; // = vec3(-1.);
-  for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
-    //float precis = .000001*t;
-    vec4 res = map( ro+rd*t, ro );
-    //if( res.x<precis || t>tmax ) break;
-    t += res.x;
-    m = res.yzw;
-  }
-
-  //if( t>tmax ) m=vec3(-1.);
-  return vec4( t, m );
-}
+// // TODO: inline
+// vec4 castRay(vec3 ro, vec3 rd) {
+//   //float tmax = 50.;
+//
+//   float t = .02; // tmin
+//   vec3 m; // = vec3(-1.);
+//   for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
+//     //float precis = .000001*t;
+//     vec4 res = map( ro+rd*t, ro );
+//     //if( res.x<precis || t>tmax ) break;
+//     t += res.x;
+//     m = res.yzw;
+//   }
+//
+//   //if( t>tmax ) m=vec3(-1.);
+//   return vec4( t, m );
+// }
 
 
 /*
@@ -663,11 +663,14 @@ float calcAO(in vec3 pos, in vec3 nor) {
 
 // TODO: inline
 vec3 render(vec3 ro, vec3 rd) {
-  vec3 col = vec3(.03, .04, .05);
-  //vec3 col = vec3(.05, .05, .05) +rd.y*.1;
-  vec4 res = castRay(ro,rd);
-  float t = res.x;
-  vec3 m = res.yzw;
+  vec3 col = vec3(.03, .04, .05), m;
+  float t = .02; // tmin
+  vec4 res; // = vec3(-1.);
+  for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
+    res = map( ro+rd*t, ro );
+    t += res.x;
+    m = res.yzw;
+  }
   vec2 e = vec2(1e-4, -1e-4);
   if( length(m)>0. ) {
     vec3 pos = ro + t*rd;
