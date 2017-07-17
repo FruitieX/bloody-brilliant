@@ -530,7 +530,7 @@ vec4 scene5(vec3 pos) {
 }
 
 vec4 map(vec3 pos, vec3 origin) {
-  vec2 res; // = vec2(0.);
+  vec4 res; // = vec4(0.);
 
   /*
   float transitionTime = 10.;
@@ -638,16 +638,15 @@ void main() {
         )
       );
 
-    vec3 col = vec3(.03, .04, .05), m;
+    vec3 col = vec3(.03, .04, .05);
     float t = .02; // tmin
     vec4 res; // = vec3(-1.);
-    for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
-      res = map( ro+rd*t, ro );
-      t += res.x;
-      m = res.yzw;
-    }
+
+    for( float i=0.; i<64.; i++ ) // 64. = maxIterations
+      t += (res = map( ro+rd*t, ro )).x;
+
     vec2 e = vec2(1e-4, -1e-4);
-    if( length(m)>0. ) {
+    if( length(res.yzw)>0. ) {
       vec3 pos = ro + t*rd;
 
       vec3 nor = normalize(e.xyy*map(pos+e.xyy,pos).x
@@ -657,7 +656,6 @@ void main() {
       vec3 ref = reflect( rd, nor );
 
       // material
-      col = m;
       vec3  lig = normalize( vec3(.4, .7, .6) );
       float amb = clamp( .5+.5*nor.y, 0., 1. );
       float dif = clamp( dot( nor, lig ), 0., 1. );
@@ -671,7 +669,7 @@ void main() {
       lin += pow(.4*amb/**occ*/, 2.);
       lin += pow(.2*dom/**occ*/, 4.);
       lin += .5*fre/**occ*/;
-      col = col*lin;
+      col = res.yzw*lin;
 
       // fog
       col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
@@ -679,7 +677,7 @@ void main() {
 
 
     tot += pow(
-      clamp(col,0.,1.),
+      col,
 
     	// gamma
       vec3(.6, .5, .4)
