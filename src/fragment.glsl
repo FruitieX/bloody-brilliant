@@ -134,7 +134,7 @@ float sdSphere(vec3 p, float s) {
 float sdBloodCell(vec3 p) {
   float d1 = length(vec2(length(p.xz)-.3,p.y)) - .1;
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
-  float d2 = min(max(d.x,d.y),.0) + length(max(d,.0));
+  float d2 = min(max(d.x,d.y),0.) + length(max(d,0.));
 
   return (smin(d1,d2,32.)
 
@@ -197,7 +197,7 @@ vec4 bloodCellWall(vec3 p) {
 
   vec3 col = vec3(1., .1, .1);
 
-  vec3 rotated = p - vec3(1.,-1.,.0);
+  vec3 rotated = p - vec3(1.,-1.,0.);
   pR(rotated.yz, a.z / 6.);
   vec4 res = vec4(sdBloodCell(rotated), col);
 
@@ -217,12 +217,12 @@ vec4 bloodCellWall(vec3 p) {
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
-  rotated = p + vec3(2.,-1.,.0);
+  rotated = p + vec3(2.,-1.,0.);
   pR(rotated.xz, a.z / 6.);
   res = opU(res, vec4(sdBloodCell(rotated.xzy), col));
 
   // repeat
-  rotated = p - vec3(.8,1.,.0);
+  rotated = p - vec3(.8,1.,0.);
   pR(rotated.xy, a.z / 7.);
   res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
 
@@ -254,7 +254,7 @@ vec4 bloodVein(vec3 p,float v) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (p.z + a.z*v))),
+    - 0.05 * (1. + sin(3. * (p.z + a.z*v))),
 
     // color
     sin(vec3(1., .1, .1) * (plasma1 / 2. + .5))
@@ -308,7 +308,7 @@ vec4 virus(vec3 pos, float size) {
 }
 
 float udBox( vec3 p, vec3 b ) {
-  return length(max(abs(p)-b,0.0));
+  return length(max(abs(p)-b,0.));
 }
 
 float sdTorus2(vec3 p) {
@@ -384,7 +384,7 @@ vec4 vessel(vec3 pos, bool laser) {
     res = opU(
       res,
       vec4(
-        fCapsule(p - vec3(.0, .95, -.35), 0.01, 1.),
+        fCapsule(p - vec3(0., .95, -.35), .01, 1.),
         100., .1, .1
       )
     );
@@ -392,7 +392,7 @@ vec4 vessel(vec3 pos, bool laser) {
     res = opU(
       res,
       vec4(
-        fCapsule(p - vec3(.0, .95, .35), 0.01, 1.),
+        fCapsule(p - vec3(0., .95, .35), .01, 1.),
         100., .1, .1
       )
     );
@@ -411,7 +411,7 @@ vec4 vessel(vec3 pos, bool laser) {
 float v = 2.;
 // SCENES
 vec4 scene0(vec3 pos) {
-  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
+  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
@@ -419,11 +419,11 @@ vec4 scene0(vec3 pos) {
 }
 
 vec4 scene1(vec3 pos) {
-  v = -2.0;
-  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
+  v = -2.;
+  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   float T = PI; // period
-  //vec3 pos_vessel = pos + vec3(.0,0.,1.);
+  //vec3 pos_vessel = pos + vec3(0.,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
   vec3 p_vessel = pos + vec3(.1-.2 * sin(a.z/T),.6 + .2 * cos(a.z/T),1.);
   // left-right tilt
@@ -442,7 +442,7 @@ vec4 scene1(vec3 pos) {
 }
 
 vec4 scene2(vec3 pos) {
-  vec4 res = vec4(sdSphere(pos,.01),1.,.0,.0);
+  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
@@ -492,7 +492,7 @@ vec4 scene4(vec3 pos) {
   pR(pos.xy, PI / 8.);
   return opBlend(
     res,
-    vessel(pos - vec3(6. - a.z / 4., .0, .5), false),
+    vessel(pos - vec3(6. - a.z / 4., 0., .5), false),
     10.
   );
 }
@@ -514,7 +514,7 @@ vec4 scene4_1(vec3 pos) {
   pR(pos.xy, PI / 8.);
   return opU(
     res,
-    vessel(pos - vec3(1., .0, -.2), true)
+    vessel(pos - vec3(1., 0., -.2), true)
   );
 }
 
@@ -522,11 +522,11 @@ vec4 scene5(vec3 pos) {
   pos.z += 1.;
 
   pR(pos.xz, a.z);
-  return vessel(pos + vec3(.0,.5,.0), true);
+  return vessel(pos + vec3(0., .5, 0.), true);
 }
 
 vec4 map(vec3 pos, vec3 origin) {
-  vec2 res; // = vec2(.0);
+  vec2 res; // = vec2(0.);
 
   /*
   float transitionTime = 10.;
@@ -552,7 +552,7 @@ vec4 map(vec3 pos, vec3 origin) {
   // stop rendering after transitioning to next scene
   if (a.z >= end0 && a.z < end1 + transitionTime) {
     res = opMorph(res,
-      scene1(pos + vec3(a.z, .0, sin(a.z))),
+      scene1(pos + vec3(a.z, 0., sin(a.z))),
 
       // Timing
       end0,
@@ -668,7 +668,7 @@ vec3 render(vec3 ro, vec3 rd) {
   vec4 res = castRay(ro,rd);
   float t = res.x;
   vec3 m = res.yzw;
-  if( length(m)>.1 ) {
+  if( length(m)>0. ) {
     vec3 pos = ro + t*rd;
     vec3 nor = calcNormal( pos );
     vec3 ref = reflect( rd, nor );
@@ -685,17 +685,17 @@ vec3 render(vec3 ro, vec3 rd) {
 
     //float occ = calcAO( pos, nor );
     vec3  lig = normalize( vec3(.4, .7, .6) );
-    float amb = clamp( .5+.5*nor.y, .0, 1. );
-    float dif = clamp( dot( nor, lig ), .0, 1. );
+    float amb = clamp( .5+.5*nor.y, 0., 1. );
+    float dif = clamp( dot( nor, lig ), 0., 1. );
     //float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
     float dom = smoothstep( -.1, .1, ref.y );
-    float fre = pow( clamp(1.+dot(nor,rd),.0,1.), 2. );
-    float spe = pow(clamp( dot( ref, lig ), .0, 1. ),2.);
+    float fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. );
+    float spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
 
     //dif *= softshadow( pos, lig, .02, 2.5 );
     //dom *= softshadow( pos, ref, .02, 2.5 );
 
-    vec3 lin = vec3(.0);
+    vec3 lin = vec3(0.);
     lin += dif;
     lin += spe*dif;
     lin += pow(.4*amb/**occ*/, 2.);
@@ -713,14 +713,14 @@ vec3 render(vec3 ro, vec3 rd) {
     */
   }
 
-  return vec3( clamp(col,.0,1.) );
+  return vec3( clamp(col,0.,1.) );
 }
 
 // TODO: inline
 mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
 	//vec3 cw = normalize(ta-ro);
 	vec3 cw = normalize(-ro);
-	vec3 cp = vec3(0., 1.,.0);
+	vec3 cp = vec3(0., 1.,0.);
 	vec3 cu = normalize( cross(cw,cp) );
 	vec3 cv = normalize( cross(cu,cw) );
 
@@ -729,7 +729,7 @@ mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
 
 void main() {
 
-  vec3 tot = vec3(.0);
+  vec3 tot = vec3(0.);
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
     // pixel coordinates
@@ -749,8 +749,8 @@ void main() {
     );
     // vec3 ro = pos.xzy*2.;
     // static camera
-    vec3 ro = vec3(.0,.0,1.);
-    //vec3 ta = vec3( .0 );
+    vec3 ro = vec3(0.,0.,1.);
+    //vec3 ta = vec3( 0. );
 
     // ray direction
     vec3 rd =
