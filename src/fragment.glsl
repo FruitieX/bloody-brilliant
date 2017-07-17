@@ -632,17 +632,17 @@ float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
 }
 */
 
-// TODO: inline
-vec3 calcNormal(vec3 pos) {
-  //vec2 e = vec2(1.,-1.)*.5773*.0005;
-  vec2 e = vec2(1e-4, -1e-4);
-  return normalize(
-    e.xyy * map(pos + e.xyy, pos).x +
-    e.yyx * map(pos + e.yyx, pos).x +
-    e.yxy * map(pos + e.yxy, pos).x +
-    e.xxx * map(pos + e.xxx, pos).x
-  );
-}
+// // TODO: inline
+// vec3 calcNormal(vec3 pos) {
+//   //vec2 e = vec2(1.,-1.)*.5773*.0005;
+//   vec2 e = vec2(1e-4, -1e-4);
+//   return normalize(
+//     e.xyy * map(pos + e.xyy, pos).x +
+//     e.yyx * map(pos + e.yyx, pos).x +
+//     e.yxy * map(pos + e.yxy, pos).x +
+//     e.xxx * map(pos + e.xxx, pos).x
+//   );
+// }
 
 /*
 float calcAO(in vec3 pos, in vec3 nor) {
@@ -668,9 +668,14 @@ vec3 render(vec3 ro, vec3 rd) {
   vec4 res = castRay(ro,rd);
   float t = res.x;
   vec3 m = res.yzw;
+  vec2 e = vec2(1e-4, -1e-4);
   if( length(m)>0. ) {
     vec3 pos = ro + t*rd;
-    vec3 nor = calcNormal( pos );
+
+    vec3 nor = normalize(e.xyy*map(pos+e.xyy,pos).x
+                         + e.yyx*map(pos+e.yyx,pos).x
+                         + e.yxy*map(pos+e.yxy,pos).x
+                         + e.xxx*map(pos+e.xxx,pos).x);
     vec3 ref = reflect( rd, nor );
 
     // material
@@ -716,16 +721,16 @@ vec3 render(vec3 ro, vec3 rd) {
   return vec3( clamp(col,0.,1.) );
 }
 
-// TODO: inline
-mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
-	//vec3 cw = normalize(ta-ro);
-	vec3 cw = normalize(-ro);
-	vec3 cp = vec3(0., 1.,0.);
-	vec3 cu = normalize( cross(cw,cp) );
-	vec3 cv = normalize( cross(cu,cw) );
-
-  return mat3( cu, cv, cw );
-}
+// // TODO: inline
+// mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
+// 	//vec3 cw = normalize(ta-ro);
+// 	vec3 cw = normalize(-ro);
+// 	vec3 cp = vec3(0., 1.,0.);
+// 	vec3 cu = normalize( cross(cw,cp) );
+// 	vec3 cv = normalize( cross(cu,cw) );
+//
+//   return mat3( cu, cv, cw );
+// }
 
 void main() {
 
@@ -750,12 +755,12 @@ void main() {
     // vec3 ro = pos.xzy*2.;
     // static camera
     vec3 ro = vec3(0.,0.,1.);
-    //vec3 ta = vec3( 0. );
 
     // ray direction
     vec3 rd =
       // camera-to-world transformation
-      setCamera(ro/*, ta*/) *
+      // shortened setCamera()
+      mat3(-ro.zxy,ro.xzy,-ro) *
 
       normalize(vec3(p.xy,2.));
 
