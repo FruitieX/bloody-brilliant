@@ -20,12 +20,9 @@
  * SOFTWARE.
  */
 
-var soundbox;
-(function() {
 soundbox = {};
 
-var audioCtx = new AudioContext();
-soundbox.audioCtx = audioCtx;
+audioCtx = new AudioContext;
 
 const waveforms = [
   "sine",
@@ -39,11 +36,11 @@ const bound = (min, value, max) => {
 };
 
 const createNoiseOsc = () => {
-  let osc = audioCtx.createScriptProcessor(2048, 1, 1);
+  osc = audioCtx.createScriptProcessor(2048, 1, 1);
 
   osc.onaudioprocess = e => {
-      var output = e.outputBuffer.getChannelData(0);
-      for (var i = 0; i < 2048; i++) {
+      output = e.outputBuffer.getChannelData(0);
+      for (i = 0; i < 2048; i++) {
           output[i] = Math.random() * 2 - 1;
       }
   }
@@ -57,16 +54,16 @@ const filters = [
   "bandpass",
 ];
 
-let initCol = () => {
+initCol = () => {
   //  master out / "post" filter mixer
-  let out = audioCtx.createGain();
+  out = audioCtx.createGain();
   // "pre" filter mixer
-  let preFilter = audioCtx.createGain();
+  preFilter = audioCtx.createGain();
 
   // oscillator envelopes
-  let osc1env = audioCtx.createGain();
-  let osc2env = audioCtx.createGain();
-  let osc3env = audioCtx.createGain();
+  osc1env = audioCtx.createGain();
+  osc2env = audioCtx.createGain();
+  osc3env = audioCtx.createGain();
 
   // make sure oscillators start out muted
   osc1env.gain.value = 0;
@@ -74,25 +71,25 @@ let initCol = () => {
   osc3env.gain.value = 0;
 
   // oscillators
-  let osc1 = audioCtx.createOscillator();
-  let osc2 = audioCtx.createOscillator();
-  let osc3 = createNoiseOsc();
+  osc1 = audioCtx.createOscillator();
+  osc2 = audioCtx.createOscillator();
+  osc3 = createNoiseOsc();
 
   // pan
-  let panNode = audioCtx.createStereoPanner();
-  let panLFO = audioCtx.createOscillator();
-  let panAmt = audioCtx.createGain();
+  panNode = audioCtx.createStereoPanner();
+  panLFO = audioCtx.createOscillator();
+  panAmt = audioCtx.createGain();
 
   // delay
-  let delayGain = audioCtx.createGain();
-  let delay = audioCtx.createDelay();
+  delayGain = audioCtx.createGain();
+  delay = audioCtx.createDelay();
 
   // filter
-  let biquadFilter = audioCtx.createBiquadFilter();
+  biquadFilter = audioCtx.createBiquadFilter();
 
   // lfo
-  let lfo = audioCtx.createOscillator();
-  let modulationGain = audioCtx.createGain();
+  lfo = audioCtx.createOscillator();
+  modulationGain = audioCtx.createGain();
 
   osc1env.connect(preFilter);
   osc2env.connect(preFilter);
@@ -140,7 +137,7 @@ let initCol = () => {
   };
 };
 
-let initTrack = () => {
+initTrack = () => {
   // Support max 4 columns per track
   return [
     initCol(),
@@ -150,9 +147,9 @@ let initTrack = () => {
   ];
 };
 
-let setParams = (params, rowLen, column) => {
+setParams = (params, l, column) => {
   // TODO get rid of unused params
-  var osc1t = waveforms[params[0]],
+  osc1t = waveforms[params[0]],
       o1vol = params[1] / 255,
       o1xenv = params[3],
       osc2t = waveforms[params[4]],
@@ -163,10 +160,10 @@ let setParams = (params, rowLen, column) => {
       sustain = params[11] * params[11] * 4 / 44100,
       release = params[12] * params[12] * 4 / 44100,
       arp = params[13],
-      arpInterval = rowLen * Math.pow(2, 2 - params[14]),
+      arpInterval = l * Math.pow(2, 2 - params[14]),
       oscLFO = waveforms[params[15]],
       lfoAmt = params[16] / 255,
-      lfoFreq = Math.pow(2, params[17] - 9) / rowLen * 2,
+      lfoFreq = Math.pow(2, params[17] - 9) / l * 2,
       fxLFO = params[18],
       fxFilter = params[19],
       fxFreq = params[20] * 20,
@@ -174,9 +171,9 @@ let setParams = (params, rowLen, column) => {
       dist = params[22] * 1e-5,
       drive = params[23] / 32,
       panAmt = params[24] / 255,
-      panFreq = 3.14 * Math.pow(2, params[25] - 9) / rowLen,
+      panFreq = 3.14 * Math.pow(2, params[25] - 9) / l,
       dlyAmt = params[26] / 255,
-      dly = params[27] * rowLen / 2;
+      dly = params[27] * l / 2;
 
     // master
     column.out.gain.value = drive;
@@ -219,9 +216,9 @@ let setParams = (params, rowLen, column) => {
     }
 };
 
-let setNotes = (params, patterns, patternOrder, rowLen, patternLen, when, column, cIndex) => {
+setNotes = (params, patterns, patternOrder, l, r, when, column, cIndex) => {
   // TODO get rid of unused params
-  var osc1t = waveforms[params[0]],
+  osc1t = waveforms[params[0]],
       o1vol = params[1] / 255,
       o1xenv = params[3],
       osc2t = waveforms[params[4]],
@@ -232,10 +229,10 @@ let setNotes = (params, patterns, patternOrder, rowLen, patternLen, when, column
       sustain = params[11] * params[11] * 4 / 44100,
       release = params[12] * params[12] * 4 / 44100,
       arp = params[13],
-      arpInterval = rowLen * Math.pow(2, 2 - params[14]),
+      arpInterval = l * Math.pow(2, 2 - params[14]),
       oscLFO = waveforms[params[15]],
       lfoAmt = params[16] / 255,
-      lfoFreq = Math.pow(2, params[17] - 9) / rowLen * 2,
+      lfoFreq = Math.pow(2, params[17] - 9) / l * 2,
       fxLFO = params[18],
       fxFilter = params[19],
       fxFreq = params[20] * 20,
@@ -243,25 +240,25 @@ let setNotes = (params, patterns, patternOrder, rowLen, patternLen, when, column
       dist = params[22] * 1e-5,
       drive = params[23] / 32,
       panAmt = params[24] / 511,
-      panFreq = 6.283184 * Math.pow(2, params[25] - 9) / rowLen,
+      panFreq = 6.283184 * Math.pow(2, params[25] - 9) / l,
       dlyAmt = params[26] / 255,
-      dly = params[27] * rowLen;
+      dly = params[27] * l;
 
   // parse song into more suitable format
-  let notes = [];
-  let effects = [];
+  notes = [];
+  effects = [];
 
   // program in all notes
   patternOrder.forEach((patIdx, numPattern) => {
     // loop over patterns
     if (patIdx) {
-      let pattern = patterns[patIdx - 1];
-      let n = pattern.n.slice(cIndex * patternLen, cIndex * patternLen + patternLen);
-      let f = pattern.f.slice(cIndex * patternLen, cIndex * patternLen + patternLen);
+      pattern = patterns[patIdx - 1];
+      n = pattern.n.slice(cIndex * r, cIndex * r + r);
+      f = pattern.f.slice(cIndex * r, cIndex * r + r);
 
-      for (let i = 0; i < patternLen; i++) {
-        notes[numPattern * patternLen + i] = n[i];
-        effects[numPattern * patternLen + i] = f[i];
+      for (i = 0; i < r; i++) {
+        notes[numPattern * r + i] = n[i];
+        effects[numPattern * r + i] = f[i];
       }
     }
   });
@@ -273,15 +270,15 @@ let setNotes = (params, patterns, patternOrder, rowLen, patternLen, when, column
   // Program notes in reverse order and keep track of the next note.
   // If next note is too close, don't program in sustain / release events
   notes.reverse();
-  let nextNote;
+  nextNote = 0;
 
   notes.forEach((note, index) => {
     if (!note) return;
 
-    //let startTime = t + rowLen * index;
-    let startTime = when + rowLen * (notes.length - index - 1);
-    let osc1freq = 440 * Math.pow(2, (note + params[2] - 272) / 12);
-    let osc2freq = 440 * Math.pow(2, (note + params[6] - 272 + 0.0125 * params[7]) / 12);
+    //startTime = t + l * index;
+    startTime = when + l * (notes.length - index - 1);
+    osc1freq = 440 * Math.pow(2, (note + params[2] - 272) / 12);
+    osc2freq = 440 * Math.pow(2, (note + params[6] - 272 + 0.0125 * params[7]) / 12);
     column.osc1.frequency.setValueAtTime(osc1freq, startTime);
     column.osc2.frequency.setValueAtTime(osc2freq, startTime);
 
@@ -311,39 +308,39 @@ let setNotes = (params, patterns, patternOrder, rowLen, patternLen, when, column
       }
     }
 
-    let a = startTime + attack;
-    let s = startTime + attack + sustain;
-    let r = startTime + attack + sustain + release;
+    att = startTime + attack;
+    sus = startTime + attack + sustain;
+    rel = startTime + attack + sustain + release;
 
     // small delta required so clamped events don't overlap
-    let d = 0.001;
+    d = 0.001;
 
     // don't overlap frequent events
     if (nextNote) {
-      a = Math.min(nextNote - d, a);
-      s = Math.min(nextNote - d, s);
-      r = Math.min(nextNote - d, r);
+      att = Math.min(nextNote - d, att);
+      sus = Math.min(nextNote - d, sus);
+      rel = Math.min(nextNote - d, rel);
     }
 
     // attack
     column.osc1env.gain.setValueAtTime(0, startTime);
     column.osc2env.gain.setValueAtTime(0, startTime);
     column.osc3env.gain.setValueAtTime(0, startTime);
-    column.osc1env.gain.linearRampToValueAtTime(o1vol, a);
-    column.osc2env.gain.linearRampToValueAtTime(o2vol, a);
-    column.osc3env.gain.linearRampToValueAtTime(noiseVol, a);
+    column.osc1env.gain.linearRampToValueAtTime(o1vol, att);
+    column.osc2env.gain.linearRampToValueAtTime(o2vol, att);
+    column.osc3env.gain.linearRampToValueAtTime(noiseVol, att);
 
     if (!nextNote || nextNote > startTime + attack + sustain) {
         // sustain
-        column.osc1env.gain.setValueAtTime(o1vol, s);
-        column.osc2env.gain.setValueAtTime(o2vol, s);
-        column.osc3env.gain.setValueAtTime(noiseVol, s);
+        column.osc1env.gain.setValueAtTime(o1vol, sus);
+        column.osc2env.gain.setValueAtTime(o2vol, sus);
+        column.osc3env.gain.setValueAtTime(noiseVol, sus);
 
         // release
-        let releaseVal = bound(0, 1 - (r - startTime) / (attack + sustain + release), 1);
-        column.osc1env.gain.linearRampToValueAtTime(o1vol * releaseVal, r);
-        column.osc2env.gain.linearRampToValueAtTime(o2vol * releaseVal, r);
-        column.osc3env.gain.linearRampToValueAtTime(noiseVol * releaseVal, r);
+        releaseVal = bound(0, 1 - (rel - startTime) / (attack + sustain + release), 1);
+        column.osc1env.gain.linearRampToValueAtTime(o1vol * releaseVal, rel);
+        column.osc2env.gain.linearRampToValueAtTime(o2vol * releaseVal, rel);
+        column.osc3env.gain.linearRampToValueAtTime(noiseVol * releaseVal, rel);
     }
 
     nextNote = startTime;
@@ -380,7 +377,7 @@ soundbox.MusicGenerator = function() {
 };
 
 soundbox.MusicGenerator.prototype.play = function(song, when = 0) {
-  song.songData.forEach((track, tIndex) =>
+  song.d.forEach((track, tIndex) =>
     this.tracks[tIndex].forEach((column, cIndex) => {
       // TODO: better way of resetting lfo?
       // currently it's recreated
@@ -395,13 +392,14 @@ soundbox.MusicGenerator.prototype.play = function(song, when = 0) {
       column.panLFO.start();
 
       // Set initial parameters for each column
-      setParams(track.i, song.rowLen / 44100, column);
+      setParams(track.i, song.l / 44100, column);
 
       // Program notes for each oscillator
-      setNotes(track.i, track.c, track.p, song.rowLen / 44100, song.patternLen, when, column, cIndex);
+      setNotes(track.i, track.c, track.p, song.l / 44100, song.r, when, column, cIndex);
     })
   );
 };
+/*
 soundbox.MusicGenerator.prototype.stop = function() {
   this.tracks.forEach(track =>
     track.forEach(column => {
@@ -418,8 +416,7 @@ soundbox.MusicGenerator.prototype.stop = function() {
     })
   );
 };
+*/
 soundbox.MusicGenerator.prototype.connect = function(target) {
   this.mixer.connect(target);
 };
-
-})();

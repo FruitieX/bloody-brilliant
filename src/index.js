@@ -5,16 +5,16 @@ c.width = 1920 / potato;
 c.height = 1080 / potato;
 
 // music
-s = new soundbox.MusicGenerator();
-s.connect(soundbox.audioCtx.destination);
+b = new soundbox.MusicGenerator();
+b.connect(audioCtx.destination);
 // analyser = soundbox.audioCtx.createAnalyser();
 // analyserArray = new Uint8Array(analyser.frequencyBinCount);
 
 // connect kick drum track, first column to analyser
-// s.tracks[0][0].out.connect(analyser);
+// b.tracks[0][0].out.connect(analyser);
 
 // connect hihat drum track, first column to analyser
-// s.tracks[2][0].out.connect(analyser);
+// b.tracks[2][0].out.connect(analyser);
 
 // time at previous frame
 oldTime = 0;
@@ -41,7 +41,7 @@ r = t =>
       g.getUniformLocation(P, 'a'),
       c.width,
       c.height,
-      soundbox.audioCtx.currentTime,
+      audioCtx.currentTime,
       0 // TODO: must pass 4 params
     ),
 
@@ -57,19 +57,19 @@ r = t =>
 
       // bass peak, averaged. TODO: can we use blood flow instead?
       bPeak = Math.max(
-        0.95 * bPeak + 0.05 * s.tracks[0][0].osc1env.gain.value *
+        0.95 * bPeak + 0.05 * b.tracks[0][0].osc1env.gain.value *
           (d = (t - oldTime) / 16),
-        s.tracks[0][0].osc1env.gain.value
+        b.tracks[0][0].osc1env.gain.value
       ),
 
       // blood flow
-      Math.floor(soundbox.audioCtx.currentTime/lBeat)*.841 +
+      Math.floor(audioCtx.currentTime/lBeat)*.841 +
       (
-        soundbox.audioCtx.currentTime % lBeat > .53
+        audioCtx.currentTime % lBeat > .53
         ? .841
         : Math.sqrt(
           Math.sin(
-            soundbox.audioCtx.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
+            audioCtx.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
           )
       ),
       requestAnimationFrame(r),
@@ -104,4 +104,4 @@ g.vertexAttribPointer(
   ),
 2, g.BYTE, r(0), g.linkProgram(P), g.useProgram(P));
 
-s.play(song);
+b.play(s);
