@@ -8,10 +8,15 @@ const argv = require('yargs').argv;
  * --replace: what file do we replace the match with?
 */
 
-const template = fs.readFileSync(argv.template);
-//const replace = fs.readFileSync(argv.replace).toString();
-let replace = fs.readFileSync('/dev/stdin').slice(0, -1);
+let template = fs.readFileSync(argv.template);
 
+//const replace = fs.readFileSync(argv.replace).toString();
+let replace = fs.readFileSync('/dev/stdin');
+let replaceS = replace.toString();
+
+if (replaceS[replaceS.length -1] === '\n') {
+  replace = replace.slice(0, -1);
+}
 /*
 if (argv.surround) {
   replace = argv.surround + replace + argv.surround;
@@ -40,4 +45,4 @@ if (index !== -1) {
   }
 }
 
-console.log(result.toString('utf8'));
+console.log(result.toString('utf8').trim());

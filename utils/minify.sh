@@ -3,7 +3,7 @@
 rm -rf dist
 
 mkdir -p dist/temp
-cp mintemplate_safe.html dist/temp/temp1.html
+cp mintemplate.html dist/temp/temp1.html
 cd dist
 
 echo ".js source filesizes (minified):"
