@@ -661,68 +661,68 @@ float calcAO(in vec3 pos, in vec3 nor) {
 }
 */
 
-// TODO: inline
-vec3 render(vec3 ro, vec3 rd) {
-  vec3 col = vec3(.03, .04, .05), m;
-  float t = .02; // tmin
-  vec4 res; // = vec3(-1.);
-  for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
-    res = map( ro+rd*t, ro );
-    t += res.x;
-    m = res.yzw;
-  }
-  vec2 e = vec2(1e-4, -1e-4);
-  if( length(m)>0. ) {
-    vec3 pos = ro + t*rd;
-
-    vec3 nor = normalize(e.xyy*map(pos+e.xyy,pos).x
-                         + e.yyx*map(pos+e.yyx,pos).x
-                         + e.yxy*map(pos+e.yxy,pos).x
-                         + e.xxx*map(pos+e.xxx,pos).x);
-    vec3 ref = reflect( rd, nor );
-
-    // material
-    //col = .45 + .35*sin( vec3(.05,.08,.10)*(m-1.0) );
-    col = m;
-    /*
-    if( m<1.5 ) {
-      float f = mod( floor(5.0*pos.z) + floor(5.0*pos.x), 2.0);
-      col = .3 + .1*f*vec3(1.0);
-    }
-    */
-
-    //float occ = calcAO( pos, nor );
-    vec3  lig = normalize( vec3(.4, .7, .6) );
-    float amb = clamp( .5+.5*nor.y, 0., 1. );
-    float dif = clamp( dot( nor, lig ), 0., 1. );
-    //float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
-    float dom = smoothstep( -.1, .1, ref.y );
-    float fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. );
-    float spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
-
-    //dif *= softshadow( pos, lig, .02, 2.5 );
-    //dom *= softshadow( pos, ref, .02, 2.5 );
-
-    vec3 lin = vec3(0.);
-    lin += dif;
-    lin += spe*dif;
-    lin += pow(.4*amb/**occ*/, 2.);
-    lin += pow(.2*dom/**occ*/, 4.);
-    //lin += .5*bac*occ;
-    lin += .5*fre/**occ*/;
-    col = col*lin;
-
-    // fog
-    col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
-
-    /*
-    float fade = 1. - min(1., (a.z - 2.)  / 8.);
-    col = mix( col, vec3(.0), fade );
-    */
-  }
-
-  return vec3( clamp(col,0.,1.) );
-}
+// // TODO: inline
+// vec3 render(vec3 ro, vec3 rd) {
+//   vec3 col = vec3(.03, .04, .05), m;
+//   float t = .02; // tmin
+//   vec4 res; // = vec3(-1.);
+//   for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
+//     res = map( ro+rd*t, ro );
+//     t += res.x;
+//     m = res.yzw;
+//   }
+//   vec2 e = vec2(1e-4, -1e-4);
+//   if( length(m)>0. ) {
+//     vec3 pos = ro + t*rd;
+//
+//     vec3 nor = normalize(e.xyy*map(pos+e.xyy,pos).x
+//                          + e.yyx*map(pos+e.yyx,pos).x
+//                          + e.yxy*map(pos+e.yxy,pos).x
+//                          + e.xxx*map(pos+e.xxx,pos).x);
+//     vec3 ref = reflect( rd, nor );
+//
+//     // material
+//     //col = .45 + .35*sin( vec3(.05,.08,.10)*(m-1.0) );
+//     col = m;
+//     /*
+//     if( m<1.5 ) {
+//       float f = mod( floor(5.0*pos.z) + floor(5.0*pos.x), 2.0);
+//       col = .3 + .1*f*vec3(1.0);
+//     }
+//     */
+//
+//     //float occ = calcAO( pos, nor );
+//     vec3  lig = normalize( vec3(.4, .7, .6) );
+//     float amb = clamp( .5+.5*nor.y, 0., 1. );
+//     float dif = clamp( dot( nor, lig ), 0., 1. );
+//     //float bac = clamp( dot( nor, normalize(vec3(-lig.x,.0,-lig.z))), .0, 1. )*clamp( 1.-pos.y,.0,1.);
+//     float dom = smoothstep( -.1, .1, ref.y );
+//     float fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. );
+//     float spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
+//
+//     //dif *= softshadow( pos, lig, .02, 2.5 );
+//     //dom *= softshadow( pos, ref, .02, 2.5 );
+//
+//     vec3 lin = vec3(0.);
+//     lin += dif;
+//     lin += spe*dif;
+//     lin += pow(.4*amb/**occ*/, 2.);
+//     lin += pow(.2*dom/**occ*/, 4.);
+//     //lin += .5*bac*occ;
+//     lin += .5*fre/**occ*/;
+//     col = col*lin;
+//
+//     // fog
+//     col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
+//
+//     /*
+//     float fade = 1. - min(1., (a.z - 2.)  / 8.);
+//     col = mix( col, vec3(.0), fade );
+//     */
+//   }
+//
+//   return vec3( clamp(col,0.,1.) );
+// }
 
 // // TODO: inline
 // mat3 setCamera(vec3 ro/*, in vec3 ta*/) {
@@ -762,13 +762,52 @@ void main() {
     // ray direction
     vec3 rd =
       // camera-to-world transformation
-      // shortened setCamera()
       mat3(-ro.zxy,ro.xzy,-ro) *
 
       normalize(vec3(p.xy,2.));
 
+    vec3 col = vec3(.03, .04, .05), m;
+    float t = .02; // tmin
+    vec4 res; // = vec3(-1.);
+    for( float i=0.; i<64.; i++ ) { // 64. = maxIterations
+      res = map( ro+rd*t, ro );
+      t += res.x;
+      m = res.yzw;
+    }
+    vec2 e = vec2(1e-4, -1e-4);
+    if( length(m)>0. ) {
+      vec3 pos = ro + t*rd;
+
+      vec3 nor = normalize(e.xyy*map(pos+e.xyy,pos).x
+                           + e.yyx*map(pos+e.yyx,pos).x
+                           + e.yxy*map(pos+e.yxy,pos).x
+                           + e.xxx*map(pos+e.xxx,pos).x);
+      vec3 ref = reflect( rd, nor );
+
+      // material
+      col = m;
+      vec3  lig = normalize( vec3(.4, .7, .6) );
+      float amb = clamp( .5+.5*nor.y, 0., 1. );
+      float dif = clamp( dot( nor, lig ), 0., 1. );
+      float dom = smoothstep( -.1, .1, ref.y );
+      float fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. );
+      float spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
+
+      vec3 lin = vec3(0.);
+      lin += dif;
+      lin += spe*dif;
+      lin += pow(.4*amb/**occ*/, 2.);
+      lin += pow(.2*dom/**occ*/, 4.);
+      lin += .5*fre/**occ*/;
+      col = col*lin;
+
+      // fog
+      col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
+    }
+
+
     tot += pow(
-      render(ro, rd),
+      clamp(col,0.,1.),
 
     	// gamma
       vec3(.6, .5, .4)
