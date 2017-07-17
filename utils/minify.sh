@@ -80,7 +80,11 @@ echo "minifying fragment shader..."
 echo "uglifying..."
 
 ../node_modules/.bin/uglifyjs -V
-../node_modules/.bin/uglifyjs temp/temp3.js -c -m \
+
+# sequences=false is needed because otherwise uglifyjs might wrap
+# g = c.getContext`webgl` in an if statement, which results in broken
+# code after regpack does method hashing on the webgl context
+../node_modules/.bin/uglifyjs temp/temp3.js -c sequences=false -m \
 > temp/temp4.js
 
 echo "find and replace..."
@@ -107,9 +111,11 @@ node ../node_modules/.bin/regpack temp/temp5.js \
   --varsNotReassigned [] \
   --crushTiebreakerFactor 1 \
   --crushGainFactor 1 \
-  --crushLengthFactor 2 \
-  --crushCopiesFactor 3 | node ../utils/findandreplace.js --template temp/temp1.html --find '{{javascript}}' > temp/temp.html
+  --crushLengthFactor 0 \
+  --crushCopiesFactor 0 \
+> temp/temp6.js
 
-cp temp/temp.html index.html
+echo "injecting regpacked js into html template..."
+cat temp/temp6.js | node ../utils/findandreplace.js --template temp/temp1.html --find '{{javascript}}' > index.html
 
 echo "wrote index.html ($(cat index.html | wc -c)b, $(($(cat index.html | wc -c)-4096))b over budget)"
