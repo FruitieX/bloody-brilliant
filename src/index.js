@@ -4,53 +4,6 @@ potato = 6;
 c.width = 1920 / potato;
 c.height = 1080 / potato;
 
-// time at previous frame
-oldTime = 0;
-
-// accumulators
-bAcc = 0;
-fAcc = 0;
-bPeak = 0; // bass peak, max(bass, bPeak)
-
-r = t => {
-  requestAnimationFrame(r, c);
-
-  d = (t - oldTime) / 16;
-
-  //bass = analyserArray[11] / 255;
-  bass = s.tracks[0][0].osc1env.gain.value;
-  // treble = analyserArray[222] / 255;
-  // treble = s.tracks[0][0].osc1env.gain.value;
-  treble = 0; // TODO
-
-  bPeak = Math.max(0.95 * bPeak + 0.05 * bass * d, bass);
-
-  // run fft
-  // analyser.getByteFrequencyData(analyserArray);
-
-
-  // set the "a" time variable
-  g.uniform1f(g.getUniformLocation(P, 'a'), a = soundbox.audioCtx.currentTime);
-
-  // set the "b" resolution variable
-  g.uniform2f(g.getUniformLocation(P, 'b'), g.canvas.width, g.canvas.height);
-
-  // set the "c" bass volume variable
-  g.uniform1f(g.getUniformLocation(P, 'c'), bPeak);
-  // set the "d" treble volume variable
-  g.uniform1f(g.getUniformLocation(P, 'd'), treble);
-  // simulate heart pumping the blood rythm
-  lBeat = 1.411764;
-  bFlow = Math.floor(a/lBeat)*.841 + (a % lBeat > .53 ? .841 : Math.sqrt(Math.sin(a % lBeat / .53 * 3. * Math.PI / 4.)));
-  g.uniform1f(g.getUniformLocation(P, 'e'), bFlow);
-  // frequency of lead synth
-  g.uniform1f(g.getUniformLocation(P, 'f'), fAcc = 0.9 * fAcc + 0.1 * s.tracks[5][0].osc1.frequency.value * d);
-
-  g.drawArrays(6,0,3); // g.TRIANGLE_FAN = 6
-
-  oldTime = t;
-}
-
 // music
 s = new soundbox.MusicGenerator();
 s.connect(soundbox.audioCtx.destination);
@@ -63,17 +16,73 @@ s.connect(soundbox.audioCtx.destination);
 // connect hihat drum track, first column to analyser
 // s.tracks[2][0].out.connect(analyser);
 
-// onload
-g = c.getContext('webgl');
+// time at previous frame
+oldTime = 0;
 
+// accumulators
+bPeak = 0; // bass peak, max(bass, bPeak)
+
+// simulate heart pumping the blood rythm
+lBeat = 1.411764;
+
+// gfx
+g = c.getContext`webgl`;
 P = g.createProgram();
 
+// NOTE: 2nd argument to drawArrays used to be 0, but undefined works
+r = t =>
+  g.drawArrays(
+    g.TRIANGLE_FAN,
+
+    // a.xy = resolution
+    // a.z = time (s)
+    // a.w = unused
+    g.uniform4f(
+      g.getUniformLocation(P, 'a'),
+      c.width,
+      c.height,
+      soundbox.audioCtx.currentTime,
+      0 // TODO: must pass 4 params
+    ),
+
+    // number of indices to be rendered
+    3,
+
+    // b.x = bass
+    // b.y = accumulated bass
+    // b.z = unused
+    // b.w = unused
+    g.uniform4f(
+      g.getUniformLocation(P, 'b'),
+
+      // bass peak, averaged. TODO: can we use blood flow instead?
+      bPeak = Math.max(
+        0.95 * bPeak + 0.05 * s.tracks[0][0].osc1env.gain.value *
+          (d = (t - oldTime) / 16),
+        s.tracks[0][0].osc1env.gain.value
+      ),
+
+      // blood flow
+      Math.floor(soundbox.audioCtx.currentTime/lBeat)*.841 +
+      (
+        soundbox.audioCtx.currentTime % lBeat > .53
+        ? .841
+        : Math.sqrt(
+          Math.sin(
+            soundbox.audioCtx.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
+          )
+      ),
+      requestAnimationFrame(r),
+      oldTime = t // unused
+    )
+  );
+
 // vertex shader
-g.shaderSource(S=g.createShader(35633), require("./vertex.glsl")); // g.VERTEX_SHADER = 35633
+g.shaderSource(S=g.createShader(g.VERTEX_SHADER), require("./vertex.glsl"));
 g.compileShader(S);g.attachShader(P,S);
 
 // fragment shader
-g.shaderSource(S=g.createShader(35632), require("./fragment.glsl")); // g.FRAGMENT_SHADER = 35632
+g.shaderSource(S=g.createShader(g.FRAGMENT_SHADER), require("./fragment.glsl"));
 g.compileShader(S);g.attachShader(P,S);
 
 // Log compilation errors
@@ -82,15 +91,17 @@ if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
   throw g.getShaderInfoLog(S);
 }
 
-g.linkProgram(P);
-g.useProgram(P);
+g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.parentElement.style.margin = 0));
 
-// g.ARRAY_BUFFER = 34962
-g.bindBuffer(34962, g.createBuffer());
-g.bufferData(34962, new Int8Array([-3,1,1,-3,1,1]),35044); // 35044 = gl.STATIC_DRAW
-g.enableVertexAttribArray(0);
-g.vertexAttribPointer(0,2,5120,0,0,0); // g.BYTE = 5120
+c.parentElement.style.cursor = 'none';
+c.style.height = '1e2vh';
 
-// start rendering and music playback
-r(0);
+// 1st argument to enableVertexAttribArray used to be 0, but undefined works
+// 1st argument to vertexAttribPointer used to be 0, but undefined works
+g.vertexAttribPointer(
+  g.enableVertexAttribArray(
+    g.bufferData(g.ARRAY_BUFFER, Int8Array.of(-3, 1, 1, -3, 1, 1), g.STATIC_DRAW)
+  ),
+2, g.BYTE, r(0), g.linkProgram(P), g.useProgram(P));
+
 s.play(song);

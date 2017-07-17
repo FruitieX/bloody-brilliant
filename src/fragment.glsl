@@ -1,19 +1,15 @@
 precision highp float;
 
-// TODO: put all uniforms in vectors to save space
-// time variable (seconds)
-uniform float a;
-// resolution (1920.0, 1080.0)
-uniform vec2 b;
+// a.xy = resolution
+// a.z = time (s)
+// a.w = unused
+uniform vec4 a;
 
-// bass
-uniform float c;
-// treble
-uniform float d;
-// accumulated bass
-uniform float e;
-// frequency of lead synth
-uniform float f;
+// b.x = bass
+// b.y = accumulated bass
+// b.z = unused
+// b.w = unused
+uniform vec4 b;
 
 float PI = 3.14;
 
@@ -167,14 +163,14 @@ float sdHexPrism( vec3 p, vec2 h ) {
 }
 
 vec4 heart(vec3 p) {
-  float plasma1 = calcPlasma(p.x, p.y, p.z, a / 10.) + .5;
+  float plasma1 = calcPlasma(p.x, p.y, p.z, a.z / 10.) + .5;
 
   return vec4(
     // tunnel shape
-    (1. - c * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
+    (1. - b.x * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
-    + (1. - c) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
+    + (1. - b.x) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
 
     // color
     sin(vec3(1., .2, .1) * plasma1)
@@ -201,32 +197,32 @@ vec4 bloodCellWall(vec3 p) {
   vec3 col = vec3(1., .1, .1);
 
   vec3 rotated = p - vec3(1.,-1.,.0);
-  pR(rotated.yz, a / 6.);
+  pR(rotated.yz, a.z / 6.);
   vec4 res = vec4(sdBloodCell(rotated), col);
 
   // repeat
   rotated = p + vec3(0.,2.,0.);
-  pR(rotated.xy, a / 6.);
+  pR(rotated.xy, a.z / 6.);
   res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
 
   // repeat
   rotated = p + vec3(2.,1.,.5);
-  pR(rotated.yz, a / 7.);
+  pR(rotated.yz, a.z / 7.);
   res = opU(res, vec4(sdBloodCell(rotated.yzx), col));
 
   // repeat
   rotated = p + vec3(1.,-1.5,1.);
-  pR(rotated.xy, a / 6.);
+  pR(rotated.xy, a.z / 6.);
   res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   rotated = p + vec3(2.,-1.,.0);
-  pR(rotated.xz, a / 6.);
+  pR(rotated.xz, a.z / 6.);
   res = opU(res, vec4(sdBloodCell(rotated.xzy), col));
 
   // repeat
   rotated = p - vec3(.8,1.,.0);
-  pR(rotated.xy, a / 7.);
+  pR(rotated.xy, a.z / 7.);
   res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
 
   return res;
@@ -236,7 +232,7 @@ vec4 bloodCellField(vec3 p, float v) {
   // set up the correct rotation axis
   p.z += 3.;
   p.x += 15.; // move rotational origo to center of blood vein
-  pR(p.xz, -(a * v + e) / 20.); // give speed to blood wall
+  pR(p.xz, -(a.z * v + b.y) / 20.); // give speed to blood wall
   pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
   p -= vec3(15.,0.,0.);
 
@@ -248,7 +244,7 @@ vec4 bloodCellField(vec3 p, float v) {
 }
 
 vec4 bloodVein(vec3 p,float v) {
-  float plasma1 = calcPlasma(p.x / 8., p.y / 8., p.z / 8., a / 10.);
+  float plasma1 = calcPlasma(p.x / 8., p.y / 8., p.z / 8., a.z / 10.);
 
   // rotate
   // pR(p.xy, a/5.);
@@ -257,7 +253,7 @@ vec4 bloodVein(vec3 p,float v) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3.0 * (p.z + a*v))),
+    - 0.05 * (1. + sin(3.0 * (p.z + a.z*v))),
 
     // color
     sin(vec3(1., .1, .1) * (plasma1 / 2. + .5))
@@ -268,7 +264,7 @@ vec4 virus(vec3 pos, float size) {
   // velocity
   pR(pos.xy, PI/4.);
 
-  float scale = 1. + c / 10.;
+  float scale = 1. + b.x / 10.;
   scale *= size;
   float spikeLen = 1.*scale;
   float spikeThickness = 0.01*scale;
@@ -428,15 +424,15 @@ vec4 scene1(vec3 pos) {
   float T = PI; // period
   //vec3 pos_vessel = pos + vec3(.0,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  vec3 p_vessel = pos + vec3(.1-.2 * sin(a/T),.6 + .2 * cos(a/T),1.);
+  vec3 p_vessel = pos + vec3(.1-.2 * sin(a.z/T),.6 + .2 * cos(a.z/T),1.);
   // left-right tilt
-  pR(p_vessel.xz, -PI/12.*cos(a/T));
+  pR(p_vessel.xz, -PI/12.*cos(a.z/T));
   // up-down tilt
-  pR(p_vessel.yz, -PI/16.*sin(a/T));
+  pR(p_vessel.yz, -PI/16.*sin(a.z/T));
   res = opU(res, vessel(p_vessel, false));
 
   // rotation to blood cells and vein
-  pR(pos.xy, a/T);
+  pR(pos.xy, a.z/T);
   // render blood vein and cells
   res = opU(res, bloodVein(pos,v));
   res = opU(res, bloodCellField(pos,v));
@@ -454,8 +450,8 @@ vec4 scene2(vec3 pos) {
   // res = opU(
   //   res,
   //   virus(
-  //     vec3(pos.x+cos(a),pos.y+sin(a),pos.z+sin(a*.2)*3.),
-  //     cos(a/2.)
+  //     vec3(pos.x+cos(a.z),pos.y+sin(a.z),pos.z+sin(a.z*.2)*3.),
+  //     cos(a.z/2.)
   //   )
   // );
 
@@ -466,9 +462,9 @@ vec4 scene2(vec3 pos) {
 vec4 scene3(vec3 pos) {
   // pos += vec3(0., 1., -4.);
 
-  //pos += vec3(sin(a / 8.) / 4.,1.,1.);
+  //pos += vec3(sin(a.z / 8.) / 4.,1.,1.);
   pR(pos.yz, 7.);
-  pR(pos.xy, a/20.);
+  pR(pos.xy, a.z/20.);
   pos += vec3(1., 1., 1.);
   return opBlend(
     heart(pos),
@@ -479,11 +475,11 @@ vec4 scene3(vec3 pos) {
 
 vec4 scene4(vec3 pos) {
 
-  //pR(pos.xz, a / 2.);
+  //pR(pos.xz, a.z / 2.);
   pR(pos.xy, -.4);
   pR(pos.xz, -.4);
-  pos += vec3(sin(a) / 4.,1.,4.);
-  //pR(pos.zy, a);
+  pos += vec3(sin(a.z) / 4.,1.,4.);
+  //pR(pos.zy, a.z);
   // vessel
   vec4 res = opBlend(
     heart(pos),
@@ -491,11 +487,11 @@ vec4 scene4(vec3 pos) {
     50.
   );
 
-  pR(pos.yz, sin(a / 4.) / 8.);
+  pR(pos.yz, sin(a.z / 4.) / 8.);
   pR(pos.xy, PI / 8.);
   return opBlend(
     res,
-    vessel(pos - vec3(6. - a / 4., .0, .5), false),
+    vessel(pos - vec3(6. - a.z / 4., .0, .5), false),
     10.
   );
 }
@@ -504,12 +500,12 @@ vec4 scene4_1(vec3 pos) {
 
   pR(pos.yz, .6);
   pR(pos.xz, -3.);
-  pos += vec3(a / 16. - 1.,1.,-1.);
-  //pR(pos.zy, a);
+  pos += vec3(a.z / 16. - 1.,1.,-1.);
+  //pR(pos.zy, a.z);
   // vessel
   vec4 res = opBlend(
     heart(pos),
-    virus(pos + vec3(.5), 1.5 / (1. + a / 10.)),
+    virus(pos + vec3(.5), 1.5 / (1. + a.z / 10.)),
     50.
   );
 
@@ -524,7 +520,7 @@ vec4 scene4_1(vec3 pos) {
 vec4 scene5(vec3 pos) {
   pos.z += 1.;
 
-  pR(pos.xz, a);
+  pR(pos.xz, a.z);
   return vessel(pos + vec3(.0,.5,.0), true);
 }
 
@@ -545,15 +541,15 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   /*
   // first scene
-  if (a < end0 + transitionTime) {
+  if (a.z < end0 + transitionTime) {
     res = scene0(pos);
   }
 
   // start rendering after previous scene,
   // stop rendering after transitioning to next scene
-  if (a >= end0 && a < end1 + transitionTime) {
+  if (a.z >= end0 && a.z < end1 + transitionTime) {
     res = opMorph(res,
-      scene1(pos + vec3(a, .0, sin(a))),
+      scene1(pos + vec3(a.z, .0, sin(a.z))),
 
       // Timing
       end0,
@@ -563,7 +559,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
 
   // start rendering after previous scene,
   // stop rendering after transitioning to next scene
-  if (a >= end1 && a < end2 + transitionTime) {
+  if (a.z >= end1 && a.z < end2 + transitionTime) {
     res = opMorph(res,
       scene2(pos),
 
@@ -573,7 +569,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
     );
   }
 
-  if (a >= end2 && a < end3 + transitionTime) {
+  if (a.z >= end2 && a.z < end3 + transitionTime) {
     res = opMorph(res,
       scene3(pos),
 
@@ -584,7 +580,7 @@ vec4 map(in vec3 pos, in vec3 origin) {
   }
 
   // last scene
-  if (a >= end3) {
+  if (a.z >= end3) {
     res = opMorph(res,
       scene3(pos),
 
@@ -703,7 +699,7 @@ vec3 render(in vec3 ro, in vec3 rd) {
     col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
 
     /*
-    float fade = 1. - min(1., (a - 2.)  / 8.);
+    float fade = 1. - min(1., (a.z - 2.)  / 8.);
     col = mix( col, vec3(.0), fade );
     */
   }
@@ -727,15 +723,15 @@ void main() {
   for( int n=0; n<2; n++ ) { // 2x AA
     // pixel coordinates
     vec2 o = vec2(float(m),float(n)) / float(2) - .5;
-    vec2 p = (-b.xy + 2.*(gl_FragCoord.xy+o))/b.y;
+    vec2 p = (-a.xy + 2.*(gl_FragCoord.xy+o))/a.y;
 
     // camera
     // ro = ray origin = where the camera is
     // ta = camera direction (point which the camera is looking at)
     // cr = camera rotation
-    float x = cos(a/2.);
-    float y = sin(a/2.);
-    float z = sin(a/2.)/2.+.5;
+    float x = cos(a.z/2.);
+    float y = sin(a.z/2.);
+    float z = sin(a.z/2.)/2.+.5;
 
     // rotating camera
     vec3 pos = vec3(x,y,z);
