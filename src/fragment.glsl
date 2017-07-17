@@ -334,25 +334,23 @@ vec4 sdArm(vec3 p, float len_arm, float angle) {
 
 vec4 vessel(vec3 pos, bool laser) {
   float s = 2.; // scale
-  vec3 col = vec3(.9);
-  vec3 p = pos + vec3(0.,-.4,0.); // position vessel at origo
-  pR(p.xz, PI/2.);
+  vec3 col = vec3(.1);
 
-  pR(p.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(p , vec2(.5,.3)/s), col);
-  pR(p.xz, PI/2.);
-  res = opI(res, vec4(sdTriPrism(p , vec2(.7)/s), col));
-  pR(p.zy, PI/2.);
-  res = opI(res, vec4(sdHexPrism(p, vec2(.3,.5)/s), col));
-  p.z += .3;
-  res = opU(res, vec4(sdHexPrism(p, vec2(.3,.4)/s), col));
+  pR(pos.xy, PI/2.);
+  vec4 res = vec4(sdTriPrism(pos , vec2(.5,.3)/s), col);
+  pR(pos.xz, PI/2.);
+  res = opI(res, vec4(sdTriPrism(pos , vec2(.7)/s), col));
+  pR(pos.zy, PI/2.);
+  res = opI(res, vec4(sdHexPrism(pos, vec2(.3,.5)/s), col));
+  pos.z += .3;
+  res = opU(res, vec4(sdHexPrism(pos, vec2(.3,.4)/s), col));
 
-  pR(p.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(p , vec2(.8,.01)/s), col));
-  pR(p.xz, PI/2.);
-  p.x += .1;
-  p.y += .1;
-  res = opU(res, vec4(sdTriPrism(p , vec2(.39,.01)/s), col));
+  pR(pos.yz, PI/2.);
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.8,.01)/s), col));
+  pR(pos.xz, PI/2.);
+  pos.x += .1;
+  pos.y += .1;
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.39,.01)/s), col));
 
   // arms
   // pos = origPos;
@@ -385,21 +383,19 @@ vec4 vessel(vec3 pos, bool laser) {
   // );
 
   if (laser) {
-    p = pos + vec3(0.,-.4,0.);
-    pR(pos.xy, PI/2.);
     res = opU(
       res,
       vec4(
-        fCapsule(p - vec3(0., .95, -.35), .01, 1.),
-        100., .1, .1
+        fCapsule(pos - vec3(.1, 2.3, -.15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
+        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .2, .3)
       )
     );
 
     res = opU(
       res,
       vec4(
-        fCapsule(p - vec3(0., .95, .35), .01, 1.),
-        100., .1, .1
+        fCapsule(pos - vec3(.1, 2.3, .15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
+        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .3, .1)
       )
     );
   }
@@ -431,7 +427,7 @@ vec4 scene1(vec3 pos) {
   //pR(pos_vessel.xz, PI/2.);
   vec3 p_vessel = pos + vec3(.1-.2 * sin(a.z/T),.6 + .2 * cos(a.z/T),1.);
   // left-right tilt
-  pR(p_vessel.xz, -PI/12.*cos(a.z/T));
+  pR(p_vessel.xz, PI/2.-PI/12.*cos(a.z/T));
   // up-down tilt
   pR(p_vessel.yz, -PI/16.*sin(a.z/T));
   res = opU(res, vessel(p_vessel, false));
@@ -497,15 +493,15 @@ vec4 scene4(vec3 pos) {
   return opBlend(
     res,
     vessel(pos - vec3(6. - a.z / 4., 0., .5), false),
-    10.
+    30.
   );
 }
 
 vec4 scene4_1(vec3 pos) {
 
-  pR(pos.yz, .6);
+  pR(pos.yz, .7);
   pR(pos.xz, -3.);
-  pos += vec3(a.z / 16. - 1.,1.,-1.);
+  pos += vec3(a.z / 16. - .5,1.,-1.);
   //pR(pos.zy, a.z);
   // vessel
   vec4 res = opBlend(
@@ -516,9 +512,15 @@ vec4 scene4_1(vec3 pos) {
 
   pR(pos.xz, PI / 6.);
   pR(pos.xy, PI / 8.);
-  return opU(
+
+  // left-right tilt
+  pR(pos.xz, -PI/12.*cos(a.z/PI));
+  // up-down tilt
+  pR(pos.yz, -PI/16.*sin(a.z/PI));
+  return opBlend(
     res,
-    vessel(pos - vec3(1., 0., -.2), true)
+    vessel(pos - vec3(1., 0., -.2), a.z > 2.),
+    15.
   );
 }
 
