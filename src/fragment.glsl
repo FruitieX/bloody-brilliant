@@ -624,7 +624,7 @@ void main() {
     // ray direction
     vec3 rd =
       // camera-to-world transformation
-      mat3(-ro.zxy,ro.xzy,-ro) *
+      mat3(-ro.zxx,ro.xzx,-ro) *
 
       normalize(vec3(p.xy,2.));
 
