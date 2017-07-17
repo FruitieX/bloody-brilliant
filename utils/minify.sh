@@ -34,7 +34,6 @@ sed \
   -e 's/dlyAmt/dA/g' \
   -e 's/delayGain/dG/g' \
   -e 's/biquadFilter/bF/g' \
-  -e 's/lfo/L/g' \
   -e 's/modulationGain/mG/g' \
 \
   -e 's/drive/Dr/g' \
@@ -44,6 +43,8 @@ sed \
   -e 's/fxFilter/FF/g' \
   -e 's/fxFreq/Ff/g' \
   -e 's/lfoAmt/LA/g' \
+  -e 's/lfoFreq/LF/g' \
+  -e 's/fxLFO/FL/g' \
   -e 's/o1vol/V1/g' \
   -e 's/o1xenv/X1/g' \
   -e 's/o2vol/V2/g' \
@@ -52,6 +53,7 @@ sed \
   -e 's/attack/At/g' \
   -e 's/sustain/Su/g' \
   -e 's/release/Re/g' \
+  -e 's/oscLFO/oL/g' \
 \
   -e 's/createNoiseOsc/CN/g' \
   -e 's/waveforms/W/g' \
@@ -61,6 +63,7 @@ sed \
   -e 's/setNotes/sN/g' \
   -e 's/mixer/M/g' \
   -e 's/song/S/g' \
+  -e 's/lfo/L/g' \
   ../src/player.js > temp/player.js
 
 # concat all js together

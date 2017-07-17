@@ -21,8 +21,8 @@ float calcPlasma(float x, float y, float z, float t) {
   //float sine2 = sin(10. * (x * sin(t / 2.) + z * cos(t / 3.)) + t);
 
   // circular sinusoid
-  float cx = x + .5 * sin(t / 5.);
-  float cy = y + .5 * cos(t / 3.);
+  float cx = x + sin(t / 5.);
+  float cy = y + cos(t / 3.);
   float blend = sin(sqrt(100. * (cx * cx + cy * cy) + 1.) + t);
 
   //float blend = sine1 + sine2 + sine3;
@@ -30,7 +30,7 @@ float calcPlasma(float x, float y, float z, float t) {
 
   //blend *= 1.0 + sin(t / 4.0) * 2.0;
   //blend *= 3.0;
-  blend = sin(blend * PI / 2.) / 2. + .5;
+  blend = sin(blend * 2.) / 2. + .5;
   //blend = pow(blend, 2.0);
 
   return blend;
@@ -602,10 +602,6 @@ void main() {
   vec3 tot = vec3(0.);
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
-    // pixel coordinates
-    vec2 o = vec2(m,n) / 2. - .5;
-    vec2 p = (-a.xy + 2.*(gl_FragCoord.xy+o))/a.y;
-
     // camera
     // ro = ray origin = where the camera is
     // ta = camera direction (point which the camera is looking at)
@@ -624,9 +620,17 @@ void main() {
     // ray direction
     vec3 rd =
       // camera-to-world transformation
-      mat3(-ro.zxx,ro.xzx,-ro) *
+      mat3(ro.zxx,ro.xzx,-ro) *
 
-      normalize(vec3(p.xy,2.));
+      normalize(
+        vec3(
+          // pixel coordinates
+          (-a.xy + 2.*(
+            gl_FragCoord.xy + vec2(m, n) / 2. - .5
+          ))/a.y,
+          2.
+        )
+      );
 
     vec3 col = vec3(.03, .04, .05), m;
     float t = .02; // tmin
@@ -676,7 +680,5 @@ void main() {
     );
   }
 
-  tot /= 4.; // AA * AA
-
-  gl_FragColor = vec4( tot, 1. );
+  gl_FragColor = vec4( tot / 4., 1. ); // 4 = AA * AA
 }
