@@ -6,14 +6,19 @@ mkdir -p dist/temp
 cp mintemplate_safe.html dist/temp/temp1.html
 cd dist
 
-echo "source filesizes:"
-echo "-----------------"
-for file in $(ls ../src); do
-  echo "$file: $(cat ../src/$file | wc -c)b"
+echo ".js source filesizes (minified):"
+echo "--------------------------------"
+for file in $(ls ../src/*.js); do
+  echo "$(basename $file): $(../node_modules/.bin/uglifyjs ../src/$file | wc -c)b"
 done
-echo
 
-echo "minifying identifiers in player.js..."
+echo -e "\n.glsl source filesizes (minified):"
+echo "----------------------------------"
+for file in $(ls ../src/*.glsl); do
+  echo "$(basename $file): $(../node_modules/.bin/glslmin -m ../src/$file | wc -c)b"
+done
+
+echo -e "\nminifying identifiers in player.js..."
 sed \
   -e 's/preFilter/pF/g' \
   -e 's/osc1env/E1/g' \
@@ -62,11 +67,11 @@ cat ../src/song.js temp/player.js ../src/index.js > temp/temp1.js
 
 # vertex shader
 echo "minifying vertex shader..."
-glslmin ../src/vertex.glsl | node ../utils/findandreplace.js --template temp/temp1.js --find 'require("./vertex.glsl")' --surround '"' > temp/temp2.js
+../node_modules/.bin/glslmin ../src/vertex.glsl | node ../utils/findandreplace.js --template temp/temp1.js --find 'require("./vertex.glsl")' --surround '"' > temp/temp2.js
 
 # fragment shader
 echo "minifying fragment shader..."
-glslmin -m ../src/fragment.glsl | node ../utils/findandreplace.js --template temp/temp2.js --find 'require("./fragment.glsl")' --surround '"' > temp/temp3.js
+../node_modules/.bin/glslmin -m ../src/fragment.glsl | node ../utils/findandreplace.js --template temp/temp2.js --find 'require("./fragment.glsl")' --surround '"' > temp/temp3.js
 
 echo "uglifying..."
 
