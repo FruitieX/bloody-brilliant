@@ -228,21 +228,6 @@ setNotes = (params, patterns, patternOrder, l, r, when, column, cIndex) => {
       attack = params[10] * params[10] * 4 / 44100,
       sustain = params[11] * params[11] * 4 / 44100,
       release = params[12] * params[12] * 4 / 44100,
-      //arp = params[13],
-      //arpInterval = l * Math.pow(2, 2 - params[14]),
-      // oscLFO = waveforms[params[15]],
-      // lfoAmt = params[16] / 255,
-      // lfoFreq = Math.pow(2, params[17] - 9) / l * 2,
-      // fxLFO = params[18],
-      // fxFilter = params[19],
-      // fxFreq = params[20] * 20,
-      // q = 1 - params[21] / 255,
-      //dist = params[22] * 1e-5,
-      // drive = params[23] / 32,
-      // panAmt = params[24] / 511,
-      // panFreq = 6.283184 * Math.pow(2, params[25] - 9) / l,
-      // dlyAmt = params[26] / 255,
-      // dly = params[27] * l;
 
   // parse song into more suitable format
   notes = [];
@@ -455,26 +440,3 @@ B.G.prototype.play = function(song, when = 0) {
     })
   );
 };
-/*
-B.G.prototype.stop = function() {
-  this.tracks.forEach(track =>
-    track.forEach(column => {
-      column.osc1.frequency.cancelScheduledValues(0);
-      column.osc2.frequency.cancelScheduledValues(0);
-      column.osc1env.gain.cancelScheduledValues(0);
-      column.osc2env.gain.cancelScheduledValues(0);
-      column.osc3env.gain.cancelScheduledValues(0);
-      column.osc1env.gain.value = 0;
-      column.osc2env.gain.value = 0;
-      column.osc3env.gain.value = 0;
-
-      column.lfo.stop();
-    })
-  );
-};
-*/
-/*
-B.G.prototype.connect = function(target) {
-  this.mixer.connect(target);
-};
-*/
