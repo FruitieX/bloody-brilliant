@@ -414,18 +414,16 @@ vec4 vessel(vec3 pos, bool laser) {
 // scene 3 = Final destination in my heart. Virus dies. Boss fight?
 // scene 4 = Greetings
 
-float v = 2.;
 // SCENES
 vec4 scene0(vec3 pos) {
   vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
-  res = opU(res, bloodVein(pos,v));
-  res = opU(res, bloodCellField(pos,v));
+  res = opU(res, bloodVein(pos, 2.));
+  res = opU(res, bloodCellField(pos, 2.));
   return res;
 }
 
 vec4 scene1(vec3 pos) {
-  v = -2.;
   vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   float T = PI; // period
@@ -441,8 +439,8 @@ vec4 scene1(vec3 pos) {
   // rotation to blood cells and vein
   pR(pos.xy, a.z/T);
   // render blood vein and cells
-  res = opU(res, bloodVein(pos,v));
-  res = opU(res, bloodCellField(pos,v));
+  res = opU(res, bloodVein(pos, -2.));
+  res = opU(res, bloodCellField(pos, -2.));
 
   return res;
 }
@@ -450,8 +448,8 @@ vec4 scene1(vec3 pos) {
 vec4 scene2(vec3 pos) {
   vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
-  res = opU(res, bloodVein(pos,v));
-  res = opU(res, bloodCellField(pos,v));
+  res = opU(res, bloodVein(pos, -2.));
+  res = opU(res, bloodCellField(pos, -2.));
 
 
   // res = opU(
@@ -631,9 +629,11 @@ void main() {
       normalize(
         vec3(
           // pixel coordinates
-          (-a.xy + 2.*(
-            gl_FragCoord.xy + vec2(m, n) / 2. - .5
-          ))/a.y,
+          (
+            2. * (
+              gl_FragCoord.xy + vec2(m, n) / 2. - .5
+            ) - a.xy
+          ) / a.y,
           2.
         )
       );
