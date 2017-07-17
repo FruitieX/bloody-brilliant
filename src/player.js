@@ -20,23 +20,25 @@
  * SOFTWARE.
  */
 
-soundbox = {};
+B = {};
 
-audioCtx = new AudioContext;
+A = new AudioContext;
 
-const waveforms = [
+waveforms = [
   "sine",
   "square",
   "sawtooth",
   "triangle",
 ];
 
+/*
 const bound = (min, value, max) => {
   return Math.max(min, Math.min(value, max));
 };
+*/
 
-const createNoiseOsc = () => {
-  osc = audioCtx.createScriptProcessor(2048, 1, 1);
+createNoiseOsc = () => {
+  osc = A.createScriptProcessor(2048, 1, 1);
 
   osc.onaudioprocess = e => {
       output = e.outputBuffer.getChannelData(0);
@@ -48,7 +50,7 @@ const createNoiseOsc = () => {
   return osc;
 };
 
-const filters = [
+F = [
   "highpass",
   "lowpass",
   "bandpass",
@@ -56,14 +58,14 @@ const filters = [
 
 initCol = () => {
   //  master out / "post" filter mixer
-  out = audioCtx.createGain();
+  o = A.createGain();
   // "pre" filter mixer
-  preFilter = audioCtx.createGain();
+  preFilter = A.createGain();
 
   // oscillator envelopes
-  osc1env = audioCtx.createGain();
-  osc2env = audioCtx.createGain();
-  osc3env = audioCtx.createGain();
+  osc1env = A.createGain();
+  osc2env = A.createGain();
+  osc3env = A.createGain();
 
   // make sure oscillators start out muted
   osc1env.gain.value = 0;
@@ -71,25 +73,25 @@ initCol = () => {
   osc3env.gain.value = 0;
 
   // oscillators
-  osc1 = audioCtx.createOscillator();
-  osc2 = audioCtx.createOscillator();
+  osc1 = A.createOscillator();
+  osc2 = A.createOscillator();
   osc3 = createNoiseOsc();
 
   // pan
-  panNode = audioCtx.createStereoPanner();
-  panLFO = audioCtx.createOscillator();
-  panAmt = audioCtx.createGain();
+  panNode = A.createStereoPanner();
+  panLFO = A.createOscillator();
+  panAmt = A.createGain();
 
   // delay
-  delayGain = audioCtx.createGain();
-  delay = audioCtx.createDelay();
+  delayGain = A.createGain();
+  dly = A.createDelay();
 
   // filter
-  biquadFilter = audioCtx.createBiquadFilter();
+  biquadFilter = A.createBiquadFilter();
 
   // lfo
-  lfo = audioCtx.createOscillator();
-  modulationGain = audioCtx.createGain();
+  lfo = A.createOscillator();
+  modulationGain = A.createGain();
 
   osc1env.connect(preFilter);
   osc2env.connect(preFilter);
@@ -100,25 +102,25 @@ initCol = () => {
   osc3.connect(osc3env);
 
   // delay output goes to master
-  delayGain.connect(out);
+  delayGain.connect(o);
   // connect delay to itself to create feedback loop
-  delayGain.connect(delay);
+  delayGain.connect(dly);
   // connect delay to delayGain to allow fading it out
-  delay.connect(delayGain);
+  dly.connect(delayGain);
 
-  panNode.connect(out);
+  panNode.connect(o);
   panLFO.connect(panAmt);
   panAmt.connect(panNode.pan);
 
   preFilter.connect(biquadFilter);
-  biquadFilter.connect(delay);
+  biquadFilter.connect(dly);
   biquadFilter.connect(panNode);
 
   lfo.connect(modulationGain);
   modulationGain.connect(biquadFilter.frequency);
 
   return {
-    out,
+    o,
     preFilter,
     osc1env,
     osc2env,
@@ -127,7 +129,7 @@ initCol = () => {
     osc2,
     osc3,
     delayGain,
-    delay,
+    dly,
     panNode,
     panLFO,
     panAmt,
@@ -176,7 +178,7 @@ setParams = (params, l, column) => {
       dly = params[27] * l / 2;
 
     // master
-    column.out.gain.value = drive;
+    column.o.gain.value = drive;
     column.preFilter.gain.value = 1;
 
     // oscillators
@@ -195,10 +197,10 @@ setParams = (params, l, column) => {
     // delay
     column.delayGain.gain.value = dlyAmt;
 
-    column.delay.delayTime.value = dly;
+    column.dly.delayTime.value = dly;
 
     // filter
-    column.biquadFilter.type = filters[fxFilter - 1];
+    column.biquadFilter.type = F[fxFilter - 1];
     column.biquadFilter.frequency.value = fxFreq;
     column.biquadFilter.Q.value = q;
 
@@ -337,7 +339,8 @@ setNotes = (params, patterns, patternOrder, l, r, when, column, cIndex) => {
         column.osc3env.gain.setValueAtTime(noiseVol, sus);
 
         // release
-        releaseVal = bound(0, 1 - (rel - startTime) / (attack + sustain + release), 1);
+
+        releaseVal = Math.max(0, Math.min(1 - (rel - startTime) / (attack + sustain + release), 1));
         column.osc1env.gain.linearRampToValueAtTime(o1vol * releaseVal, rel);
         column.osc2env.gain.linearRampToValueAtTime(o2vol * releaseVal, rel);
         column.osc3env.gain.linearRampToValueAtTime(noiseVol * releaseVal, rel);
@@ -347,7 +350,7 @@ setNotes = (params, patterns, patternOrder, l, r, when, column, cIndex) => {
   });
 };
 
-soundbox.MusicGenerator = function() {
+B.G = function() {
     // Support max 8 tracks
     this.tracks = [
       initTrack(),
@@ -360,13 +363,14 @@ soundbox.MusicGenerator = function() {
       initTrack(),
     ];
 
-    this.mixer = audioCtx.createGain();
-    this.mixer.gain.value = 0.4;
+    M = A.createGain();
+    M.gain.value = 0.4;
+    M.connect(A.destination);
 
     // connect each column in each track to the mixer and start oscillators
     this.tracks.forEach(track =>
       track.forEach(column => {
-        column.out.connect(this.mixer);
+        column.o.connect(M);
         column.osc1.start();
         column.osc2.start();
         //column.osc3.start(); // TODO: start/stop noise osc
@@ -376,18 +380,18 @@ soundbox.MusicGenerator = function() {
     );
 };
 
-soundbox.MusicGenerator.prototype.play = function(song, when = 0) {
+B.G.prototype.play = function(song, when = 0) {
   song.d.forEach((track, tIndex) =>
     this.tracks[tIndex].forEach((column, cIndex) => {
       // TODO: better way of resetting lfo?
       // currently it's recreated
       column.lfo.disconnect();
-      column.lfo = audioCtx.createOscillator();
+      column.lfo = A.createOscillator();
       column.lfo.connect(column.modulationGain);
       column.lfo.start();
 
       column.panLFO.disconnect();
-      column.panLFO = audioCtx.createOscillator();
+      column.panLFO = A.createOscillator();
       column.panLFO.connect(column.panAmt);
       column.panLFO.start();
 
@@ -400,7 +404,7 @@ soundbox.MusicGenerator.prototype.play = function(song, when = 0) {
   );
 };
 /*
-soundbox.MusicGenerator.prototype.stop = function() {
+B.G.prototype.stop = function() {
   this.tracks.forEach(track =>
     track.forEach(column => {
       column.osc1.frequency.cancelScheduledValues(0);
@@ -417,6 +421,8 @@ soundbox.MusicGenerator.prototype.stop = function() {
   );
 };
 */
-soundbox.MusicGenerator.prototype.connect = function(target) {
+/*
+B.G.prototype.connect = function(target) {
   this.mixer.connect(target);
 };
+*/

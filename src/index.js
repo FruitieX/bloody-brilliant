@@ -5,8 +5,8 @@ c.width = 1920 / potato;
 c.height = 1080 / potato;
 
 // music
-b = new soundbox.MusicGenerator();
-b.connect(audioCtx.destination);
+b = new B.G();
+//b.connect(A.destination);
 // analyser = soundbox.audioCtx.createAnalyser();
 // analyserArray = new Uint8Array(analyser.frequencyBinCount);
 
@@ -41,7 +41,7 @@ r = t =>
       g.getUniformLocation(P, 'a'),
       c.width,
       c.height,
-      audioCtx.currentTime,
+      A.currentTime,
       0 // TODO: must pass 4 params
     ),
 
@@ -63,13 +63,13 @@ r = t =>
       ),
 
       // blood flow
-      Math.floor(audioCtx.currentTime/lBeat)*.841 +
+      Math.floor(A.currentTime/lBeat)*.841 +
       (
-        audioCtx.currentTime % lBeat > .53
+        A.currentTime % lBeat > .53
         ? .841
         : Math.sqrt(
           Math.sin(
-            audioCtx.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
+            A.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
           )
       ),
       requestAnimationFrame(r),
