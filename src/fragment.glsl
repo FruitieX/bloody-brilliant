@@ -307,16 +307,21 @@ vec4 virus(vec3 pos, float size) {
   return res;
 }
 
+/*
 float udBox( vec3 p, vec3 b ) {
   return length(max(abs(p)-b,0.));
 }
+*/
 
+/*
 float sdTorus2(vec3 p) {
   // the first constant sets size of torus
   // second sets size of middle
   return length(vec2(length(p.xz)-.5,p.y)) - 0.1;
 }
+*/
 
+/*
 vec4 sdArm(vec3 p, float len_arm, float angle) {
   vec4 res = vec4(fCapsule(p, .05,len_arm), .1,.1,.1);
   p.y += len_arm;
@@ -325,6 +330,7 @@ vec4 sdArm(vec3 p, float len_arm, float angle) {
   res = opU(res, vec4(fCapsule(p, .05,len_arm), .1,.1,.1));
   return res;
 }
+*/
 
 vec4 vessel(vec3 pos, bool laser) {
   float s = 2.; // scale
