@@ -60,6 +60,7 @@ sed \
   -e 's/setParams/sP/g' \
   -e 's/setNotes/sN/g' \
   -e 's/mixer/M/g' \
+  -e 's/song/S/g' \
   ../src/player.js > temp/player.js
 
 # concat all js together
@@ -76,7 +77,7 @@ echo "minifying fragment shader..."
 echo "uglifying..."
 
 ../node_modules/.bin/uglifyjs -V
-../node_modules/.bin/uglifyjs temp/temp3.js \
+../node_modules/.bin/uglifyjs temp/temp3.js -c -m \
 > temp/temp4.js
 
 echo "find and replace..."
