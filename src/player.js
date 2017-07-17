@@ -68,9 +68,7 @@ initCol = () => {
   osc3env = A.createGain();
 
   // make sure oscillators start out muted
-  osc1env.gain.value = 0;
-  osc2env.gain.value = 0;
-  osc3env.gain.value = 0;
+  osc1env.gain.value = osc2env.gain.value = osc3env.gain.value = 0;
 
   // oscillators
   osc1 = A.createOscillator();
@@ -395,8 +393,62 @@ B.G.prototype.play = function(song, when = 0) {
       column.panLFO.connect(column.panAmt);
       column.panLFO.start();
 
-      // Set initial parameters for each column
-      setParams(track.i, song.l / 44100, column);
+      // set params
+      osc1t = waveforms[track.i[0]],
+      osc2t = waveforms[track.i[4]],
+      oscLFO = waveforms[track.i[15]],
+      lfoAmt = track.i[16] / 255,
+      lfoFreq = Math.pow(2, track.i[17] - 9) / song.l / 44100 * 2,
+      fxLFO = track.i[18],
+      fxFilter = track.i[19],
+      fxFreq = track.i[20] * 20,
+      q = Math.pow(track.i[21] / 255, 2) * 10,
+      //dist = track.i[22] * 1e-5,
+      drive = track.i[23] / 32,
+      panAmt = track.i[24] / 255,
+      panFreq = 3.14 * Math.pow(2, track.i[25] - 9) / song.l / 44100,
+      dlyAmt = track.i[26] / 255,
+      dly = track.i[27] * song.l /44100 / 2;
+
+      // master
+      column.o.gain.value = drive;
+      column.preFilter.gain.value = 1;
+
+      // oscillators
+      column.osc1env.gain.value = 0;
+      column.osc2env.gain.value = 0;
+      column.osc3env.gain.value = 0;
+
+      column.osc1.type = osc1t;
+      column.osc2.type = osc2t;
+
+      // pan
+      column.panAmt.gain.value = panAmt;
+      // TODO: correct value?
+      column.panLFO.frequency.value = panFreq;
+
+      // delay
+      column.delayGain.gain.value = dlyAmt;
+
+      column.dly.delayTime.value = dly;
+
+      // filter
+      column.biquadFilter.type = F[fxFilter - 1];
+      column.biquadFilter.frequency.value = fxFreq;
+      column.biquadFilter.Q.value = q;
+
+      if (fxLFO) {
+        // lfo
+        column.lfo.type = oscLFO;
+        column.lfo.frequency.value = lfoFreq;
+
+        // TODO: whats the correct value?
+        column.modulationGain.gain.value = lfoAmt * 1000;
+
+      } else {
+        // disable LFO
+        column.modulationGain.gain.value = 0;
+      }
 
       // Program notes for each oscillator
       setNotes(track.i, track.c, track.p, song.l / 44100, song.r, when, column, cIndex);
