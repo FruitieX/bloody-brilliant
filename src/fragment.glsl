@@ -614,6 +614,7 @@ vec4 castRay(in vec3 ro, in vec3 rd) {
 }
 
 
+/*
 float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
   float res = 2.;
   float t = mint;
@@ -627,6 +628,7 @@ float softshadow(in vec3 ro, in vec3 rd, in float mint, in float tmax) {
 
   return clamp( res, .0, 1. );
 }
+*/
 
 vec3 calcNormal(in vec3 pos) {
   vec2 e = vec2(1.,-1.)*.5773*.0005;
@@ -683,8 +685,8 @@ vec3 render(in vec3 ro, in vec3 rd) {
     float fre = pow( clamp(1.+dot(nor,rd),.0,1.), 2. );
     float spe = pow(clamp( dot( ref, lig ), .0, 1. ),2.);
 
-    dif *= softshadow( pos, lig, .02, 2.5 );
-    dom *= softshadow( pos, ref, .02, 2.5 );
+    //dif *= softshadow( pos, lig, .02, 2.5 );
+    //dom *= softshadow( pos, ref, .02, 2.5 );
 
     vec3 lin = vec3(.0);
     lin += dif;
