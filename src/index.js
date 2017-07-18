@@ -56,11 +56,11 @@ r = t =>
       g.getUniformLocation(P, 'b'),
 
       // bass peak, averaged. TODO: can we use blood flow instead?
-      bPeak = Math.max(
-        0.95 * bPeak + 0.05 * b.tracks[0][0].osc1env.gain.value *
+      bPeak = //Math.max(
+        0.97 * bPeak + 0.2 * b.tracks[0][0].osc1env.gain.value *
           (d = (t - oldTime) / 16),
-        b.tracks[0][0].osc1env.gain.value
-      ),
+        //b.tracks[0][0].osc1env.gain.value
+      //),
 
       // blood flow
       Math.floor(A.currentTime/lBeat)*.841 +
