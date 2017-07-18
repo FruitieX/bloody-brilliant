@@ -191,6 +191,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+/*
 vec4 bloodCellWall(vec3 p) {
   p.z += .2;
   // vec3 p = pos;// - vec3(1.,0.,0.);
@@ -228,6 +229,7 @@ vec4 bloodCellWall(vec3 p) {
 
   return res;
 }
+*/
 
 vec4 bloodCellField(vec3 p, float v) {
   // set up the correct rotation axis
@@ -237,10 +239,40 @@ vec4 bloodCellField(vec3 p, float v) {
   pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
   p -= vec3(15.,0.,0.);
 
-  vec4 res = bloodCellWall(p);
-  // duplicate wall
-  // pR(p.xy, 1.);
-  // res = opU(res, bloodCellWall(p));
+  //p.z += .2;
+  // vec3 p = pos;// - vec3(1.,0.,0.);
+
+  vec3 col = vec3(1., .1, .1);
+
+  vec3 rotated = p - vec3(1.,-1.,0.);
+  pR(rotated.yz, a.z / 6.);
+  vec4 res = vec4(sdBloodCell(rotated), col);
+
+  // repeat
+  rotated = p + vec3(0.,2.,0.);
+  pR(rotated.xy, a.z / 6.);
+  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
+
+  // repeat
+  rotated = p + vec3(2.,1.,.5);
+  pR(rotated.yz, a.z / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated.yzx), col));
+
+  // repeat
+  rotated = p + vec3(1.,-1.5,1.);
+  pR(rotated.xy, a.z / 6.);
+  res = opU(res, vec4(sdBloodCell(rotated), col));
+
+  // repeat
+  rotated = p + vec3(2.,-1.,0.);
+  pR(rotated.xz, a.z / 6.);
+  res = opU(res, vec4(sdBloodCell(rotated.xzy), col));
+
+  // repeat
+  rotated = p - vec3(.8,1.,0.);
+  pR(rotated.xy, a.z / 7.);
+  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
+
   return res;
 }
 
@@ -411,29 +443,31 @@ vec4 vessel(vec3 pos, bool laser) {
 // scene 4 = Greetings
 
 // SCENES
-vec4 scene0(vec3 pos) {
+/*
+vec4 scene0(vec3 pos, float t) {
   vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   res = opU(res, bloodVein(pos, 2.));
   res = opU(res, bloodCellField(pos, 2.));
   return res;
 }
+*/
 
-vec4 scene1(vec3 pos) {
-  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
+vec4 scene1(vec3 pos, float t) {
+  //vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   float T = PI; // period
   //vec3 pos_vessel = pos + vec3(0.,0.,1.);
   //pR(pos_vessel.xz, PI/2.);
-  vec3 p_vessel = pos + vec3(.1-.2 * sin(a.z/T),.6 + .2 * cos(a.z/T),1.);
+  vec3 p_vessel = pos + vec3(.1-.2 * sin(t/T),.6 + .2 * cos(t/T),1.);
   // left-right tilt
-  pR(p_vessel.xz, PI/2.-PI/12.*cos(a.z/T));
+  pR(p_vessel.xz, PI/2.-PI/12.*cos(t/T));
   // up-down tilt
-  pR(p_vessel.yz, -PI/16.*sin(a.z/T));
-  res = opU(res, vessel(p_vessel, false));
+  pR(p_vessel.yz, -PI/16.*sin(t/T));
+  vec4 res = vessel(p_vessel, false);
 
   // rotation to blood cells and vein
-  pR(pos.xy, a.z/T);
+  pR(pos.xy, t/T);
   // render blood vein and cells
   res = opU(res, bloodVein(pos, -2.));
   res = opU(res, bloodCellField(pos, -2.));
@@ -441,7 +475,8 @@ vec4 scene1(vec3 pos) {
   return res;
 }
 
-vec4 scene2(vec3 pos) {
+/*
+vec4 scene2(vec3 pos, float t) {
   vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
 
   res = opU(res, bloodVein(pos, -2.));
@@ -451,21 +486,22 @@ vec4 scene2(vec3 pos) {
   // res = opU(
   //   res,
   //   virus(
-  //     vec3(pos.x+cos(a.z),pos.y+sin(a.z),pos.z+sin(a.z*.2)*3.),
-  //     cos(a.z/2.)
+  //     vec3(pos.x+cos(t),pos.y+sin(t),pos.z+sin(t*.2)*3.),
+  //     cos(t/2.)
   //   )
   // );
 
   return res;
 }
+*/
 
 
-vec4 scene3(vec3 pos) {
+vec4 scene3(vec3 pos, float t) {
   // pos += vec3(0., 1., -4.);
 
-  //pos += vec3(sin(a.z / 8.) / 4.,1.,1.);
+  //pos += vec3(sin(t / 8.) / 4.,1.,1.);
   pR(pos.yz, 7.);
-  pR(pos.xy, a.z/20.);
+  pR(pos.xy, t/20.);
   pos += vec3(1., 1., 1.);
   return opBlend(
     heart(pos),
@@ -474,13 +510,13 @@ vec4 scene3(vec3 pos) {
   );
 }
 
-vec4 scene4(vec3 pos) {
+vec4 scene4(vec3 pos, float t) {
 
-  //pR(pos.xz, a.z / 2.);
+  //pR(pos.xz, t / 2.);
   pR(pos.xy, -.4);
   pR(pos.xz, -.4);
-  pos += vec3(sin(a.z) / 4.,1.,4.);
-  //pR(pos.zy, a.z);
+  pos += vec3(1. + cos(t / 6.), 1., 2.5 - cos(t / 6.));
+  //pR(pos.zy, t);
   // vessel
   vec4 res = opBlend(
     heart(pos),
@@ -488,25 +524,34 @@ vec4 scene4(vec3 pos) {
     50.
   );
 
-  pR(pos.yz, sin(a.z / 4.) / 8.);
+  pR(pos.yz, sin(t / 4.) / 8.);
   pR(pos.xy, PI / 8.);
+
+  // left-right tilt
+  pR(pos.xz, +PI/12.*cos(t/PI));
+  // up-down tilt
+  pR(pos.yz, -PI/16.*sin(t/PI));
   return opBlend(
     res,
-    vessel(pos - vec3(6. - a.z / 4., 0., .5), false),
+    vessel(pos - vec3(
+      3. + 2. * cos(min(t, PI * 4.) / 4.),
+      0.,
+      .5
+    ), false),
     30.
   );
 }
 
-vec4 scene4_1(vec3 pos) {
+vec4 scene4_1(vec3 pos, float t) {
 
   pR(pos.yz, .7);
   pR(pos.xz, -3.);
-  pos += vec3(a.z / 16. - .5,1.,-1.);
-  //pR(pos.zy, a.z);
+  pos += vec3(t / 16. - .5,1.,-1.);
+  //pR(pos.zy, t);
   // vessel
   vec4 res = opBlend(
     heart(pos),
-    virus(pos + vec3(.5), 1.5 / (1. + a.z / 10.)),
+    virus(pos + vec3(.5), 1.5 / (1. + t / 10.)),
     50.
   );
 
@@ -514,93 +559,41 @@ vec4 scene4_1(vec3 pos) {
   pR(pos.xy, PI / 8.);
 
   // left-right tilt
-  pR(pos.xz, -PI/12.*cos(a.z/PI));
+  pR(pos.xz, -PI/12.*cos(t/PI));
   // up-down tilt
-  pR(pos.yz, -PI/16.*sin(a.z/PI));
+  pR(pos.yz, -PI/16.*sin(t/PI));
   return opBlend(
     res,
-    vessel(pos - vec3(1., 0., -.2), a.z > 2.),
+    vessel(pos - vec3(1., 0., -.2), t > 2.),
     15.
   );
 }
 
-vec4 scene5(vec3 pos) {
-  pos.z += 1.;
-
-  pR(pos.xz, a.z);
-  return vessel(pos + vec3(0., .5, 0.), true);
-}
-
 vec4 map(vec3 pos, vec3 origin) {
-  vec4 res; // = vec4(0.);
-
-  /*
-  float transitionTime = 10.;
-  float end0 = 20.;
-  float end1 = 34.;
-  float end2 = 50.;
-  float end3 = 70.;
-  */
-
+  float t = a.z;
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene4(pos);
+  return scene4(pos, a.z);
 
   /* ---------- SCENES --------- */
-
-  /*
-  // first scene
-  if (a.z < end0 + transitionTime) {
-    res = scene0(pos);
+  if ((t -= 22.5) < 0.) {
+    // nanobot
+    return scene1(pos, t);
+  } else if ((t -= 11.) < 0.) {
+    // virus
+    return scene3(pos, t + 10.);
+  } else if ((t -= 11.5) < 0.) {
+    // nanobot, TODO: viruses on blood vein walls?
+    return scene1(pos, t);
+  } else if ((t -= 15.) < 0.) {
+    // nanobot approaches virus
+    return scene4(pos, t + 15.);
+  } else if ((t -= 25.) < 0.) {
+    // nanobot fires lasers
+    return scene4_1(pos, t + 25.);
+  } else {
+    return vec4(0.);
   }
-
-  // start rendering after previous scene,
-  // stop rendering after transitioning to next scene
-  if (a.z >= end0 && a.z < end1 + transitionTime) {
-    res = opMorph(res,
-      scene1(pos + vec3(a.z, 0., sin(a.z))),
-
-      // Timing
-      end0,
-      transitionTime
-    );
-  }
-
-  // start rendering after previous scene,
-  // stop rendering after transitioning to next scene
-  if (a.z >= end1 && a.z < end2 + transitionTime) {
-    res = opMorph(res,
-      scene2(pos),
-
-      // Timing
-      end1,
-      transitionTime
-    );
-  }
-
-  if (a.z >= end2 && a.z < end3 + transitionTime) {
-    res = opMorph(res,
-      scene3(pos),
-
-      // Timing
-      end2,
-      transitionTime
-    );
-  }
-
-  // last scene
-  if (a.z >= end3) {
-    res = opMorph(res,
-      scene3(pos),
-
-      // Timing
-      end3,
-      transitionTime
-    );
-  }
-
-  return res;
-  */
 }
 
 void main() {
