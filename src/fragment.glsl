@@ -13,10 +13,15 @@ uniform vec4 b;
 
 float PI = 3.14;
 
-float calcPlasma(float x, float y, float z, float t) {
+float calcPlasma(vec3 p, float t) {
+  return sin(2. * sin(
+    pow(p.z + sin(p.x + t / 5.), 2.) + pow(p.y + sin(2. + t / 3.), 2.)
+  + 1. + t)) / 2. + .5;
+  /*
   return sin(2. * sin(sqrt(100. * (
-    pow(x + sin(t / 5.), 2.) + pow(y + cos(t / 3.), 2.)
+    pow(p.x + sin(t / 5.), 2.) + pow(p.y + sin(2. + t / 3.), 2.)
   ) + 1.) + t)) / 2. + .5;
+  */
 }
 
 float smin( float a, float b, float k ) {
@@ -37,7 +42,7 @@ vec4 opBlend( vec4 d1, vec4 d2, float k ) {
 }
 
 vec4 opU(vec4 d1, vec4 d2) {
-  return (d1.x<d2.x) ? d1 : d2;
+  return d1.x < d2.x ? d1 : d2;
 }
 
 // Rotate around a coordinate axis (i.e. in a plane perpendicular to that axis) by angle <a>.
@@ -52,11 +57,13 @@ float fCapsule(vec3 p, float r, float c) {
 }
 
 float sdBloodCell(vec3 p) {
-  float d1 = length(vec2(length(p.xz)-.3,p.y)) - .1;
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
-  float d2 = min(max(d.x,d.y),0.) + length(max(d,0.));
 
-  return smin(d1,d2,32.);
+  return smin(
+    length(vec2(length(p.xz)-.3,p.y)) - .1,
+    min(max(d.x,d.y),0.) + length(max(d,0.)),
+    32.
+  );
 }
 
 float sdTorus(vec3 p) {
@@ -67,16 +74,16 @@ float sdTorus(vec3 p) {
 
 float sdTriPrism( vec3 p, vec2 h ) {
     vec3 q = abs(p);
-    return max(q.z-h.y,max(q.x*.866025+.5*p.y, -p.y)-h.x*.5);
+    return max(q.z-h.y,max(q.x+.5*p.y, -p.y)-h.x*.5);
 }
 
 float sdHexPrism( vec3 p, vec2 h ) {
     vec3 q = abs(p);
-    return max(q.z-h.y,max(q.x*.866025+.5*q.y, q.y)-h.x);
+    return max(q.z-h.y,max(q.x+.5*q.y, q.y)-h.x);
 }
 
 vec4 heart(vec3 p) {
-  float plasma1 = calcPlasma(p.x, p.y, p.z, a.z / 10.) + .5;
+  float plasma1 = calcPlasma(p, a.z / 10.) + .5;
 
   return vec4(
     // tunnel shape
@@ -109,9 +116,6 @@ vec4 bloodCellField(vec3 p, float v) {
   pR(p.xz, -(a.z * v + b.y) / 20.); // give speed to blood wall
   pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
   p -= vec3(15.,0.,0.);
-
-  //p.z += .2;
-  // vec3 p = pos;// - vec3(1.,0.,0.);
 
   vec3 col = vec3(1., .1, .1);
 
@@ -148,8 +152,6 @@ vec4 bloodCellField(vec3 p, float v) {
 }
 
 vec4 bloodVein(vec3 p,float v) {
-  float plasma1 = calcPlasma(p.x / 8., p.y / 8., p.z / 8., a.z / 10.);
-
   // rotate
   // pR(p.xy, a/5.);
   return vec4(
@@ -162,7 +164,7 @@ vec4 bloodVein(vec3 p,float v) {
     + b.x,
 
     // color
-    sin(vec3(1., .1, .1) * (plasma1 / 2. + .5))
+    sin(vec3(1., .1, .1) * (calcPlasma(p / 8., a.z / 10.) + .5))
   );
 }
 
@@ -212,31 +214,6 @@ vec4 virus(vec3 pos, float size) {
   return res;
 }
 
-/*
-float udBox( vec3 p, vec3 b ) {
-  return length(max(abs(p)-b,0.));
-}
-*/
-
-/*
-float sdTorus2(vec3 p) {
-  // the first constant sets size of torus
-  // second sets size of middle
-  return length(vec2(length(p.xz)-.5,p.y)) - 0.1;
-}
-*/
-
-/*
-vec4 sdArm(vec3 p, float len_arm, float angle) {
-  vec4 res = vec4(fCapsule(p, .05,len_arm), .1,.1,.1);
-  p.y += len_arm;
-  pR(p.xy, angle);
-  p.y += len_arm;
-  res = opU(res, vec4(fCapsule(p, .05,len_arm), .1,.1,.1));
-  return res;
-}
-*/
-
 vec4 vessel(vec3 pos, bool laser) {
   float s = 2.; // scale
   vec3 col = vec3(.1);
@@ -256,36 +233,6 @@ vec4 vessel(vec3 pos, bool laser) {
   pos.x += .1;
   pos.y += .1;
   res = opU(res, vec4(sdTriPrism(pos , vec2(.39,.01)/s), col));
-
-  // arms
-  // pos = origPos;
-  // pos.x += .3;
-  // pR(pos.xy, PI/2.);
-  // pR(pos.yz, PI);
-  // // pos.z += .3;
-  // pR(pos.yz, -PI/8.);
-  // pos.z -= .4;
-  // pR(pos.xz, PI/2.);
-  // res = opU(res, sdArm(pos, .2, -PI/8.));
-  // pR(pos.yz, PI/4.);
-  // res = opU(res, sdArm(pos + vec3(.0,.0,.3), .3, -PI/8. * a));
-  // res = vec4(fCapsule(pos, .03,.5), .1,.1,.1);
-  // pos.y += .5;
-  // pR(pos.xy, PI/8.);
-  // pos.y += .5;
-  // res = opU(res, vec4(fCapsule(pos, .03,.5), .1,.1,.1));
-
-  // propeller thing
-  // pos = origPos;
-  // pR(pos.yz, a * 10.);
-  // pModPolar(pos.yz, 3.);
-  // res = opU(
-  //   res,
-  //   vec4(
-  //     fCapsule(pos - vec3(.93, 0., 0.), 0.03, 0.3),
-  //     .4, .3, .7
-  //   )
-  // );
 
   if (laser) {
     res = opU(
@@ -308,24 +255,6 @@ vec4 vessel(vec3 pos, bool laser) {
   return res;
 }
 
-// Scene list
-// Scene 0 = Intro, Normal day at blood work
-// Scene 1 = Virus drives past camera, makes everything funky color
-// scene 2 = Blood canal chase begins
-// scene 3 = Final destination in my heart. Virus dies. Boss fight?
-// scene 4 = Greetings
-
-// SCENES
-/*
-vec4 scene0(vec3 pos, float t) {
-  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
-
-  res = opU(res, bloodVein(pos, 2.));
-  res = opU(res, bloodCellField(pos, 2.));
-  return res;
-}
-*/
-
 vec4 scene1(vec3 pos, float t) {
   vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
 
@@ -345,31 +274,7 @@ vec4 scene1(vec3 pos, float t) {
   return res;
 }
 
-/*
-vec4 scene2(vec3 pos, float t) {
-  vec4 res = vec4(sdSphere(pos,.01),1.,0.,0.);
-
-  res = opU(res, bloodVein(pos, -2.));
-  res = opU(res, bloodCellField(pos, -2.));
-
-
-  // res = opU(
-  //   res,
-  //   virus(
-  //     vec3(pos.x+cos(t),pos.y+sin(t),pos.z+sin(t*.2)*3.),
-  //     cos(t/2.)
-  //   )
-  // );
-
-  return res;
-}
-*/
-
-
 vec4 scene3(vec3 pos, float t) {
-  // pos += vec3(0., 1., -4.);
-
-  //pos += vec3(sin(t / 8.) / 4.,1.,1.);
   pR(pos.yz, 7.);
   pR(pos.xy, t/20.);
   pos += vec3(1.);
@@ -381,12 +286,10 @@ vec4 scene3(vec3 pos, float t) {
 }
 
 vec4 scene4(vec3 pos, float t) {
-
-  //pR(pos.xz, t / 2.);
   pR(pos.xy, -.4);
   pR(pos.xz, -.8 + t / 32.);
   pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
-  //pR(pos.zy, t);
+
   // vessel
   vec4 res = opBlend(
     heart(pos),
@@ -394,7 +297,6 @@ vec4 scene4(vec3 pos, float t) {
     50.
   );
 
-  //pR(pos.yz, sin(t / 4.) / 8.);
   pR(pos.xz, PI / 6.);
   pR(pos.xy, PI / 8.);
 
@@ -475,23 +377,6 @@ void main() {
 
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
-    // camera
-    // ro = ray origin = where the camera is
-    // ta = camera direction (point which the camera is looking at)
-    // cr = camera rotation
-
-    // rotating camera
-    //vec3 pos = vec3(
-      //1.,0.,0.
-      /*
-      cos(a.z/2.),
-      sin(a.z/2.),
-      sin(a.z/2.)/2.+.5
-      */
-    //);
-    // vec3 ro = pos.xzy*2.;
-    // static camera
-
     vec4 res; // = vec3(-1.);
     float t = .0; // tmin
 
