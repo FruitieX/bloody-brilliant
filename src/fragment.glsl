@@ -286,7 +286,9 @@ vec4 bloodVein(vec3 p,float v) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. + sin(3. * (p.z + a.z*v))),
+    - 0.05 * (1. - sin(3. * (p.z + a.z*v)))
+
+    + b.x,
 
     // color
     sin(vec3(1., .1, .1) * (plasma1 / 2. + .5))
