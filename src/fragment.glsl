@@ -601,6 +601,7 @@ vec4 map(vec3 pos, vec3 origin) {
 
 void main() {
 
+  vec3 col = vec3(0.);
   vec3 tot = vec3(0.);
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
@@ -610,11 +611,14 @@ void main() {
     // cr = camera rotation
 
     // rotating camera
-    vec3 pos = vec3(
+    //vec3 pos = vec3(
+      //1.,0.,0.
+      /*
       cos(a.z/2.),
       sin(a.z/2.),
       sin(a.z/2.)/2.+.5
-    );
+      */
+    //);
     // vec3 ro = pos.xzy*2.;
     // static camera
     vec3 ro = vec3(0.,0.,1.);
@@ -636,7 +640,7 @@ void main() {
         )
       );
 
-    vec3 col = vec3(.03, .04, .05);
+    //vec3 col = vec3(.03, .04, .05);
     float t = .02; // tmin
     vec4 res; // = vec3(-1.);
 
@@ -661,17 +665,18 @@ void main() {
       float fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. );
       float spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
 
-      vec3 lin = vec3(0.);
-      lin += dif;
-      lin += spe*dif;
-      lin += pow(.4*amb/**occ*/, 2.);
-      lin += pow(.2*dom/**occ*/, 4.);
-      lin += .5*fre/**occ*/;
-      col = res.yzw*lin;
+      col = res.yzw * (
+        dif
+          + spe*dif
+          + pow(.4*amb, 2.)
+          + pow(.2*dom, 4.)
+          + .5*fre
+      );
 
       // fog
-      col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
+      //col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
     }
+    col = mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) );
 
 
     tot += pow(
