@@ -514,8 +514,8 @@ vec4 scene4(vec3 pos, float t) {
 
   //pR(pos.xz, t / 2.);
   pR(pos.xy, -.4);
-  pR(pos.xz, -.4);
-  pos += vec3(1. + cos(t / 6.), 1., 2.5 - cos(t / 6.));
+  pR(pos.xz, -.8 + t / 32.);
+  pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
   //pR(pos.zy, t);
   // vessel
   vec4 res = opBlend(
@@ -524,7 +524,8 @@ vec4 scene4(vec3 pos, float t) {
     50.
   );
 
-  pR(pos.yz, sin(t / 4.) / 8.);
+  //pR(pos.yz, sin(t / 4.) / 8.);
+  pR(pos.xz, PI / 6.);
   pR(pos.xy, PI / 8.);
 
   // left-right tilt
@@ -534,7 +535,7 @@ vec4 scene4(vec3 pos, float t) {
   return opBlend(
     res,
     vessel(pos - vec3(
-      3. + 2. * cos(min(t, PI * 4.) / 4.),
+      2.5 + 1.5 * cos(1. + min(t, (PI - 1. ) * 8.) / 8.),
       0.,
       .5
     ), false),
@@ -573,7 +574,7 @@ vec4 map(vec3 pos, vec3 origin) {
   float t = a.z;
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
-  return scene4(pos, a.z);
+  // return scene4(pos, a.z);
 
   /* ---------- SCENES --------- */
   if ((t -= 22.5) < 0.) {
