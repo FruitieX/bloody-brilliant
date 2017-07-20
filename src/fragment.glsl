@@ -349,21 +349,21 @@ vec4 map(vec3 pos, vec3 origin) {
   // return scene4(pos, a.z);
 
   /* ---------- SCENES --------- */
-  if ((t -= 22.5) < 0.) {
+  if ((t -= 16.) < 0.) {
     // nanobot
     return scene1(pos, t);
-  } else if ((t -= 11.) < 0.) {
+  } else if ((t -= 16.) < 0.) {
     // virus
-    return scene3(pos, t + 10.);
-  } else if ((t -= 11.5) < 0.) {
+    return scene3(pos, t + 16.);
+  } else if ((t -= 16.) < 0.) {
     // nanobot, TODO: viruses on blood vein walls?
     return scene1(pos, t);
-  } else if ((t -= 15.) < 0.) {
+  } else if ((t -= 16.) < 0.) {
     // nanobot approaches virus
-    return scene4(pos, t + 15.);
-  } else if ((t -= 25.) < 0.) {
+    return scene4(pos, t + 16.);
+  } else if ((t -= 16.) < 0.) {
     // nanobot fires lasers
-    return scene4_1(pos, t + 25.);
+    return scene4_1(pos, t + 16.);
   } else {
     return vec4(0.);
   }

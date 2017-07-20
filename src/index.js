@@ -22,7 +22,7 @@ oldTime = 0;
 bPeak = 0; // bass peak, max(bass, bPeak)
 
 // simulate heart pumping the blood rythm
-lBeat = 1.411764;
+lBeat = 1;
 
 // gfx
 g = c.getContext`webgl`;
@@ -56,7 +56,7 @@ r = t =>
 
       // bass peak, averaged. TODO: can we use blood flow instead?
       bPeak = //Math.max(
-        0.97 * bPeak + 0.2 * .1 /*b.tracks[0][0].osc1env.gain.value*/ *
+        0.97 * bPeak + 0.2 * I[0].e.gain.value *
           (d = (t - oldTime) / 16),
         //b.tracks[0][0].osc1env.gain.value
       //),
@@ -71,10 +71,10 @@ r = t =>
             A.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
           )
       ),
-      //requestAnimationFrame(r),
+      requestAnimationFrame(r),
 
       // battery saving
-      setTimeout(() => requestAnimationFrame(r), 1000),
+      //setTimeout(() => requestAnimationFrame(r), 1000),
       oldTime = t // unused
     )
   );
@@ -88,10 +88,11 @@ g.shaderSource(S=g.createShader(g.FRAGMENT_SHADER), require("./fragment.glsl"));
 g.compileShader(S);g.attachShader(P,S);
 
 // Log compilation errors
-// TODO: remove in production
+/*
 if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
   throw g.getShaderInfoLog(S);
 }
+*/
 
 g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.parentElement.style.margin = 0));
 
