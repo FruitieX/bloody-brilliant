@@ -24,17 +24,31 @@
 
 A = new AudioContext;
 
+n = () => {
+  osc = A.createScriptProcessor(2048, 1, 1);
+
+  osc.onaudioprocess = e =>
+    e.outputBuffer.getChannelData(0).map((s, i) =>
+      e.outputBuffer.getChannelData(0)[i] = Math.random() * 2 - 1
+    );
+
+  return osc;
+};
+
 // Init instruments
 I = s.i.map(i => {
   o = A.createOscillator();
   e = A.createGain();
   l = A.createBiquadFilter();
 
-  // Start oscillator
-  o.start();
-
   // Set oscillator type
-  o.type = i.t;
+  if (i.t == 'noise') {
+    o = n();
+  } else {
+    o.type = i.t;
+    // Start oscillator
+    o.start();
+  }
 
   // Set filter Q value
   //l.Q.value = 12;
@@ -48,20 +62,22 @@ I = s.i.map(i => {
   // Connect filter to master out
   l.connect(A.destination);
 
-  return { ...i, o, e, l };
+  // TODO: object spread not supported by uglifyes, babili?
+  return Object.assign({ o, e, l }, i);
 });
 
 // Program notes
 for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
   for (r = s.r - 1; r > -1; r--) { // rows (in reverse order)
     I.map(i => { // for each instrument
+      N = i.n[r % i.n.length];
       // Don't do anything if note is undefined
-      if (!i.n[r]) return;
+      if (!N) return;
 
       // Begin note
       i.e.gain.setValueAtTime(
         // Volume
-        i.v,
+        N == -1 ? 0 : i.v,
 
         // Start time
         (
@@ -79,9 +95,10 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
           r         // Row index
         ) * s.b     // * Seconds per row
       );
-      i.o.frequency.setValueAtTime(
+
+      i.t != 'noise' && i.o.frequency.setValueAtTime(
         // Frequency
-        440 * Math.pow(2, (i.n[r] - 48) / 12),
+        440 * Math.pow(2, (N - 48) / 12),
 
         // Start time
         (
@@ -102,7 +119,7 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
-        - 1e-4      // - delta
+        - 1e-3      // - delta
       );
       i.l.frequency.linearRampToValueAtTime(
         // Decayed frequency
@@ -113,7 +130,21 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
-        - 1e-4      // - delta
+        - 1e-3      // - delta
+      );
+
+      // Only glide notes if enabled
+      if (!i.g) return;
+      i.o.frequency.exponentialRampToValueAtTime(
+        // Glide frequency
+        i.g,
+
+        // End time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+        - 1e-3      // - delta
       );
     });
   }
