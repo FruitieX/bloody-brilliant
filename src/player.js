@@ -20,10 +20,106 @@
  * SOFTWARE.
  */
 
-B = {};
+//B = {};
 
 A = new AudioContext;
 
+// Init instruments
+I = s.i.map(i => {
+  o = A.createOscillator();
+  e = A.createGain();
+  l = A.createBiquadFilter();
+
+  // Start oscillator
+  o.start();
+
+  // Set oscillator type
+  o.type = i.t;
+
+  // Set filter Q value
+  //l.Q.value = 12;
+
+  // Connect oscillator to envelope
+  o.connect(e);
+
+  // Connect envelope to filter
+  e.connect(l);
+
+  // Connect filter to master out
+  l.connect(A.destination);
+
+  return { ...i, o, e, l };
+});
+
+// Program notes
+for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
+  for (r = s.r - 1; r > -1; r--) { // rows (in reverse order)
+    I.map(i => { // for each instrument
+      // Don't do anything if note is undefined
+      if (!i.n[r]) return;
+
+      // Begin note
+      i.e.gain.setValueAtTime(
+        // Volume
+        i.v,
+
+        // Start time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+      );
+      i.l.frequency.setValueAtTime(
+        // Frequency
+        i.f * 1000,
+
+        // Start time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+      );
+      i.o.frequency.setValueAtTime(
+        // Frequency
+        440 * Math.pow(2, (i.n[r] - 48) / 12),
+
+        // Start time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+      );
+
+      // Fade previous note only if this is not the first note
+      if (!l && !r) return;
+
+      i.e.gain.linearRampToValueAtTime(
+        // Decayed volume
+        i.V,
+
+        // End time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+        - 1e-4      // - delta
+      );
+      i.l.frequency.linearRampToValueAtTime(
+        // Decayed frequency
+        i.F * 1000,
+
+        // End time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+        - 1e-4      // - delta
+      );
+    });
+  }
+}
+
+/*
 waveforms = [
   "sine",
   "square",
@@ -31,11 +127,6 @@ waveforms = [
   "triangle",
 ];
 
-/*
-const bound = (min, value, max) => {
-  return Math.max(min, Math.min(value, max));
-};
-*/
 
 createNoiseOsc = () => {
   osc = A.createScriptProcessor(2048, 1, 1);
@@ -371,3 +462,4 @@ B.G.prototype.play = function(song, when = 0) {
     })
   );
 };
+*/

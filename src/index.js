@@ -5,7 +5,6 @@ c.width = 1920 / potato;
 c.height = 1080 / potato;
 
 // music
-b = new B.G();
 //b.connect(A.destination);
 // analyser = soundbox.audioCtx.createAnalyser();
 // analyserArray = new Uint8Array(analyser.frequencyBinCount);
@@ -57,7 +56,7 @@ r = t =>
 
       // bass peak, averaged. TODO: can we use blood flow instead?
       bPeak = //Math.max(
-        0.97 * bPeak + 0.2 * b.tracks[0][0].osc1env.gain.value *
+        0.97 * bPeak + 0.2 * .1 /*b.tracks[0][0].osc1env.gain.value*/ *
           (d = (t - oldTime) / 16),
         //b.tracks[0][0].osc1env.gain.value
       //),
@@ -72,7 +71,10 @@ r = t =>
             A.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
           )
       ),
-      requestAnimationFrame(r),
+      //requestAnimationFrame(r),
+
+      // battery saving
+      setTimeout(() => requestAnimationFrame(r), 1000),
       oldTime = t // unused
     )
   );
@@ -103,5 +105,3 @@ g.vertexAttribPointer(
     g.bufferData(g.ARRAY_BUFFER, Int8Array.of(-3, 1, 1, -3, 1, 1), g.STATIC_DRAW)
   ),
 2, g.BYTE, r(0), g.linkProgram(P), g.useProgram(P));
-
-b.play(s);
