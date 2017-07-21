@@ -16,13 +16,13 @@ c.height = 1080 / potato;
 // b.tracks[2][0].out.connect(analyser);
 
 // time at previous frame
-oldTime = 0;
+//oldTime = 0;
 
 // accumulators
-bPeak = 0; // bass peak, max(bass, bPeak)
+//bPeak = 0; // bass peak, max(bass, bPeak)
 
 // simulate heart pumping the blood rythm
-lBeat = 1;
+//lBeat = 1;
 
 // gfx
 g = c.getContext`webgl`;
@@ -36,12 +36,11 @@ r = t =>
     // a.xy = resolution
     // a.z = time (s)
     // a.w = unused
-    g.uniform4f(
+    g.uniform3f(
       g.getUniformLocation(P, 'a'),
       c.width,
       c.height,
       A.currentTime,
-      0 // TODO: must pass 4 params
     ),
 
     // number of indices to be rendered
@@ -51,31 +50,34 @@ r = t =>
     // b.y = accumulated bass
     // b.z = unused
     // b.w = unused
-    g.uniform4f(
+    g.uniform3f(
       g.getUniformLocation(P, 'b'),
 
       // bass peak, averaged. TODO: can we use blood flow instead?
+      /*
       bPeak = //Math.max(
         0.97 * bPeak + 0.2 * I[0].e.gain.value *
           (d = (t - oldTime) / 16),
         //b.tracks[0][0].osc1env.gain.value
       //),
+      */
+      I[0].e.gain.value,
 
-      // blood flow
-      Math.floor(A.currentTime/lBeat)*.841 +
+      // blood flow, TODO: golf?
+      Math.floor(A.currentTime/* / 1*/)*.841 +
       (
-        A.currentTime % lBeat > .53
+        A.currentTime % 1 > .53
         ? .841
         : Math.sqrt(
           Math.sin(
-            A.currentTime % lBeat / .53 * 3. * Math.PI / 4.)
+            A.currentTime % 1 / .53 * 3. * Math.PI / 4.)
           )
       ),
       requestAnimationFrame(r),
 
       // battery saving
       //setTimeout(() => requestAnimationFrame(r), 1000),
-      oldTime = t // unused
+      //oldTime = t // unused
     )
   );
 

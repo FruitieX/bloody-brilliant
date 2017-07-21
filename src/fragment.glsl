@@ -2,14 +2,12 @@ precision highp float;
 
 // a.xy = resolution
 // a.z = time (s)
-// a.w = unused
-uniform vec4 a;
+uniform vec3 a;
 
 // b.x = bass
 // b.y = accumulated bass
 // b.z = unused
-// b.w = unused
-uniform vec4 b;
+uniform vec3 b;
 
 float PI = 3.14;
 
