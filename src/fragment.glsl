@@ -371,7 +371,7 @@ void main() {
 
   vec3 col = vec3(0.),
        tot = vec3(0.),
-       ro = vec3(0.,0.,1.);
+       ro = vec3(0., 0., 1.);
 
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
@@ -381,7 +381,7 @@ void main() {
     // ray direction
     vec3 rd =
       // camera-to-world transformation
-      mat3(ro.zxx,ro.xzx,-ro) *
+      mat3(ro.zxx, ro.xzx, -ro) *
 
       normalize(
         vec3(
@@ -395,47 +395,47 @@ void main() {
         )
       );
 
-    for( float i=0.; i<64.; i++ ) // 64. = maxIterations
-      t += (res = map( ro+rd*t, ro )).x;
+    for(float i = 0.; i < 64.; i++) // 64. = maxIterations
+      t += (res = map(ro + rd * t, ro)).x;
 
     vec2 e = vec2(1e-2, -1e-2);
 
-    vec3 pos = ro+rd*t,
+    vec3 pos = ro + rd * t,
 
     nor = normalize(
-      e.xyy*map(pos+e.xyy,pos).x +
-      e.yyx*map(pos+e.yyx,pos).x +
-      e.yxy*map(pos+e.yxy,pos).x +
-      e.xxx*map(pos+e.xxx,pos).x
+      e.xyy * map(pos + e.xyy, pos).x +
+      e.yyx * map(pos + e.yyx, pos).x +
+      e.yxy * map(pos + e.yxy, pos).x +
+      e.xxx * map(pos + e.xxx, pos).x
     ),
-    ref = reflect( rd, nor ),
+    ref = reflect(rd, nor),
 
     lig = vec3(.7); // direction of light
 
     // material
-    float amb = clamp( .5+.5*nor.y, 0., 1. ),
-          dif = clamp( dot( nor, lig ), 0., 1. ),
-          dom = smoothstep( -.1, .1, ref.y ),
-          fre = pow( clamp(1.+dot(nor,rd),0.,1.), 2. ),
-          spe = pow(clamp( dot( ref, lig ), 0., 1. ),2.);
+    float amb = clamp(.5 + .5 * nor.y, 0., 1.),
+          dif = clamp(dot(nor, lig), 0., 1.),
+          dom = smoothstep(-.1, .1, ref.y),
+          fre = pow(clamp(dot(nor, rd) + 1., 0., 1.), 2.),
+          spe = pow(clamp(dot(ref, lig), 0., 1.), 2.);
 
-    if( length(res.yzw)>0. )
+    if(length(res.yzw) > 0.)
       col = res.yzw * (
         dif
-          + spe*dif
-          + pow(.4*amb, 2.)
-          + pow(.2*dom, 4.)
-          + .5*fre
+          + spe * dif
+          + pow(.4 * amb, 2.)
+          + pow(.2 * dom, 4.)
+          + .5 * fre
       );
 
     tot += pow(
       // fog
-      mix( col, vec3(.03, .04, .05), 1.-exp( -.001*t*t*t ) ),
+      mix(col, vec3(.03, .04, .05), 1. - exp(-.001 * t * t * t)),
 
     	// gamma
       vec3(.6, .5, .4)
     );
   }
 
-  gl_FragColor = vec4( tot / 4., 1. ); // 4 = AA * AA
+  gl_FragColor = vec4(tot / 4., 1.); // 4 = AA * AA
 }

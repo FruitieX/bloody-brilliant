@@ -1,8 +1,17 @@
 // potato level for PC, higher = faster :-)
 // TODO: remove in production
-potato = 6;
+/*
+potato = 8;
 c.width = 1920 / potato;
 c.height = 1080 / potato;
+*/
+// production
+/*
+c.width = 1920;
+c.height = 1080;
+*/
+c.width = 240;
+c.height = 135;
 
 // music
 //b.connect(A.destination);
