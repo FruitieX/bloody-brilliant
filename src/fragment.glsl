@@ -163,43 +163,59 @@ vec4 virus(vec3 pos, float size) {
   // velocity
   pR(pos.xy, PI/4.);
 
-  float scale = 1. + b.x / 10.;
-  scale *= size;
-  float spikeLen = 1.*scale;
-  float spikeThickness = 0.01*scale;
-  float blend = 9.;
+  /*
+  float spikeLen = size + size * b.x / 10.;
+  float spikeThickness = 0.01 * size + size * b.x * 0.001 ;
 
-  vec4 res = vec4(length(pos)-.5*scale, 0., 1., 0.);
+  */
+  vec4 res = vec4(length(pos)-.5 - b.x / 20., 0., 1., 0.);
 
   pModPolar(pos.yz, 7.);
 
-  vec4 spikes = vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.);
+  vec4 spikes =
+    vec4(fCapsule(
+      pos,
+      0.01 * size + size * b.x * 0.001,
+      size + size * b.x * 0.1
+    ), 1., .6, 1.);
 
   pR(pos.xy, PI/4.);
 
   spikes = opU(
     spikes,
-    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
+    vec4(fCapsule(
+      pos,
+      0.01 * size + size * b.x * 0.001,
+      size + size * b.x * 0.1
+    ), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
   spikes = opU(
     spikes,
-    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
+    vec4(fCapsule(
+      pos,
+      0.01 * size + size * b.x * 0.001,
+      size + size * b.x * 0.1
+    ), 1., .6, 1.)
   );
 
   pR(pos.xy, PI/4.);
 
   spikes = opU(
     spikes,
-    vec4(fCapsule(pos, spikeThickness, spikeLen), 1., .6, 1.)
+    vec4(fCapsule(
+      pos,
+      0.01 * size + size * b.x * 0.001,
+      size + size * b.x * 0.1
+    ), 1., .6, 1.)
   );
 
   res = opBlend(
     res,
     spikes,
-    blend
+    9.
   );
 
   return res;
