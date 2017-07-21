@@ -25,7 +25,7 @@
 A = new AudioContext;
 
 n = () => {
-  osc = A.createScriptProcessor(2048, 1, 1);
+  osc = A.createScriptProcessor(512, 1, 1);
 
   osc.onaudioprocess = e =>
     e.outputBuffer.getChannelData(0).map((s, i) =>
@@ -49,6 +49,9 @@ I = s.i.map(i => {
     // Start oscillator
     o.start();
   }
+
+  // Oscillators start out silent, TODO: unnecessary?
+  e.gain.value = 0;
 
   // Set filter Q value
   //l.Q.value = 12;
@@ -74,7 +77,29 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
       // Don't do anything if note is undefined
       if (!N) return;
 
-      // Begin note
+      // Begin note from silence
+      i.e.gain.setValueAtTime(
+        // Volume
+        0,
+
+        // Start time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+      );
+      // Note fades to full volume after attack time
+      i.e.gain.linearRampToValueAtTime(
+        // Volume
+        N == -1 ? 0 : i.v,
+
+        // Start time
+        (
+          l * s.r + // Loop index * rows per loop
+          r         // Row index
+        ) * s.b     // * Seconds per row
+        + i.a       // Instrument attack
+      );
       i.e.gain.setValueAtTime(
         // Volume
         N == -1 ? 0 : i.v,
@@ -84,7 +109,9 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
+        + i.a       // Instrument attack
       );
+
       i.l.frequency.setValueAtTime(
         // Frequency
         i.f * 1000,

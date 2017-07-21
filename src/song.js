@@ -8,6 +8,7 @@ s = {
     // Kick drum
     // oscillator is sine by default
     //t: 'sine', // oscillator type
+    a: 0.01, // attack time
     v: 0.5, // volume
     V: 0, // decayed volume at end of note
     f: 1, // low-pass filter frequency in kHz
@@ -22,25 +23,28 @@ s = {
       ,,-1,,
     ],
   }, {
-    // Percussion 1
-    t: 'noise', // oscillator type
-    v: 0.3, // volume
+    // Percussion 1 (Snare)
+    t: 'square', // oscillator type
+    a: 0.01, // attack time
+    v: 0.5, // volume
     V: 0, // decayed volume at end of note
     f: 10, // low-pass filter frequency in kHz
     F: 10, // decayed low-pass filter frequency in kHz
     m: 0, // muted for this many loops
     M: 8, // muted after this many loops
+    g: 10, // glide notes to this frequency in Hz (useful for kicks drums)
 
     // notes, -1 = off note
     n: [
-      ,,,,1,,-1,,
-      ,,,,1,,-1,,
-      ,,,,1,,-1,,
-      ,,,1,,,,-1,
+      ,,,,42,,-1,,
+      ,,,,42,,-1,,
+      ,,,,42,,-1,,
+      ,,,42,,,,-1,
     ],
   }, {
-    // Percussion 2
+    // Percussion 2 (Hi-hat)
     t: 'noise', // oscillator type
+    a: 0.001, // attack time
     v: 0.3, // volume
     V: 0, // decayed volume at end of note
     f: 15, // low-pass filter frequency in kHz
@@ -54,6 +58,7 @@ s = {
     ],
   }, {
     t: 'square', // oscillator type
+    a: 0.01, // attack time
     v: 0.2, // volume
     V: 0.2, // decayed volume at end of note
     f: 0.05, // low-pass filter frequency in kHz
@@ -68,6 +73,7 @@ s = {
     ],
   }, {
     t: 'square', // oscillator type
+    a: 0.01, // attack time
     v: 0.2, // volume
     V: 0.2, // decayed volume at end of note
     f: 0.05, // low-pass filter frequency in kHz
@@ -82,6 +88,7 @@ s = {
     ],
   }, {
     t: 'square', // oscillator type
+    a: 0.01, // attack time
     v: 0.2, // volume
     V: 0.01, // decayed volume at end of note
     f: 10, // low-pass filter frequency in kHz
