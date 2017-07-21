@@ -163,11 +163,6 @@ vec4 virus(vec3 pos, float size) {
   // velocity
   pR(pos.xy, PI/4.);
 
-  /*
-  float spikeLen = size + size * b.x / 10.;
-  float spikeThickness = 0.01 * size + size * b.x * 0.001 ;
-
-  */
   vec4 res = vec4(length(pos)-.5 - b.x / 20., 0., 1., 0.);
 
   pModPolar(pos.yz, 7.);
@@ -222,24 +217,23 @@ vec4 virus(vec3 pos, float size) {
 }
 
 vec4 vessel(vec3 pos, bool laser) {
-  float s = 2.; // scale
   vec3 col = vec3(.1);
 
   pR(pos.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(pos , vec2(.5,.3)/s), col);
+  vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col);
   pR(pos.xz, PI/2.);
-  res = opI(res, vec4(sdTriPrism(pos , vec2(.7)/s), col));
+  res = opI(res, vec4(sdTriPrism(pos , vec2(.35)), col));
   pR(pos.zy, PI/2.);
-  res = opI(res, vec4(sdHexPrism(pos, vec2(.3,.5)/s), col));
+  res = opI(res, vec4(sdHexPrism(pos, vec2(.15,.25)), col));
   pos.z += .3;
-  res = opU(res, vec4(sdHexPrism(pos, vec2(.3,.4)/s), col));
+  res = opU(res, vec4(sdHexPrism(pos, vec2(.15,.2)), col));
 
   pR(pos.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.8,.01)/s), col));
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.4,.005)), col));
   pR(pos.xz, PI/2.);
   pos.x += .1;
   pos.y += .1;
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.39,.01)/s), col));
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.195,.005)), col));
 
   if (laser) {
     res = opU(
