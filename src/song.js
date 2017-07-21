@@ -43,19 +43,34 @@ s = {
     ],
   }, {
     // Percussion 2 (Hi-hat)
-    t: 'noise', // oscillator type
-    a: 0.001, // attack time
-    v: 0.3, // volume
-    V: 0, // decayed volume at end of note
-    f: 15, // low-pass filter frequency in kHz
-    F: 15, // decayed low-pass filter frequency in kHz
-    m: 4, // muted for this many loops
-    M: 4, // muted after this many loops
-
-    // notes, -1 = off note
-    n: [
-      1
-    ],
+    t: 'square', // oscillator type
+    T: 'highpass', // filter type
+    a: 0.01, v: 0.5, V: 0, f: 9, F: 20, m: 0, M: 4,
+    n: [20],
+  }, {
+    // Percussion 2 (Hi-hat)
+    t: 'square', // oscillator type
+    T: 'highpass', // filter type
+    a: 0.01, v: 0.5, V: 0, f: 9, F: 20, m: 0, M: 4,
+    n: [25],
+  }, {
+    // Percussion 2 (Hi-hat)
+    t: 'square', // oscillator type
+    T: 'highpass', // filter type
+    a: 0.01, v: 0.5, V: 0, f: 9, F: 20, m: 0, M: 4,
+    n: [30],
+  }, {
+    // Percussion 2 (Hi-hat)
+    t: 'square', // oscillator type
+    T: 'highpass', // filter type
+    a: 0.01, v: 0.5, V: 0, f: 9, F: 20, m: 0, M: 4,
+    n: [35],
+  }, {
+    // Percussion 2 (Hi-hat)
+    t: 'square', // oscillator type
+    T: 'highpass', // filter type
+    a: 0.01, v: 0.5, V: 0, f: 9, F: 20, m: 0, M: 4,
+    n: [40],
   }, {
     t: 'square', // oscillator type
     a: 0.02, // attack time

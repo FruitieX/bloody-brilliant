@@ -20,21 +20,7 @@
  * SOFTWARE.
  */
 
-//B = {};
-
 A = new AudioContext;
-
-// TODO: this is quite a lot of code for a simple hi-hat
-n = () => {
-  osc = A.createScriptProcessor(512, 1, 1);
-
-  osc.onaudioprocess = e =>
-    e.outputBuffer.getChannelData(0).map((s, i) =>
-      e.outputBuffer.getChannelData(0)[i] = Math.random() * 2 - 1
-    );
-
-  return osc;
-};
 
 // Init instruments
 I = s.i.map(i => {
@@ -43,19 +29,18 @@ I = s.i.map(i => {
   l = A.createBiquadFilter();
 
   // Set oscillator type
-  if (i.t == 'noise') {
-    o = n();
-  } else {
-    o.type = i.t;
-    // Start oscillator
-    o.start();
-  }
+  o.type = i.t;
+
+  // Start oscillator
+  o.start();
 
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;
 
   // Set filter Q value
   //l.Q.value = 12;
+
+  l.type = i.T;
 
   // Connect oscillator to envelope
   o.connect(e);
@@ -128,7 +113,7 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
       );
 
       // OSCILLATOR FREQUENCY
-      i.t != 'noise' && i.o.frequency.setValueAtTime(
+      i.o.frequency.setValueAtTime(
         440 * Math.pow(2, (N - 48) / 12),
 
         (
