@@ -416,11 +416,12 @@ void main() {
     lig = vec3(.7); // direction of light
 
     // material
-    float amb = clamp(.5 + .5 * nor.y, 0., 1.),
-          dif = clamp(dot(nor, lig), 0., 1.),
-          dom = smoothstep(-.1, .1, ref.y),
-          fre = pow(clamp(dot(nor, rd) + 1., 0., 1.), 2.),
-          spe = pow(clamp(dot(ref, lig), 0., 1.), 2.);
+    float amb = nor.y,
+          dif = max(dot(nor, lig), 0.),
+          //dom = smoothstep(-.1, .1, ref.y),
+          dom = ref.y,
+          fre = pow(min(dot(nor, rd) + 1., 1.), 2.),
+          spe = pow(dot(ref, lig), 2.);
 
     if(length(res.yzw) > 0.)
       col = res.yzw * (
