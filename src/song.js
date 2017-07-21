@@ -14,7 +14,7 @@ s = {
     f: 1, // low-pass filter frequency in kHz
     F: 0.1, // decayed low-pass filter frequency in kHz
     m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    M: 7, // muted after this many loops
     g: 10, // glide notes to this frequency in Hz (useful for kicks drums)
 
     // notes, -1 = off note
@@ -30,8 +30,8 @@ s = {
     V: 0, // decayed volume at end of note
     f: 10, // low-pass filter frequency in kHz
     F: 10, // decayed low-pass filter frequency in kHz
-    m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    m: 1, // muted for this many loops
+    M: 5, // muted after this many loops
     g: 10, // glide notes to this frequency in Hz (useful for kicks drums)
 
     // notes, -1 = off note
@@ -49,8 +49,8 @@ s = {
     V: 0, // decayed volume at end of note
     f: 15, // low-pass filter frequency in kHz
     F: 15, // decayed low-pass filter frequency in kHz
-    m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    m: 4, // muted for this many loops
+    M: 4, // muted after this many loops
 
     // notes, -1 = off note
     n: [
@@ -58,13 +58,13 @@ s = {
     ],
   }, {
     t: 'square', // oscillator type
-    a: 0.01, // attack time
+    a: 0.02, // attack time
     v: 0.2, // volume
     V: 0.2, // decayed volume at end of note
     f: 0.05, // low-pass filter frequency in kHz
     F: 10, // decayed low-pass filter frequency in kHz
-    m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    m: 1, // muted for this many loops
+    M: 5, // muted after this many loops
 
     // notes, -1 = off note
     n: [
@@ -78,8 +78,8 @@ s = {
     V: 0.2, // decayed volume at end of note
     f: 0.05, // low-pass filter frequency in kHz
     F: 10, // decayed low-pass filter frequency in kHz
-    m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    m: 2, // muted for this many loops
+    M: 5, // muted after this many loops
 
     // notes, -1 = off note
     n: [
@@ -93,8 +93,8 @@ s = {
     V: 0.01, // decayed volume at end of note
     f: 10, // low-pass filter frequency in kHz
     F: 1, // decayed low-pass filter frequency in kHz
-    m: 0, // muted for this many loops
-    M: 8, // muted after this many loops
+    m: 3, // muted for this many loops
+    M: 6, // muted after this many loops
 
     // notes, -1 = off note
     n: [
