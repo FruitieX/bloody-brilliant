@@ -29,6 +29,8 @@ c.height = 135;
 
 // accumulators
 //bPeak = 0; // bass peak, max(bass, bPeak)
+b = 0; // bass avg
+T = 0; // oldTime
 
 // simulate heart pumping the blood rythm
 //lBeat = 1;
@@ -44,50 +46,20 @@ r = t =>
 
     // a.xy = resolution
     // a.z = time (s)
-    // a.w = unused
-    g.uniform3f(
+    // a.w = bass
+    g.uniform4f(
       g.getUniformLocation(P, 'a'),
       c.width,
       c.height,
       A.currentTime,
+      // framerate independent moving average:
+      // https://www.gamedev.net/forums/topic/499983-smooth-framerate-independent-chase-camera/#comment-4261584
+      b = Math.pow(0.995, t - T) * b + (1 - Math.pow(0.995, t - T)) * I[0].e.gain.value,
+      requestAnimationFrame(r, T = t),
     ),
 
     // number of indices to be rendered
     3,
-
-    // b.x = bass
-    // b.y = accumulated bass
-    // b.z = unused
-    // b.w = unused
-    g.uniform3f(
-      g.getUniformLocation(P, 'b'),
-
-      // bass peak, averaged. TODO: can we use blood flow instead?
-      /*
-      bPeak = //Math.max(
-        0.97 * bPeak + 0.2 * I[0].e.gain.value *
-          (d = (t - oldTime) / 16),
-        //b.tracks[0][0].osc1env.gain.value
-      //),
-      */
-      I[0].e.gain.value,
-
-      // blood flow, TODO: golf?
-      Math.floor(A.currentTime/* / 1*/)*.841 +
-      (
-        A.currentTime % 1 > .53
-        ? .841
-        : Math.sqrt(
-          Math.sin(
-            A.currentTime % 1 / .53 * 3. * Math.PI / 4.)
-          )
-      ),
-      requestAnimationFrame(r),
-
-      // battery saving
-      //setTimeout(() => requestAnimationFrame(r), 1000),
-      //oldTime = t // unused
-    )
   );
 
 // vertex shader

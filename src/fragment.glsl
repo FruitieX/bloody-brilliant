@@ -2,12 +2,8 @@ precision highp float;
 
 // a.xy = resolution
 // a.z = time (s)
-uniform vec3 a;
-
-// b.x = bass
-// b.y = accumulated bass
-// b.z = unused
-uniform vec3 b;
+// a.w = bass
+uniform vec4 a;
 
 float PI = 3.14;
 
@@ -78,10 +74,10 @@ vec4 heart(vec3 p) {
 
   return vec4(
     // tunnel shape
-    (1. - b.x * .25) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
+    (1. - a.w * .5) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
-    + (1. - b.x) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
+    + (1. - a.w * 2.) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
 
     // color
     sin(vec3(1., .2, .1) * plasma1)
@@ -104,7 +100,7 @@ vec4 bloodCellField(vec3 p, float v) {
   // set up the correct rotation axis
   p.z += 3.;
   p.x += 15.; // move rotational origo to center of blood vein
-  pR(p.xz, -(a.z * v + b.y) / 20.); // give speed to blood wall
+  pR(p.xz, -(a.z * v + 6. * a.z + 2. * a.w) / 20.); // give speed to blood wall
   pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
   p -= vec3(15.,0.,0.);
 
@@ -152,7 +148,7 @@ vec4 bloodVein(vec3 p,float v) {
     // blobby surface
     - 0.05 * (1. - sin(3. * (p.z + a.z*v)))
 
-    + b.x,
+    + 2. * a.w,
 
     // color
     sin(vec3(1., .1, .1) * (calcPlasma(p * 2., a.z / 10.) + .5))
@@ -163,15 +159,15 @@ vec4 virus(vec3 pos, float size) {
   // velocity
   pR(pos.xy, PI/4.);
 
-  vec4 res = vec4(length(pos)-.5 - b.x / 20., 0., 1., 0.);
+  vec4 res = vec4(length(pos) - .5 * size - a.w / 5., 0., 1., 0.);
 
   pModPolar(pos.yz, 7.);
 
   vec4 spikes =
     vec4(fCapsule(
       pos,
-      0.01 * size + size * b.x * 0.001,
-      size + size * b.x * 0.1
+      0.01 * size,
+      size
     ), 1., .6, 1.);
 
   pR(pos.xy, PI/4.);
@@ -180,8 +176,8 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size + size * b.x * 0.001,
-      size + size * b.x * 0.1
+      0.01 * size,
+      size
     ), 1., .6, 1.)
   );
 
@@ -191,8 +187,8 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size + size * b.x * 0.001,
-      size + size * b.x * 0.1
+      0.01 * size,
+      size
     ), 1., .6, 1.)
   );
 
@@ -202,8 +198,8 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size + size * b.x * 0.001,
-      size + size * b.x * 0.1
+      0.01 * size,
+      size
     ), 1., .6, 1.)
   );
 
