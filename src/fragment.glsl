@@ -244,7 +244,7 @@ vec4 vessel(vec3 pos, bool laser) {
       )
     );
 
-    pos.z += .3;
+    pos.z -= .3;
 
     res = opU(
       res,
