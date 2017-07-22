@@ -244,11 +244,13 @@ vec4 vessel(vec3 pos, bool laser) {
       )
     );
 
+    pos.z += .3;
+
     res = opU(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.3, .15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
-        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .3, .1)
+        fCapsule(pos - vec3(.1, 2.3, -.15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
+        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .2, .3)
       )
     );
   }
