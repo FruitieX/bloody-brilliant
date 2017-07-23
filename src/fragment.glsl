@@ -48,8 +48,7 @@ float sdBloodCell(vec3 p) {
 
   return smin(
     length(vec2(length(p.xz)-.3,p.y)) - .1,
-    // TODO: use bound()
-    min(max(d.x,d.y),0.) + length(max(d,0.)),
+    clamp(d.x, d.y, 0.) + length(max(d,0.)),
     32.
   );
 }
@@ -97,11 +96,11 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-vec4 bloodCellField(vec3 p, float v) {
+vec4 bloodCellField(vec3 p) {
   // set up the correct rotation axis
   p.z += 3.;
   p.x += 15.; // move rotational origo to center of blood vein
-  pR(p.xz, -(a.z * v + 6. * a.z + 2. * a.w) / 20.); // give speed to blood wall
+  pR(p.xz, -(4. * a.z + 2. * a.w) / 20.); // give speed to blood wall
   pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
   p -= vec3(15.,0.,0.);
 
@@ -139,7 +138,7 @@ vec4 bloodCellField(vec3 p, float v) {
   return res;
 }
 
-vec4 bloodVein(vec3 p,float v) {
+vec4 bloodVein(vec3 p) {
   // rotate
   // pR(p.xy, a/5.);
   return vec4(
@@ -147,7 +146,7 @@ vec4 bloodVein(vec3 p,float v) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. - sin(3. * (p.z + a.z*v)))
+    - 0.05 * (1. - sin(3. * (p.z - 2. * a.z)))
 
     + 2. * a.w,
 
@@ -268,8 +267,8 @@ vec4 scene1(vec3 pos, float t) {
   pR(pos.xy, t/PI);
 
   // render blood vein and cells
-  res = opU(res, bloodVein(pos, -2.));
-  res = opU(res, bloodCellField(pos, -2.));
+  res = opU(res, bloodVein(pos));
+  res = opU(res, bloodCellField(pos));
 
   return res;
 }
@@ -324,7 +323,7 @@ vec4 scene4_1(vec3 pos, float t) {
   // vessel
   vec4 res = opBlend(
     heart(pos),
-    virus(pos + vec3(.5), 1.5 / (1. + t / 10.)),
+    virus(pos + vec3(.5), 1. / (1. + t / 10.)),
     50.
   );
 

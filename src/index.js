@@ -71,11 +71,9 @@ g.shaderSource(S=g.createShader(g.FRAGMENT_SHADER), require("./fragment.glsl"));
 g.compileShader(S);g.attachShader(P,S);
 
 // Log compilation errors
-/*
-if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
-  throw g.getShaderInfoLog(S);
-}
-*/
+// if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
+//   throw g.getShaderInfoLog(S);
+// }
 
 g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.parentElement.style.margin = 0));
 
