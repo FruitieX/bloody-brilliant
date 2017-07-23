@@ -103,33 +103,35 @@ vec4 bloodCellField(vec3 pos) {
   pModPolar(pos.xz, 24.); // Rotate and duplicate blood wall around torus origo
   pos -= vec3(15.,0.,0.);
 
+  float x = 2.;
+
   vec3 rotated = pos - vec3(1.,-1.,0.);
-  pR(rotated.yz, a.z / 6.);
+  pR(rotated.xy, a.z / x++);
   vec4 res = vec4(sdBloodCell(rotated), 1., .1, .1);
 
   // repeat
   rotated = pos + vec3(0.,2.,0.);
-  pR(rotated.xy, a.z / 6.);
+  pR(rotated.xy, a.z / x++);
   res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
   rotated = pos + vec3(2.,1.,.5);
-  pR(rotated.yz, a.z / 7.);
+  pR(rotated.xy, a.z / x++);
   res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
   rotated = pos + vec3(1.,-1.5,1.);
-  pR(rotated.xy, a.z / 6.);
+  pR(rotated.xy, a.z / x++);
   res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
   rotated = pos + vec3(2.,-1.,0.);
-  pR(rotated.xz, a.z / 6.);
+  pR(rotated.xy, a.z / x++);
   res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
   rotated = pos - vec3(.8,1.,0.);
-  pR(rotated.xy, a.z / 7.);
+  pR(rotated.xy, a.z / x++);
   res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   return res;
