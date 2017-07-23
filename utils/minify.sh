@@ -46,9 +46,11 @@ echo "uglifying..."
 > temp/temp4.js
 
 # TODO: uglify-es doesn't understand object spread notation yet, so we do this awesome thing
+# ahem, neither do browsers?
+#  -e 's/Object.assign({o,e,l},a)/{...a,o,e,l}/g' \
 echo "find and replace..."
 sed \
-  -e 's/Object.assign({o,e,l},a)/{...a,o,e,l}/g' \
+  -e '' \
   temp/temp4.js > temp/temp5.js
 
 echo "saving non-regpacked result in index_unpacked.html..."
