@@ -104,10 +104,11 @@ vec4 bloodCellField(vec3 pos) {
   pos -= vec3(15.,0.,0.);
 
   float x = 2.;
+  vec4 res = vec4(10.);
 
   vec3 rotated = pos - vec3(1.,-1.,0.);
   pR(rotated.xy, a.z / x++);
-  vec4 res = vec4(sdBloodCell(rotated), 1., .1, .1);
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
   rotated = pos + vec3(0.,2.,0.);
