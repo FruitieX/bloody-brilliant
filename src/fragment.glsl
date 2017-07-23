@@ -113,12 +113,12 @@ vec4 bloodCellField(vec3 p) {
   // repeat
   rotated = p + vec3(0.,2.,0.);
   pR(rotated.xy, a.z / 6.);
-  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   rotated = p + vec3(2.,1.,.5);
   pR(rotated.yz, a.z / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated.yzx), col));
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   rotated = p + vec3(1.,-1.5,1.);
@@ -128,12 +128,12 @@ vec4 bloodCellField(vec3 p) {
   // repeat
   rotated = p + vec3(2.,-1.,0.);
   pR(rotated.xz, a.z / 6.);
-  res = opU(res, vec4(sdBloodCell(rotated.xzy), col));
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   // repeat
   rotated = p - vec3(.8,1.,0.);
   pR(rotated.xy, a.z / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated.yxz), col));
+  res = opU(res, vec4(sdBloodCell(rotated), col));
 
   return res;
 }
