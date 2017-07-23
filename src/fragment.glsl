@@ -291,8 +291,8 @@ vec4 scene4(vec3 pos, float t) {
 
   // vessel
   vec4 res = opBlend(
-    heart(pos),
     virus(pos + vec3(.5), 1.),
+    heart(pos),
     50.
   );
 
@@ -322,8 +322,8 @@ vec4 scene4_1(vec3 pos, float t) {
   //pR(pos.zy, t);
   // vessel
   vec4 res = opBlend(
-    heart(pos),
     virus(pos + vec3(.5), 1. / (1. + t / 10.)),
+    heart(pos),
     50.
   );
 
