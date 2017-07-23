@@ -372,7 +372,8 @@ void main() {
 
   vec3 col = vec3(0.),
        tot = vec3(0.),
-       ro = vec3(0., 0., 1.);
+       ro = vec3(0., 0., 1.),
+       pos;
 
   for( float m=0.; m<2.; m++ )   // 2x AA
   for( float n=0.; n<2.; n++ ) { // 2x AA
@@ -397,13 +398,11 @@ void main() {
       );
 
     for(float i = 0.; i < 64.; i++) // 64. = maxIterations
-      t += (res = map(ro + rd * t)).x;
+      t += (res = map(pos = ro + rd * t)).x;
 
     vec2 e = vec2(1e-2, -1e-2);
 
-    vec3 pos = ro + rd * t,
-
-    nor = normalize(
+    vec3 nor = normalize(
       e.xyy * map(pos + e.xyy).x +
       e.yyx * map(pos + e.yyx).x +
       e.yxy * map(pos + e.yxy).x +
