@@ -86,9 +86,8 @@ vec4 heart(vec3 p) {
 
 float pModPolar(inout vec2 p, float repetitions) {
 	float angle = 2.*PI/repetitions,
-      	a = atan(p.y, p.x) + angle/2.,
+      	a = mod(atan(p.y, p.x) + angle/2., angle) - angle/2.,
       	c = floor(a/angle);
-	a = mod(a,angle) - angle/2.;
 	p = vec2(cos(a), sin(a))*length(p);
 	// For an odd number of repetitions, fix cell index of the cell in -x direction
 	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
