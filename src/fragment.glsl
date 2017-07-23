@@ -146,7 +146,7 @@ vec4 bloodVein(vec3 p) {
     sdTorus(p + vec3(14.,0.,1.5))
 
     // blobby surface
-    - 0.05 * (1. - sin(3. * (p.z - 2. * a.z)))
+    - .05 * (1. - sin(3. * (p.z - 2. * a.z)))
 
     + 2. * a.w,
 
@@ -166,7 +166,7 @@ vec4 virus(vec3 pos, float size) {
   vec4 spikes =
     vec4(fCapsule(
       pos,
-      0.01 * size,
+      .01 * size,
       size
     ), 1., .6, 1.);
 
@@ -176,7 +176,7 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size,
+      .01 * size,
       size
     ), 1., .6, 1.)
   );
@@ -187,7 +187,7 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size,
+      .01 * size,
       size
     ), 1., .6, 1.)
   );
@@ -198,7 +198,7 @@ vec4 virus(vec3 pos, float size) {
     spikes,
     vec4(fCapsule(
       pos,
-      0.01 * size,
+      .01 * size,
       size
     ), 1., .6, 1.)
   );
