@@ -67,11 +67,13 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
 
       // Instrument was just muted: insert off note
       if (!r && i.M == l - 1) N = -1;
-      // Otherwise don't do anything once instrument is muted
-      else if (i.m > l || i.M < l) return;
-
-      // Don't do anything if note is undefined
-      if (!N) return;
+      else if (
+        // Otherwise don't do anything once instrument is muted
+        i.m > l ||
+        i.M < l ||
+        // Or if note is undefined
+        !N
+      ) return;
 
       // ATTACK
       i.e.gain.setValueAtTime(
