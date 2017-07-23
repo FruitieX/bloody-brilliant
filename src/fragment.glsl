@@ -350,13 +350,13 @@ vec4 map(vec3 pos, vec3 origin) {
   /* ---------- SCENES --------- */
   if ((t -= 16.) < 0.) {
     // nanobot
-    return scene1(pos, t);
+    return scene1(pos, t + 16.);
   } else if ((t -= 16.) < 0.) {
     // virus
     return scene3(pos, t + 16.);
   } else if ((t -= 16.) < 0.) {
     // nanobot, TODO: viruses on blood vein walls?
-    return scene1(pos, t);
+    return scene1(pos, t + 16.);
   } else if ((t -= 16.) < 0.) {
     // nanobot approaches virus
     return scene4(pos, t + 16.);
