@@ -14,7 +14,7 @@ s = {
       V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: 0.1, // decayed low-pass filter frequency in kHz
-      m: 0, // muted for this many loops
+      //m: 0, // muted for this many loops
       M: 7, // muted after this many loops
       g: 1, // glide notes to this frequency in Hz (useful for kicks drums)
 
@@ -33,7 +33,6 @@ s = {
       V: 0, // decayed volume at end of note
       f: 10, // low-pass filter frequency in kHz
       F: 10, // decayed low-pass filter frequency in kHz
-      m: 1, // muted for this many loops
       M: 5, // muted after this many loops
       g: 10, // glide notes to this frequency in Hz (useful for kicks drums)
 
@@ -44,6 +43,7 @@ s = {
         ,,,,42,,-1,,
         ,,,42,,,,-1,
       ],
+      m: 1, // muted for this many loops
     },
 
     // Hi-hat: multiple layered square waves produce noise
@@ -75,7 +75,6 @@ s = {
       V: 0.2, // decayed volume at end of note
       f: 0.05, // low-pass filter frequency in kHz
       F: 10, // decayed low-pass filter frequency in kHz
-      m: 1, // muted for this many loops
       M: 5, // muted after this many loops
 
       // notes, -1 = off note
@@ -83,6 +82,7 @@ s = {
         24,,,,,,,, 24,,,,,,,, 27,,,,,,,, 27,,,,,,,, 20,,,,,,,, 20,,,,,,,, 19,,,,,,,, 19,,,,,,,,
         24,,,,,,,, 24,,,,,,,, 27,,,,,,,, 27,,,,,,,, 20,,,,,,,, 20,,,,,,,, 17,,,,,,,, 17,,,,,,,,
       ],
+      m: 1, // muted for this many loops
     },
 
     // Bass 2
@@ -93,7 +93,6 @@ s = {
       V: 0.2, // decayed volume at end of note
       f: 0.05, // low-pass filter frequency in kHz
       F: 10, // decayed low-pass filter frequency in kHz
-      m: 2, // muted for this many loops
       M: 5, // muted after this many loops
 
       // notes, -1 = off note
@@ -101,6 +100,7 @@ s = {
         31,,,,,,,, 31,,,,,,,, 34,,,,,,,, 34,,,,,,,, 27,,,,,,,, 27,,,,,,,, 26,,,,,,,, 26,,,,,,,,
         31,,,,,,,, 31,,,,,,,, 34,,,,,,,, 34,,,,,,,, 34,,,,,,,, 34,,,,,,,, 32,,,,,,,, 32,,,,,,,,
       ],
+      m: 2, // muted for this many loops
     },
 
     // Lead
