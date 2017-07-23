@@ -331,7 +331,7 @@ vec4 scene4_1(vec3 pos, float t) {
   pR(pos.xy, PI / 8.);
 
   // left-right tilt
-  pR(pos.xz, -PI/12.*cos(t/PI));
+  pR(pos.xz, PI/12.*cos(t/PI));
   // up-down tilt
   pR(pos.yz, -PI/16.*sin(t/PI));
   return opBlend(
