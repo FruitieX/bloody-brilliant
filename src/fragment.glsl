@@ -95,44 +95,42 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-vec4 bloodCellField(vec3 p) {
+vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
-  p.z += 3.;
-  p.x += 15.; // move rotational origo to center of blood vein
-  pR(p.xz, -(4. * a.z + 2. * a.w) / 20.); // give speed to blood wall
-  pModPolar(p.xz, 24.); // Rotate and duplicate blood wall around torus origo
-  p -= vec3(15.,0.,0.);
+  pos.z += 3.;
+  pos.x += 15.; // move rotational origo to center of blood vein
+  pR(pos.xz, -(4. * a.z + 2. * a.w) / 20.); // give speed to blood wall
+  pModPolar(pos.xz, 24.); // Rotate and duplicate blood wall around torus origo
+  pos -= vec3(15.,0.,0.);
 
-  vec3 col = vec3(1., .1, .1);
-
-  vec3 rotated = p - vec3(1.,-1.,0.);
+  vec3 rotated = pos - vec3(1.,-1.,0.);
   pR(rotated.yz, a.z / 6.);
-  vec4 res = vec4(sdBloodCell(rotated), col);
+  vec4 res = vec4(sdBloodCell(rotated), 1., .1, .1);
 
   // repeat
-  rotated = p + vec3(0.,2.,0.);
+  rotated = pos + vec3(0.,2.,0.);
   pR(rotated.xy, a.z / 6.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
-  rotated = p + vec3(2.,1.,.5);
+  rotated = pos + vec3(2.,1.,.5);
   pR(rotated.yz, a.z / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
-  rotated = p + vec3(1.,-1.5,1.);
+  rotated = pos + vec3(1.,-1.5,1.);
   pR(rotated.xy, a.z / 6.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
-  rotated = p + vec3(2.,-1.,0.);
+  rotated = pos + vec3(2.,-1.,0.);
   pR(rotated.xz, a.z / 6.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   // repeat
-  rotated = p - vec3(.8,1.,0.);
+  rotated = pos - vec3(.8,1.,0.);
   pR(rotated.xy, a.z / 7.);
-  res = opU(res, vec4(sdBloodCell(rotated), col));
+  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
 
   return res;
 }
