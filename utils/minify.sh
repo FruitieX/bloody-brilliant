@@ -9,7 +9,7 @@ cd dist
 echo ".js source filesizes (minified):"
 echo "--------------------------------"
 for file in $(ls ../src/*.js); do
-  echo "$(basename $file): $(../node_modules/.bin/uglifyjs ../src/$file | wc -c)b"
+  echo "$(basename $file): $(../node_modules/.bin/uglifyjs --ecma 6 ../src/$file | wc -c)b"
 done
 
 echo -e "\n.glsl source filesizes (minified):"
@@ -19,51 +19,9 @@ for file in $(ls ../src/*.glsl); do
 done
 
 echo -e "\nminifying identifiers in player.js..."
+# TODO: this is no-op
 sed \
-  -e 's/preFilter/pF/g' \
-  -e 's/osc1env/E1/g' \
-  -e 's/osc2env/E2/g' \
-  -e 's/osc3env/E3/g' \
-  -e 's/osc1/O1/g' \
-  -e 's/osc2/O2/g' \
-  -e 's/osc3/O3/g' \
-  -e 's/panNode/pN/g' \
-  -e 's/panLFO/pL/g' \
-  -e 's/panAmt/pA/g' \
-  -e 's/panFreq/pF/g' \
-  -e 's/dlyAmt/dA/g' \
-  -e 's/delayGain/dG/g' \
-  -e 's/biquadFilter/bF/g' \
-  -e 's/modulationGain/mG/g' \
-\
-  -e 's/drive/Dr/g' \
-  -e 's/osc1t/T1/g' \
-  -e 's/osc2t/T2/g' \
-  -e 's/osc3t/T3/g' \
-  -e 's/fxFilter/FF/g' \
-  -e 's/fxFreq/Ff/g' \
-  -e 's/lfoAmt/LA/g' \
-  -e 's/lfoFreq/LF/g' \
-  -e 's/fxLFO/FL/g' \
-  -e 's/o1vol/V1/g' \
-  -e 's/o1xenv/X1/g' \
-  -e 's/o2vol/V2/g' \
-  -e 's/o2xenv/X2/g' \
-  -e 's/noiseVol/N/g' \
-  -e 's/attack/At/g' \
-  -e 's/sustain/Su/g' \
-  -e 's/release/Re/g' \
-  -e 's/oscLFO/oL/g' \
-\
-  -e 's/createNoiseOsc/CN/g' \
-  -e 's/waveforms/W/g' \
-  -e 's/initCol/iC/g' \
-  -e 's/initTrack/iT/g' \
-  -e 's/setParams/sP/g' \
-  -e 's/setNotes/sN/g' \
-  -e 's/mixer/M/g' \
-  -e 's/song/S/g' \
-  -e 's/lfo/L/g' \
+  -e '' \
   ../src/player.js > temp/player.js
 
 # concat all js together
@@ -84,18 +42,14 @@ echo "uglifying..."
 # sequences=false is needed because otherwise uglifyjs might wrap
 # g = c.getContext`webgl` in an if statement, which results in broken
 # code after regpack does method hashing on the webgl context
-../node_modules/.bin/uglifyjs temp/temp3.js -c sequences=false -m \
+../node_modules/.bin/uglifyjs --ecma 6 temp/temp3.js -c sequences=false -m \
 > temp/temp4.js
 
+# TODO: uglify-es doesn't understand object spread notation yet, so we do this awesome thing
 echo "find and replace..."
 sed \
-  -e 's/osc1env/E1/g' \
+  -e 's/Object.assign({o,e,l},a)/{...a,o,e,l}/g' \
   temp/temp4.js > temp/temp5.js
-
-#  -e 's/100/1e2/g' \
-#  -e 's/10/1e1/g' \
-#  -e 's/3200/32e2/' \
-#  -e 's/1800/18e2/' \
 
 echo "saving non-regpacked result in index_unpacked.html..."
 cat temp/temp5.js | node ../utils/findandreplace.js --template temp/temp1.html --find '{{javascript}}' > index_unpacked.html

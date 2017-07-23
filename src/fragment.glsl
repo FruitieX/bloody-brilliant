@@ -48,6 +48,7 @@ float sdBloodCell(vec3 p) {
 
   return smin(
     length(vec2(length(p.xz)-.3,p.y)) - .1,
+    // TODO: use bound()
     min(max(d.x,d.y),0.) + length(max(d,0.)),
     32.
   );

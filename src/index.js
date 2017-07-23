@@ -55,11 +55,11 @@ r = t =>
       // framerate independent moving average:
       // https://www.gamedev.net/forums/topic/499983-smooth-framerate-independent-chase-camera/#comment-4261584
       b = Math.pow(0.995, t - T) * b + (1 - Math.pow(0.995, t - T)) * I[0].e.gain.value,
-      requestAnimationFrame(r, T = t),
+      requestAnimationFrame(r, T = t)
     ),
 
     // number of indices to be rendered
-    3,
+    3
   );
 
 // vertex shader

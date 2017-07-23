@@ -52,6 +52,10 @@ I = s.i.map(i => {
   l.connect(A.destination);
 
   // TODO: object spread not supported by uglifyes, babili?
+  // TODO: something in the build chain expands object shorthand syntax
+  // ex. { e } => { e: e }
+  // NOTE: at the moment we do awful things (find and replace) to save
+  // some space
   return Object.assign({ o, e, l }, i);
 });
 
