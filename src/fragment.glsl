@@ -341,7 +341,7 @@ vec4 scene4_1(vec3 pos, float t) {
   );
 }
 
-vec4 map(vec3 pos, vec3 origin) {
+vec4 map(vec3 pos) {
   float t = a.z;
   /* ---------- DEBUGGING ---------- */
   // Uncomment when debugging single scene
@@ -397,17 +397,17 @@ void main() {
       );
 
     for(float i = 0.; i < 64.; i++) // 64. = maxIterations
-      t += (res = map(ro + rd * t, ro)).x;
+      t += (res = map(ro + rd * t)).x;
 
     vec2 e = vec2(1e-2, -1e-2);
 
     vec3 pos = ro + rd * t,
 
     nor = normalize(
-      e.xyy * map(pos + e.xyy, pos).x +
-      e.yyx * map(pos + e.yyx, pos).x +
-      e.yxy * map(pos + e.yxy, pos).x +
-      e.xxx * map(pos + e.xxx, pos).x
+      e.xyy * map(pos + e.xyy).x +
+      e.yyx * map(pos + e.yyx).x +
+      e.yxy * map(pos + e.yxy).x +
+      e.xxx * map(pos + e.xxx).x
     ),
     ref = reflect(rd, nor),
 
