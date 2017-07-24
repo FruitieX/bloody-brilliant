@@ -1,4 +1,5 @@
 const fs = require('fs');
+const os = require('os');
 const argv = require('yargs').argv;
 
 /*
@@ -8,41 +9,61 @@ const argv = require('yargs').argv;
  * --replace: what file do we replace the match with?
 */
 
-let template = fs.readFileSync(argv.template);
+let resuls = '';
+var isWin = (os.platform() === 'win32');
 
-//const replace = fs.readFileSync(argv.replace).toString();
-let replace = fs.readFileSync('/dev/stdin');
-let replaceS = replace.toString();
+if (isWin) {
+	let template = fs.readFileSync(argv.template).toString();
 
-if (replaceS[replaceS.length -1] === '\n') {
-  replace = replace.slice(0, -1);
+	let replace = '';
+	if (!argv.replace) {
+		var size = fs.fstatSync(process.stdin.fd).size;
+		replace = size > 0 ? fs.readSync(process.stdin.fd, size)[0] : '';
+	} else {
+		replace = argv.replace;
+		replace = fs.readFileSync(argv.replace, 'utf8');
+	}
+
+	var re = new RegExp(argv.find, "g");
+	if (argv.surround) replace = argv.surround + replace + argv.surround;
+	result = template.replace(argv.find, replace);
+} else {
+
+	let template = fs.readFileSync(argv.template);
+
+	//const replace = fs.readFileSync(argv.replace).toString();
+	let replace = fs.readFileSync('/dev/stdin');
+	let replaceS = replace.toString();
+
+	if (replaceS[replaceS.length -1] === '\n') {
+	  replace = replace.slice(0, -1);
+	}
+	/*
+	if (argv.surround) {
+	  replace = argv.surround + replace + argv.surround;
+	}
+	*/
+
+	const index = template.indexOf(argv.find);
+	result = template;
+
+	// match found
+	if (index !== -1) {
+	  if (argv.surround) {
+	    result = new Buffer.concat([
+	      template.slice(0, index),
+	      new Buffer(argv.surround),
+	      replace,
+	      new Buffer(argv.surround),
+	      template.slice(index + argv.find.length)
+	    ]);
+	  } else {
+	    result = new Buffer.concat([
+	      template.slice(0, index),
+	      replace,
+	      template.slice(index + argv.find.length)
+	    ]);
+	  }
+	}
 }
-/*
-if (argv.surround) {
-  replace = argv.surround + replace + argv.surround;
-}
-*/
-
-const index = template.indexOf(argv.find);
-let result = template;
-
-// match found
-if (index !== -1) {
-  if (argv.surround) {
-    result = new Buffer.concat([
-      template.slice(0, index),
-      new Buffer(argv.surround),
-      replace,
-      new Buffer(argv.surround),
-      template.slice(index + argv.find.length)
-    ]);
-  } else {
-    result = new Buffer.concat([
-      template.slice(0, index),
-      replace,
-      template.slice(index + argv.find.length)
-    ]);
-  }
-}
-
 console.log(result.toString('utf8').trim());
