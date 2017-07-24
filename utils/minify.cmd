@@ -1,5 +1,8 @@
 @ECHO OFF
 
+rm -rf dist
+mkdir dist\temp
+
 SET wd=%0
 echo.
 echo .js source filesizes:
@@ -24,6 +27,19 @@ echo Minified .glsl sizes:
 echo --------------------------------
 for %%F in ("dist\temp\*.glsl") do echo %%~nxF     %%~zF b
 echo.
+
+REM concat all js together
+cat dist\temp\song.min.js dist\temp\player.min.js dist\temp\index.min.js > dist\temp\all.js
+REM .\node_modules\.bin\uglifyjs --ecma 6 dist\temp\all.js > dist\temp\all.min.js
+
+echo Minifying vertex shader into js...
+cat dist\temp\vertex.min.glsl | node utils\findandreplace.js --template dist\temp\all.js --find require(\"./vertex.glsl\") --surround ^" > dist\temp\all2.js
+
+echo Minifying fragment shader js...
+cat dist\temp\fragment.min.glsl | node utils\findandreplace.js --template dist\temp\all2.js --find require(\"./fragment.glsl\") --surround ^" > dist\temp\all3.js
+
+REM echo "saving non-regpacked result in index_unpacked.html..."
+cat dist\temp\all3.js | node utils\findandreplace.js --template mintemplate.html --find {{javascript}} > dist\index_unpacked.html
 
 REM go back to original working directory
 cd %CD%
