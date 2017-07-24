@@ -19,7 +19,7 @@ for %%F in ("dist\temp\*.js") do echo %%~nxF     %%~zF b
 echo.
 
 REM echo Minifying glsl...
-for %%F in ("src\*.glsl") do (call .\node_modules\.bin\glslmin -m%%F > dist\temp\%%~nF.min%%~xF)
+for %%F in ("src\*.glsl") do (call .\node_modules\.bin\glslmin -m %%F > dist\temp\%%~nF.min%%~xF)
 echo Minified .glsl sizes:
 echo --------------------------------
 for %%F in ("dist\temp\*.glsl") do echo %%~nxF     %%~zF b
