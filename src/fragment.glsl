@@ -212,7 +212,7 @@ vec4 virus(vec3 pos, float size) {
   return res;
 }
 
-vec4 vessel(vec3 pos, bool laser) {
+vec4 vessel(vec3 pos, float laser) {
   vec3 col = vec3(.1);
 
   pR(pos.xy, PI/2.);
@@ -231,7 +231,7 @@ vec4 vessel(vec3 pos, bool laser) {
   pos.y += .1;
   res = opU(res, vec4(sdTriPrism(pos , vec2(.195,.005)), col));
 
-  if (laser) {
+  if (laser > 0.) {
     res = opU(
       res,
       vec4(
@@ -275,7 +275,7 @@ vec4 map(vec3 pos) {
     pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
     // up-down tilt
     pR(p_vessel.yz, -PI/16.*sin(t/PI));
-    res = vessel(p_vessel, false);
+    res = vessel(p_vessel, 0.);
 
     // rotation to blood cells and vein
     pR(pos.xy, t/PI);
@@ -305,7 +305,7 @@ vec4 map(vec3 pos) {
     pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
     // up-down tilt
     pR(p_vessel.yz, -PI/16.*sin(t/PI));
-    res = vessel(p_vessel, false);
+    res = vessel(p_vessel, 0.);
 
     // rotation to blood cells and vein
     pR(pos.xy, t/PI);
@@ -341,7 +341,7 @@ vec4 map(vec3 pos) {
         2.5 + 1.5 * cos(1. + min(t, (PI - 1. ) * 8.) / 8.),
         0.,
         .5
-        ), false
+        ), 0.
       ),
       30.
     );
@@ -369,7 +369,7 @@ vec4 map(vec3 pos) {
     pR(pos.yz, -PI/16.*sin(t/PI));
     return opBlend(
       res,
-      vessel(pos - vec3(1., 0., -.2), t > 2.),
+      vessel(pos - vec3(1., 0., -.2), max(0., t - 2.)),
       15.
     );
   }
@@ -395,7 +395,7 @@ vec4 map(vec3 pos) {
     pR(pos.yz, -PI/16.*sin(t/PI));
     return opBlend(
       res,
-      vessel(pos - vec3(1., 0., -.2), false),
+      vessel(pos - vec3(1., 0., -.2), 0.),
       15.
     );
   }
