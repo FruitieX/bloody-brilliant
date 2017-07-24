@@ -254,6 +254,15 @@ vec4 vessel(vec3 pos, bool laser) {
   return res;
 }
 
+vec4 scene0(vec3 pos, float t) {
+  pR(pos.xy, t / 32.);
+  pR(pos.xz, t / 32.);
+  pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
+
+  // vessel
+  return heart(pos);
+}
+
 vec4 scene1(vec3 pos, float t) {
   vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
 
@@ -349,6 +358,9 @@ vec4 map(vec3 pos) {
 
   /* ---------- SCENES --------- */
   if ((t -= 16.) < 0.) {
+    // heart
+    return scene0(pos, t + 16.);
+  } else if ((t -= 16.) < 0.) {
     // nanobot
     return scene1(pos, t + 16.);
   } else if ((t -= 16.) < 0.) {
@@ -363,8 +375,6 @@ vec4 map(vec3 pos) {
   } else if ((t -= 16.) < 0.) {
     // nanobot fires lasers
     return scene4_1(pos, t + 16.);
-  } else {
-    return vec4(0.);
   }
 }
 
@@ -435,7 +445,12 @@ void main() {
 
     	// gamma
       vec3(.6, .5, .4)
-    );
+    )
+
+    // fade in
+    * pow(clamp(-(1. - a.z) / 8., 0., 1.), 2.)
+    // fade out
+    * pow(clamp((120. - a.z) / 8., 0., 1.), 2.); // 120. = demo length in seconds
   }
 
   gl_FragColor = vec4(tot / 4., 1.); // 4 = AA * AA
