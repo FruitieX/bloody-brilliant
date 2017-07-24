@@ -235,8 +235,8 @@ vec4 vessel(vec3 pos, bool laser) {
     res = opU(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.3, -.15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
-        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .2, .3)
+        fCapsule(pos - vec3(.1, 2.3, -.15), .01, 2.),
+        vec3(100., .2, .3)
       )
     );
 
@@ -245,8 +245,8 @@ vec4 vessel(vec3 pos, bool laser) {
     res = opU(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.3, -.15), .01 + .005 * sin(10. * pos.y + 20. * a.z), 2.),
-        vec3(abs(sin(a.z * 10. + pos.y * 10.)), .2, .3)
+        fCapsule(pos - vec3(.1, 2.3, -.15), .01, 2.),
+        vec3(100., .2, .3)
       )
     );
   }
@@ -254,132 +254,163 @@ vec4 vessel(vec3 pos, bool laser) {
   return res;
 }
 
-vec4 scene0(vec3 pos, float t) {
-  pR(pos.xy, t / 32.);
-  pR(pos.xz, t / 32.);
-  pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
-
-  // vessel
-  return heart(pos);
-}
-
-vec4 scene1(vec3 pos, float t) {
-  vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
-
-  // left-right tilt
-  pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
-  // up-down tilt
-  pR(p_vessel.yz, -PI/16.*sin(t/PI));
-  vec4 res = vessel(p_vessel, false);
-
-  // rotation to blood cells and vein
-  pR(pos.xy, t/PI);
-
-  // render blood vein and cells
-  res = opU(res, bloodVein(pos));
-  res = opU(res, bloodCellField(pos));
-
-  return res;
-}
-
-vec4 scene3(vec3 pos, float t) {
-  pR(pos.yz, 7.);
-  pR(pos.xy, t/20.);
-  pos += vec3(1.);
-  return opBlend(
-    heart(pos),
-    virus(pos + vec3(.5), 1.),
-    50.
-  );
-}
-
-vec4 scene4(vec3 pos, float t) {
-  pR(pos.xy, -.4);
-  pR(pos.xz, -.8 + t / 32.);
-  pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
-
-  // vessel
-  vec4 res = opBlend(
-    virus(pos + vec3(.5), 1.),
-    heart(pos),
-    50.
-  );
-
-  pR(pos.xz, PI / 6.);
-  pR(pos.xy, PI / 8.);
-
-  // left-right tilt
-  pR(pos.xz, PI/12.*cos(t/PI));
-  // up-down tilt
-  pR(pos.yz, -PI/16.*sin(t/PI));
-  return opBlend(
-    res,
-    vessel(pos - vec3(
-      2.5 + 1.5 * cos(1. + min(t, (PI - 1. ) * 8.) / 8.),
-      0.,
-      .5
-    ), false),
-    30.
-  );
-}
-
-vec4 scene4_1(vec3 pos, float t) {
-
-  pR(pos.yz, .7);
-  pR(pos.xz, -3.);
-  pos += vec3(t / 16. - .5,1.,-1.);
-  //pR(pos.zy, t);
-  // vessel
-  vec4 res = opBlend(
-    virus(pos + vec3(.5), 1. / (1. + t / 10.)),
-    heart(pos),
-    50.
-  );
-
-  pR(pos.xz, PI / 6.);
-  pR(pos.xy, PI / 8.);
-
-  // left-right tilt
-  pR(pos.xz, PI/12.*cos(t/PI));
-  // up-down tilt
-  pR(pos.yz, -PI/16.*sin(t/PI));
-  return opBlend(
-    res,
-    vessel(pos - vec3(1., 0., -.2), t > 2.),
-    15.
-  );
-}
-
 vec4 map(vec3 pos) {
   float t = a.z;
-  /* ---------- DEBUGGING ---------- */
-  // Uncomment when debugging single scene
-  // return scene4(pos, a.z);
+  vec4 res;
 
-  /* ---------- SCENES --------- */
+  // SCENE 1: Inside heart
   if ((t -= 16.) < 0.) {
-    // heart
-    return scene0(pos, t + 16.);
-  } else if ((t -= 16.) < 0.) {
-    // nanobot
-    return scene1(pos, t + 16.);
-  } else if ((t -= 16.) < 0.) {
-    // virus
-    return scene3(pos, t + 16.);
-  } else if ((t -= 16.) < 0.) {
-    // nanobot, TODO: viruses on blood vein walls?
-    return scene1(pos, t + 16.);
-  } else if ((t -= 16.) < 0.) {
-    // nanobot approaches virus
-    return scene4(pos, t + 16.);
-  } else if ((t -= 16.) < 0.) {
-    // nanobot fires lasers
-    return scene4_1(pos, t + 16.);
+    pos.z -= 1.;
+    pR(pos.xz, t / 6.);
+    pR(pos.xy, t / 5.);
+
+    return heart(pos);
+  }
+
+  // SCENE 2: Nanobot in blood vein
+  else if ((t -= 16.) < 0.) {
+    vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
+
+    // left-right tilt
+    pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
+    // up-down tilt
+    pR(p_vessel.yz, -PI/16.*sin(t/PI));
+    res = vessel(p_vessel, false);
+
+    // rotation to blood cells and vein
+    pR(pos.xy, t/PI);
+
+    // render blood vein and cells
+    res = opU(res, bloodVein(pos));
+    return opU(res, bloodCellField(pos));
+  }
+
+  // SCENE 3: Virus in heart
+  else if ((t -= 16.) < 0.) {
+    pR(pos.yz, 7.);
+    pR(pos.xy, t/20.);
+    pos += vec3(1.);
+    return opBlend(
+      heart(pos),
+      virus(pos + vec3(.5), 1.),
+      50.
+    );
+  }
+
+  // SCENE 4: Nanobot in blood vein, TODO: viruses on walls?
+  else if ((t -= 16.) < 0.) {
+    vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
+
+    // left-right tilt
+    pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
+    // up-down tilt
+    pR(p_vessel.yz, -PI/16.*sin(t/PI));
+    res = vessel(p_vessel, false);
+
+    // rotation to blood cells and vein
+    pR(pos.xy, t/PI);
+
+    // render blood vein and cells
+    res = opU(res, bloodVein(pos));
+    return opU(res, bloodCellField(pos));
+  }
+
+  // SCENE 5: Nanobot approaches virus
+  else if ((t -= 16.) < 0.) {
+    t += 16.; // TODO;
+    pR(pos.xy, -.4);
+    pR(pos.xz, -.8 + t / 32.);
+    pos += vec3(cos(t / 6.), 0.5, 2.5 + cos(t / 6.));
+
+    res = opBlend(
+      virus(pos + vec3(.5), 1.),
+      heart(pos),
+      50.
+    );
+
+    pR(pos.xz, PI / 6.);
+    pR(pos.xy, PI / 8.);
+
+    // left-right tilt
+    pR(pos.xz, PI/12.*cos(t/PI));
+    // up-down tilt
+    pR(pos.yz, -PI/16.*sin(t/PI));
+    return opBlend(
+      res,
+      vessel(pos - vec3(
+        2.5 + 1.5 * cos(1. + min(t, (PI - 1. ) * 8.) / 8.),
+        0.,
+        .5
+        ), false
+      ),
+      30.
+    );
+  }
+
+  // SCENE 6: Nanobot attacks virus
+  else if ((t -= 16.) < 0.) {
+    t += 16.; // TODO;
+    pR(pos.yz, .7);
+    pR(pos.xz, -3.);
+    pos += vec3(t / 16. - .5,1.,-1.);
+
+    res = opBlend(
+      virus(pos + vec3(.5), 1. / (1. + t / 10.)),
+      heart(pos),
+      50.
+    );
+
+    pR(pos.xz, PI / 6.);
+    pR(pos.xy, PI / 8.);
+
+    // left-right tilt
+    pR(pos.xz, PI/12.*cos(t/PI));
+    // up-down tilt
+    pR(pos.yz, -PI/16.*sin(t/PI));
+    return opBlend(
+      res,
+      vessel(pos - vec3(1., 0., -.2), t > 2.),
+      15.
+    );
+  }
+
+  // SCENE 7: Nanobot retracts
+  else if ((t -= 16.) < 0.) {
+    pR(pos.yz, .7);
+    pR(pos.xz, -3.);
+    pos += vec3(t / 16. - .5,1.,-1.);
+
+    res = opBlend(
+      virus(pos + vec3(.5), 1. / (16. + t / 10.)),
+      heart(pos),
+      50.
+    );
+
+    pR(pos.xz, PI / 6.);
+    pR(pos.xy, PI / 8.);
+
+    // left-right tilt
+    pR(pos.xz, PI/12.*cos(t/PI));
+    // up-down tilt
+    pR(pos.yz, -PI/16.*sin(t/PI));
+    return opBlend(
+      res,
+      vessel(pos - vec3(1., 0., -.2), false),
+      15.
+    );
+  }
+
+  // SCENE 8: Closing shot of heart
+  else if ((t -= 16.) < 0.) {
+    pos.z -= 1.;
+    pR(pos.xz, t / 6.);
+    pR(pos.xy, t / 5.);
+
+    return heart(pos);
   }
 }
 
 void main() {
-
   vec3 col = vec3(0.),
        tot = vec3(0.),
        ro = vec3(0., 0., 1.),
