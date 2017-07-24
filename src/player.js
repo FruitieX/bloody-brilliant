@@ -32,7 +32,8 @@ I = s.i.map(i => {
   o.type = i.t;
 
   // Start oscillator
-  o.start();
+  // NOTE: now started after shader compilation, using I.map(i => i.o.start())
+  // o.start();
 
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;

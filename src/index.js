@@ -87,3 +87,6 @@ g.vertexAttribPointer(
     g.bufferData(g.ARRAY_BUFFER, Int8Array.of(-3, 1, 1, -3, 1, 1), g.STATIC_DRAW)
   ),
 2, g.BYTE, r(0), g.linkProgram(P), g.useProgram(P));
+
+// start music
+I.map(i => i.o.start());
