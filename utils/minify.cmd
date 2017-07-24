@@ -1,7 +1,9 @@
 @ECHO OFF
 
+echo | set /p dummyvar=Purging current distribution files...
 rm -rf dist
 mkdir dist\temp
+echo. Done!
 
 SET wd=%0
 echo.
@@ -29,39 +31,26 @@ for %%F in ("dist\temp\*.glsl") do echo %%~nxF     %%~zF b
 echo.
 
 REM concat all js together
-cat dist\temp\song.min.js dist\temp\player.min.js dist\temp\index.min.js > dist\temp\all.js
+cat src\song.js src\player.js src\index.js > dist\temp\js.js
 REM .\node_modules\.bin\uglifyjs --ecma 6 dist\temp\all.js > dist\temp\all.min.js
 
-echo Minifying vertex shader into js...
-cat dist\temp\vertex.min.glsl | node utils\findandreplace.js --template dist\temp\all.js --find require(\"./vertex.glsl\") --surround ^" > dist\temp\all2.js
+echo | set /p dummyvar=Minifying vertex shader into js...
+cat dist\temp\vertex.min.glsl | node utils\findandreplace.js --template dist\temp\js.js --find require(\"./vertex.glsl\") --surround ' 
+REM > dist\temp\js_n_vertex.js
+echo. Done
 
-echo Minifying fragment shader js...
-cat dist\temp\fragment.min.glsl | node utils\findandreplace.js --template dist\temp\all2.js --find require(\"./fragment.glsl\") --surround ^" > dist\temp\all3.js
+echo | set /p dummyvar=Minifying fragment shader js...
+REM cat dist\temp\fragment.min.glsl | node utils\findandreplace.js --template dist\temp\js_n_vertex.js --find require(\"./fragment.glsl\") --surround ' > dist\temp\js_n_glsl.js
+echo. Done
 
-REM echo "saving non-regpacked result in index_unpacked.html..."
-cat dist\temp\all3.js | node utils\findandreplace.js --template mintemplate.html --find {{javascript}} > dist\index_unpacked.html
+echo | set /p dummyvar=Uglifying...
+REM call node_modules\.bin\uglifyjs --ecma 6 dist\temp\js_n_glsl.js -c sequences=false -m > dist\temp\all_ugly.js
+echo. Done
+
+echo | set /p dummyvar=Saving non-regpacked result in index_unpacked.html...
+REM cat dist\temp\all_ugly.js | node utils\findandreplace.js --template mintemplate.html --find {{javascript}} > dist\index_unpacked.html
+echo. Done
+
 
 REM go back to original working directory
 cd %CD%
-
-
-REM js src
-REM uglifyjs ..\src\song.js ..\src\player.js ..\src\index.js | node ..\utils\findandreplace.js --template temp\temp1.html --find '{{javascript}}' > temp\temp2.html
-REM crunch with regpack
-REM echo "uglifying..."
-REM uglifyjs ..\src\song.js ..\src\player.js ..\src\index.js -c  unsafe,unsafe_comps,unused,dead_code,drop_console,unsafe_math -m toplevel,eval  > temp\temp1.js
-
-REM vertex shader
-REM echo "minifying vertex shader..."
-REM glslmin ..\src\vertex.glsl | node ..\utils\findandreplace.js --template temp\temp1.js --find 'require(".\vertex.glsl")' --surround '`' > temp\temp2.js
-
-REM REM fragment shader
-REM echo "minifying fragment shader..."
-REM glslmin -m ..\src\fragment.glsl | node ..\utils\findandreplace.js --template temp\temp2.js --find 'require(".\fragment.glsl")' --surround '`' > temp\temp3.js
-
-REM echo "running regpack..."
-REM node ..\node_modules\.bin\regpack temp\temp3.js | node ..\utils\findandreplace.js --template temp\temp1.html --find '{{javascript}}' > temp\temp.html
-
-REM cp temp\temp.html index.html
-
-REM echo "wrote index.html ($(cat index.html | wc -c) bytes)"

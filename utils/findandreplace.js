@@ -9,16 +9,29 @@ const argv = require('yargs').argv;
  * --replace: what file do we replace the match with?
 */
 
+//console.log(argv.find);
+//console.log(argv.surround);
+
 let resuls = '';
 var isWin = (os.platform() === 'win32');
 
 if (isWin) {
 	let template = fs.readFileSync(argv.template).toString();
 
-	let replace = '';
+	var replace = '';
 	if (!argv.replace) {
-		var size = fs.fstatSync(process.stdin.fd).size;
-		replace = size > 0 ? fs.readSync(process.stdin.fd, size)[0] : '';
+		var stdin = process.openStdin();
+		stdin.resume();
+		stdin.setEncoding('utf8');
+		stdin.on('data', function(chunk) {
+			replace += chunk;
+			console.log(replace);
+		});
+		console.log("Replacing string is now:");
+		console.log(replace);
+		console.log("look above");
+		//var size = fs.fstatSync(process.stdin.fd).size;
+		//replace = size > 0 ? fs.readSync(process.stdin.fd, size)[0] : '';
 	} else {
 		replace = argv.replace;
 		replace = fs.readFileSync(argv.replace, 'utf8');
@@ -27,6 +40,8 @@ if (isWin) {
 	var re = new RegExp(argv.find, "g");
 	if (argv.surround) replace = argv.surround + replace + argv.surround;
 	result = template.replace(argv.find, replace);
+	
+	//console.log(result);
 } else {
 
 	let template = fs.readFileSync(argv.template);
@@ -65,5 +80,7 @@ if (isWin) {
 	    ]);
 	  }
 	}
+	
+	console.log(result.toString('utf8').trim());
 }
-console.log(result.toString('utf8').trim());
+
