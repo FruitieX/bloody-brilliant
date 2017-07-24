@@ -257,25 +257,24 @@ vec4 vessel(vec3 pos, float laser) {
 vec4 map(vec3 pos) {
   float t = a.z;
   vec4 res;
+  vec3 temp = pos;
 
   // SCENE 1: Inside heart
   if ((t -= 16.) < 0.) {
-    pos.z -= 1.;
-    pR(pos.xz, t / 6.);
-    pR(pos.xy, t / 5.);
+    pos.z -= 1.; pR(pos.xz, t / 6.); pR(pos.xy, t / 5.);
 
     return heart(pos);
   }
 
   // SCENE 2: Nanobot in blood vein
   else if ((t -= 16.) < 0.) {
-    vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
+    temp += vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
 
     // left-right tilt
-    pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
+    pR(temp.xz, PI/2.-PI/12.*cos(t/PI));
     // up-down tilt
-    pR(p_vessel.yz, -PI/16.*sin(t/PI));
-    res = vessel(p_vessel, 0.);
+    pR(temp.yz, -PI/16.*sin(t/PI));
+    res = vessel(temp, 0.);
 
     // rotation to blood cells and vein
     pR(pos.xy, t/PI);
@@ -299,13 +298,13 @@ vec4 map(vec3 pos) {
 
   // SCENE 4: Nanobot in blood vein, TODO: viruses on walls?
   else if ((t -= 16.) < 0.) {
-    vec3 p_vessel = pos + vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
+    temp += vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
 
     // left-right tilt
-    pR(p_vessel.xz, PI/2.-PI/12.*cos(t/PI));
+    pR(temp.xz, PI/2.-PI/12.*cos(t/PI));
     // up-down tilt
-    pR(p_vessel.yz, -PI/16.*sin(t/PI));
-    res = vessel(p_vessel, 0.);
+    pR(temp.yz, -PI/16.*sin(t/PI));
+    res = vessel(temp, 0.);
 
     // rotation to blood cells and vein
     pR(pos.xy, t/PI);
