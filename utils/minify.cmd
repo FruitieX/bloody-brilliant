@@ -31,11 +31,11 @@ for %%F in ("dist\temp\*.glsl") do echo %%~nxF     %%~zF b
 echo.
 
 REM concat all js together
-cat src\song.js src\player.js src\index.js > dist\temp\js.js
+cat src\song.js src\index.js > dist\temp\js.js
 REM .\node_modules\.bin\uglifyjs --ecma 6 dist\temp\all.js > dist\temp\all.min.js
 
 echo | set /p dummyvar=Minifying vertex shader into js...
-cat dist\temp\vertex.min.glsl | node utils\findandreplace.js --template dist\temp\js.js --find require(\"./vertex.glsl\") --surround ' 
+cat dist\temp\vertex.min.glsl | node utils\findandreplace.js --template dist\temp\js.js --find require(\"./vertex.glsl\") --surround '
 REM > dist\temp\js_n_vertex.js
 echo. Done
 

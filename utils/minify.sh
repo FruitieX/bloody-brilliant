@@ -18,14 +18,8 @@ for file in $(ls ../src/*.glsl); do
   echo "$(basename $file): $(../node_modules/.bin/glslmin -m ../src/$file | wc -c)b"
 done
 
-echo -e "\nminifying identifiers in player.js..."
-# TODO: this is no-op
-sed \
-  -e '' \
-  ../src/player.js > temp/player.js
-
 # concat all js together
-cat ../src/song.js temp/player.js ../src/index.js > temp/temp1.js
+cat ../src/song.js ../src/index.js > temp/temp1.js
 
 # vertex shader
 echo "minifying vertex shader..."
