@@ -7,10 +7,6 @@ uniform vec4 a;
 
 float PI = 3.14;
 
-float calcPlasma(vec3 p) {
-  return length(sin(sin(p) + a.z / 10.));
-}
-
 float smin( float a, float b, float k ) {
   return -log(exp( -k*a ) + exp( -k*b ))/k;
 }
@@ -62,17 +58,15 @@ float sdHexPrism( vec3 p, vec2 h ) {
 }
 
 vec4 heart(vec3 p) {
-  float plasma1 = calcPlasma(p * 2.) + .5;
-
   return vec4(
     // tunnel shape
     (1. - a.w * .5) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
-    + (1. - a.w * 2.) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(plasma1),
+    + (1. - a.w * 2.) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(length(sin(sin(p * 2.) + a.z / 10.)) + .5),
 
     // color
-    sin(vec3(1., .2, .1) * plasma1)
+    sin(vec3(1., .2, .1) * (length(sin(sin(p * 2.) + a.z / 10.)) + .5))
   );
 }
 
@@ -128,7 +122,7 @@ vec4 bloodVein(vec3 p) {
     + 2. * a.w,
 
     // color
-    sin(vec3(1., .1, .1) * (calcPlasma(p * 2.) + .5))
+    sin(vec3(1., .1, .1) * (length(sin(sin(p * 2.) + a.z / 10.)) + .5))
   );
 }
 
