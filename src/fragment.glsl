@@ -18,7 +18,7 @@ vec4 opI( vec4 d1, vec4 d2 ) {
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   return vec4(
     smin( d1.x, d2.x, k ),
-    1. / (d1.x + d2.x) * (d1.yzw * d2.x + d2.yzw * d1.x)
+    (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
   );
 }
 
