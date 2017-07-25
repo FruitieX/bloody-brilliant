@@ -251,8 +251,13 @@ vec4 map(vec3 pos) {
     pR(pos.xy, t/PI);
 
     // render blood vein and cells
-    res = opU(res, bloodVein(pos));
-    return opU(res, bloodCellField(pos));
+    return opU(
+      opU(
+        res,
+        bloodVein(pos)
+      ),
+      bloodCellField(pos)
+    );
   }
 
   // SCENE 3: Virus in heart
@@ -281,8 +286,13 @@ vec4 map(vec3 pos) {
     pR(pos.xy, t/PI);
 
     // render blood vein and cells
-    res = opU(res, bloodVein(pos));
-    return opU(res, bloodCellField(pos));
+    return opU(
+      opU(
+        res,
+        bloodVein(pos)
+      ),
+      bloodCellField(pos)
+    );
   }
 
   // SCENE 5: Nanobot approaches virus
@@ -372,9 +382,7 @@ vec4 map(vec3 pos) {
 
   // SCENE 8: Closing shot of heart
   else if ((t -= 16.) < 0.) {
-    pos.z -= 1.;
-    pR(pos.xz, t / 6.);
-    pR(pos.xy, t / 5.);
+    pos.z -= 1.; pR(pos.xz, t / 6.); pR(pos.xy, t / 5.);
 
     return heart(pos);
   }
