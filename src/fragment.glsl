@@ -89,45 +89,27 @@ float pModPolar(inout vec2 p, float repetitions) {
 
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
-  pos.z += 3.;
   pos.x += 15.; // move rotational origo to center of blood vein
   pR(pos.xz, -(4. * a.z + 2. * a.w) / 20.); // give speed to blood wall
-  pModPolar(pos.xz, 24.); // Rotate and duplicate blood wall around torus origo
-  pos -= vec3(15.,0.,0.);
+  pModPolar(pos.xz, 12.); // Rotate and duplicate blood wall around torus origo
+  pos.x -= 15.;
 
-  float x = 2.;
-  vec4 res = vec4(10.);
+  // rotate blood cell ring
+  pR(pos.xy, a.z / 10.);
+  pR(pos.xz, .3);
+  pModPolar(pos.xy, 5.); // Rotate and duplicate blood cell into ring around z axis
+  pModPolar(pos.xz, 7.); // Rotate and duplicate ring around y axis
 
-  vec3 rotated = pos - vec3(1.,-1.,0.);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
+  // rotate individual blood cell
+  pR(pos.yz, 1.5 + sin(a.z / 10.));
 
-  // repeat
-  rotated = pos + vec3(0.,2.,0.);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
+  // offset individual blood cell
+  pos.x -= 2.5;
 
-  // repeat
-  rotated = pos + vec3(2.,1.,.5);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
-
-  // repeat
-  rotated = pos + vec3(1.,-1.5,1.);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
-
-  // repeat
-  rotated = pos + vec3(2.,-1.,0.);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
-
-  // repeat
-  rotated = pos - vec3(.8,1.,0.);
-  pR(rotated.xy, a.z / x++);
-  res = opU(res, vec4(sdBloodCell(rotated), 1., .1, .1));
-
-  return res;
+  return vec4(
+    sdBloodCell(pos),
+    1., .1, .1
+  );
 }
 
 vec4 bloodVein(vec3 p) {
