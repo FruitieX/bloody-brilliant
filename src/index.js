@@ -30,13 +30,13 @@ R = t =>
     // a.z = time (s)
     // a.w = bass
     g.uniform4f(
-      g.getUniformLocation(P, 'a'),
+      g.getUniformLocation(P, 'a', B = Math.pow(0.995, t - T)),
       c.width,
       c.height,
       A.currentTime,
       // framerate independent moving average:
       // https://www.gamedev.net/forums/topic/499983-smooth-framerate-independent-chase-camera/#comment-4261584
-      b = Math.pow(0.995, t - T) * b + (1 - Math.pow(0.995, t - T)) * I[0].e.gain.value,
+      b = B * b + (1 - B) * I[0].e.gain.value,
       requestAnimationFrame(R, T = t)
     ),
 
