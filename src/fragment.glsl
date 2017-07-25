@@ -16,15 +16,13 @@ float smin( float a, float b, float k ) {
 }
 
 vec4 opI( vec4 d1, vec4 d2 ) {
-    return d1.x < d2.x ? d2 : d1;
+  return d1.x < d2.x ? d2 : d1;
 }
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
-  float tot = d1.x + d2.x;
-
   return vec4(
     smin( d1.x, d2.x, k ),
-    1. / tot * (d1.yzw * (tot - d1.x) + d2.yzw * (tot - d2.x))
+    1. / (d1.x + d2.x) * (d1.yzw * d2.x + d2.yzw * d1.x)
   );
 }
 
