@@ -53,12 +53,6 @@ float sdBloodCell(vec3 p) {
   );
 }
 
-float sdTorus(vec3 p) {
-  // the first constant sets size of torus
-  // second sets size of middle
-  return -(length(vec2(length(p.xz)-14.,p.y)) - 3.);
-}
-
 float sdTriPrism( vec3 p, vec2 h ) {
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x+.5*p.y, -p.y)-h.x*.5);
@@ -141,9 +135,12 @@ vec4 bloodCellField(vec3 pos) {
 vec4 bloodVein(vec3 p) {
   // rotate
   // pR(p.xy, a/5.);
+  p += vec3(14., 0., 1.5);
   return vec4(
     // tunnel shape
-    sdTorus(p + vec3(14.,0.,1.5))
+    // the first constant sets size of torus
+    // second sets size of middle
+    -length(vec2(length(p.xz)-14.,p.y)) + 3.
 
     // blobby surface
     - .05 * (1. - sin(3. * (p.z - 2. * a.z)))
