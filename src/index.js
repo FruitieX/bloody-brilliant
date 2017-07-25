@@ -37,7 +37,11 @@ R = t =>
       // framerate independent moving average:
       // https://www.gamedev.net/forums/topic/499983-smooth-framerate-independent-chase-camera/#comment-4261584
       b = B * b + (1 - B) * I[0].e.gain.value,
+
       requestAnimationFrame(R, T = t)
+
+      // battery saving
+      // setTimeout(() => requestAnimationFrame(R, T = t), 40)
     ),
 
     // number of indices to be rendered
