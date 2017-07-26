@@ -52,10 +52,12 @@ float sdTriPrism( vec3 p, vec2 h ) {
     return max(q.z-h.y,max(q.x+.5*p.y, -p.y)-h.x*.5);
 }
 
+/*
 float sdHexPrism( vec3 p, vec2 h ) {
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x+.5*q.y, q.y)-h.x);
 }
+*/
 
 vec4 heart(vec3 p) {
   return vec4(
@@ -189,25 +191,27 @@ vec4 vessel(vec3 pos, float laser) {
   pR(pos.xy, PI/2.);
   vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col);
   pR(pos.xz, PI/2.);
-  res = opI(res, vec4(sdTriPrism(pos , vec2(.35)), col));
+  //res = opI(res, vec4(sdTriPrism(pos , vec2(.35)), col));
   pR(pos.zy, PI/2.);
-  res = opI(res, vec4(sdHexPrism(pos, vec2(.15,.25)), col));
+  res = opI(res, vec4(sdTriPrism(pos, vec2(.15,.25)), col));
   pos.z += .3;
-  res = opU(res, vec4(sdHexPrism(pos, vec2(.15,.2)), col));
+  res = opU(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col));
 
   pR(pos.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.4,.005)), col));
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col));
   pR(pos.xz, PI/2.);
+  // pos += vec3(.1, .1, 0.);
   pos.x += .1;
   pos.y += .1;
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.195,.005)), col));
+  res = opU(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col));
 
   if (laser > 0.) {
+    // TODO: pos += vec3(.1, 2.3, -.15) ?
     res = opU(
       res,
       vec4(
         fCapsule(pos - vec3(.1, 2.3, -.15), .01, 2.),
-        vec3(100., .2, .3)
+        100., .2, .3
       )
     );
 
@@ -217,7 +221,7 @@ vec4 vessel(vec3 pos, float laser) {
       res,
       vec4(
         fCapsule(pos - vec3(.1, 2.3, -.15), .01, 2.),
-        vec3(100., .2, .3)
+        100., .2, .3
       )
     );
   }
