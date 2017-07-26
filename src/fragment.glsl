@@ -129,60 +129,27 @@ vec4 bloodVein(vec3 p) {
 }
 
 vec4 virus(vec3 pos, float size) {
-  // velocity
-  pR(pos.xy, PI/4.);
-
-  vec4 res = vec4(length(pos) - .5 * size - a.w / 5., 0., 1., 0.);
+  vec3 temp = pos;
 
   pModPolar(pos.yz, 7.);
+  pModPolar(pos.yx, 7.);
+  pos.y -= .5;
 
-  vec4 spikes =
-    vec4(fCapsule(
-      pos,
-      .01 * size,
-      size
-    ), 1., .6, 1.);
-
-  pR(pos.xy, PI/4.);
-
-  spikes = opU(
-    spikes,
-    vec4(fCapsule(
-      pos,
-      .01 * size,
-      size
-    ), 1., .6, 1.)
-  );
-
-  pR(pos.xy, PI/4.);
-
-  spikes = opU(
-    spikes,
-    vec4(fCapsule(
-      pos,
-      .01 * size,
-      size
-    ), 1., .6, 1.)
-  );
-
-  pR(pos.xy, PI/4.);
-
-  spikes = opU(
-    spikes,
-    vec4(fCapsule(
-      pos,
-      .01 * size,
-      size
-    ), 1., .6, 1.)
-  );
-
-  res = opBlend(
-    res,
-    spikes,
+  return opBlend(
+    vec4(
+      length(temp) - .5 * size - a.w / 5.,
+      0., 1., 0.
+    ),
+    vec4(
+      fCapsule(
+        pos,
+        .01 * size,
+        .5 * size
+      ),
+      1., .6, 1.
+    ),
     9.
   );
-
-  return res;
 }
 
 vec4 vessel(vec3 pos, float laser) {
