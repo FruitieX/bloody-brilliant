@@ -239,24 +239,25 @@ vec4 map(vec3 pos) {
 
   // SCENE 2: Nanobot in blood vein
   else if ((t -= 16.) < 0.) {
-    temp += vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
-
-    // left-right tilt
-    pR(temp.xz, PI/2.-PI/12.*cos(t/PI));
-    // up-down tilt
-    pR(temp.yz, -PI/16.*sin(t/PI));
-    res = vessel(temp, 0.);
+    // move vessel forward
+    pos += vec3(0., .25, .5);
 
     // rotation to blood cells and vein
-    pR(pos.xy, t/PI);
+    pR(temp.xy, t/PI);
+
+    // rotate
+    pR(pos.xz, 3. * PI / 6.);
+
+    // left-right tilt, up-down tilt
+    pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
 
     // render blood vein and cells
     return opU(
       opU(
-        res,
-        bloodVein(pos)
+        vessel(pos, 0.),
+        bloodVein(temp)
       ),
-      bloodCellField(pos)
+      bloodCellField(temp)
     );
   }
 
@@ -274,24 +275,25 @@ vec4 map(vec3 pos) {
 
   // SCENE 4: Nanobot in blood vein, TODO: viruses on walls?
   else if ((t -= 16.) < 0.) {
-    temp += vec3(.1-.2 * sin(t/PI),.6 + .2 * cos(t/PI),1.);
-
-    // left-right tilt
-    pR(temp.xz, PI/2.-PI/12.*cos(t/PI));
-    // up-down tilt
-    pR(temp.yz, -PI/16.*sin(t/PI));
-    res = vessel(temp, 0.);
+    // move vessel forward
+    pos += vec3(0., .25, .5);
 
     // rotation to blood cells and vein
-    pR(pos.xy, t/PI);
+    pR(temp.xy, t/PI);
+
+    // rotate
+    pR(pos.xz, 3. * PI / 6.);
+
+    // left-right tilt, up-down tilt
+    pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
 
     // render blood vein and cells
     return opU(
       opU(
-        res,
-        bloodVein(pos)
+        vessel(pos, 0.),
+        bloodVein(temp)
       ),
-      bloodCellField(pos)
+      bloodCellField(temp)
     );
   }
 
@@ -308,13 +310,12 @@ vec4 map(vec3 pos) {
       50.
     );
 
-    pR(pos.xz, PI / 6.);
-    pR(pos.xy, PI / 8.);
+    // rotate
+    pR(pos.xy, PI / 8.); pR(pos.xz, PI / 6.);
 
-    // left-right tilt
-    pR(pos.xz, PI/12.*cos(t/PI));
-    // up-down tilt
-    pR(pos.yz, -PI/16.*sin(t/PI));
+    // left-right tilt, up-down tilt
+    pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
+
     return opBlend(
       res,
       vessel(pos - vec3(
@@ -340,13 +341,12 @@ vec4 map(vec3 pos) {
       50.
     );
 
-    pR(pos.xz, PI / 6.);
-    pR(pos.xy, PI / 8.);
+    // rotate
+    pR(pos.xy, PI / 8.); pR(pos.xz, PI / 6.);
 
-    // left-right tilt
-    pR(pos.xz, PI/12.*cos(t/PI));
-    // up-down tilt
-    pR(pos.yz, -PI/16.*sin(t/PI));
+    // left-right tilt, up-down tilt
+    pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
+
     return opBlend(
       res,
       vessel(pos - vec3(1., 0., -.2), max(0., t - 2.)),
@@ -366,13 +366,12 @@ vec4 map(vec3 pos) {
       50.
     );
 
-    pR(pos.xz, PI / 6.);
-    pR(pos.xy, PI / 8.);
+    // rotate
+    pR(pos.xy, PI / 8.); pR(pos.xz, PI / 6.);
 
-    // left-right tilt
-    pR(pos.xz, PI/12.*cos(t/PI));
-    // up-down tilt
-    pR(pos.yz, -PI/16.*sin(t/PI));
+    // left-right tilt, up-down tilt
+    pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
+
     return opBlend(
       res,
       vessel(pos - vec3(1., 0., -.2), 0.),
