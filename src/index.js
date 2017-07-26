@@ -179,13 +179,13 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
       );
 
       // DECAY
-      if (!r && !l) return; // Only if this is not the first note
       i.e.gain.linearRampToValueAtTime(
-        // Volume right before next note
-        i.V,
+        // Volume right before next note, unless this is an off note
+        N == -1 ? 0 : i.V,
 
         // End time
         (
+          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
@@ -197,6 +197,7 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
 
         // End time
         (
+          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
@@ -210,6 +211,7 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
 
         // End time
         (
+          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
