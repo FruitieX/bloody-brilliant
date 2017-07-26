@@ -1,17 +1,17 @@
-// potato level for PC, higher = faster :-)
-// TODO: remove in production
+// production, 4K
 /*
-potato = 8;
-c.width = 1920 / potato;
-c.height = 1080 / potato;
+c.width = 3840;
+c.height = 2160;
 */
-// production
+// production, 1080p
 /*
-c.width = 1920;
-c.height = 1080;
+c.width = 3840;
+c.height = 2160;
 */
-c.width = 240;
-c.height = 135;
+
+// debug, 1080p / 2
+c.width = 960;
+c.height = 540;
 
 // accumulators
 b = 0; // bass avg
@@ -41,7 +41,7 @@ R = t =>
       requestAnimationFrame(R, T = t)
 
       // battery saving
-      // setTimeout(() => requestAnimationFrame(R, T = t), 40)
+      // setTimeout(() => requestAnimationFrame(R, T = t), 200)
     ),
 
     // number of indices to be rendered

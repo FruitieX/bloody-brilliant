@@ -364,73 +364,66 @@ void main() {
        ro = vec3(0., 0., 1.),
        pos;
 
-  for( float m=0.; m<2.; m++ )   // 2x AA
-  for( float n=0.; n<2.; n++ ) { // 2x AA
-    vec4 res; // = vec3(-1.);
-    float t = .0; // tmin
+  vec4 res; // = vec3(-1.);
+  float t = .0; // tmin
 
-    // ray direction
-    vec3 rd =
-      // camera-to-world transformation
-      mat3(ro.zxx, ro.xzx, -ro) *
+  // ray direction
+  vec3 rd =
+    // camera-to-world transformation
+    mat3(ro.zxx, ro.xzx, -ro) *
 
-      normalize(
-        vec3(
-          // pixel coordinates
-          (
-            2. * (
-              gl_FragCoord.xy + vec2(m, n) / 2. - .5
-            ) - a.xy
-          ) / a.y,
-          2.
-        )
-      );
+    normalize(
+      vec3(
+        // pixel coordinates
+        (2. * gl_FragCoord.xy - a.xy) / a.y,
+        2.
+      )
+    );
 
-    for(float i = 0.; i < 64.; i++) // 64. = maxIterations
-      t += (res = map(pos = ro + rd * t)).x;
+  for(float i = 0.; i < 64.; i++) // 64. = maxIterations
+    t += (res = map(pos = ro + rd * t)).x;
 
-    vec2 e = vec2(1e-2, -1e-2);
+  vec2 e = vec2(1e-2, -1e-2);
 
-    vec3 nor = normalize(
-      e.xyy * map(pos + e.xyy).x +
-      e.yyx * map(pos + e.yyx).x +
-      e.yxy * map(pos + e.yxy).x +
-      e.xxx * map(pos + e.xxx).x
-    ),
-    ref = reflect(rd, nor),
+  vec3 nor = normalize(
+    e.xyy * map(pos + e.xyy).x +
+    e.yyx * map(pos + e.yyx).x +
+    e.yxy * map(pos + e.yxy).x +
+    e.xxx * map(pos + e.xxx).x
+  ),
+  ref = reflect(rd, nor),
 
-    lig = vec3(.7); // direction of light
+  lig = vec3(.7); // direction of light
 
-    // material
-    float amb = nor.y,
-          dif = max(dot(nor, lig), 0.),
-          //dom = smoothstep(-.1, .1, ref.y),
-          dom = ref.y,
-          fre = pow(min(dot(nor, rd) + 1., 1.), 2.),
-          spe = pow(dot(ref, lig), 2.);
+  // material
+  float amb = nor.y,
+        dif = max(dot(nor, lig), 0.),
+        //dom = smoothstep(-.1, .1, ref.y),
+        dom = ref.y,
+        fre = pow(min(dot(nor, rd) + 1., 1.), 2.),
+        spe = pow(dot(ref, lig), 2.);
 
-    if(length(res.yzw) > 0.)
-      col = res.yzw * (
-        dif
-          + spe * dif
-          + pow(.4 * amb, 2.)
-          + pow(.2 * dom, 4.)
-          + .5 * fre
-      );
+  if(length(res.yzw) > 0.)
+    col = res.yzw * (
+      dif
+        + spe * dif
+        + pow(.4 * amb, 2.)
+        + pow(.2 * dom, 4.)
+        + .5 * fre
+    );
 
-    tot += pow(
-      // fog
-      mix(col, vec3(.03, .04, .05), 1. - exp(-.001 * t * t * t)),
+  tot += pow(
+    // fog
+    mix(col, vec3(.03, .04, .05), 1. - exp(-.001 * t * t * t)),
 
-    	// gamma
-      vec3(.6, .5, .4)
-    )
+  	// gamma
+    vec3(.6, .5, .4)
+  )
 
-    // fade in
-    * pow(clamp(-(1. - a.z) / 8., 0., 1.), 2.)
-    // fade out
-    * pow(clamp((120. - a.z) / 8., 0., 1.), 2.); // 120. = demo length in seconds
-  }
+  // fade in
+  * pow(clamp(-(1. - a.z) / 8., 0., 1.), 2.)
+  // fade out
+  * pow(clamp((120. - a.z) / 8., 0., 1.), 2.); // 120. = demo length in seconds
 
-  gl_FragColor = vec4(tot / 4., 1.); // 4 = AA * AA
+  gl_FragColor = vec4(tot, 1.); // 4 = AA * AA
 }
