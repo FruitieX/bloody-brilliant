@@ -65,10 +65,10 @@ vec4 heart(vec3 p) {
     (1. - a.w * .5) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
 
     // blobby surface
-    + (1. - a.w * 2.) * .05 * sin(10. * p.x) * sin(10. * p.y) * sin(10. * p.z) * sin(length(sin(sin(p * 2.) + a.z / 10.)) + .5),
+    + (.9 - a.w * 2.) * .05 * sin(5. * p.x) * sin(5. * p.y) * sin(5. * p.z),
 
     // color
-    sin(vec3(1., .2, .1) * (length(sin(sin(p * 2.) + a.z / 10.)) + .5))
+    sin(vec3(1., .2, .1) * (1.+sin(a.z / 10.)))
   );
 }
 
