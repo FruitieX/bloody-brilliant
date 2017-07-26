@@ -45,7 +45,7 @@ s = {
       n: [,,,,36,,-1,,],
     },
 
-    // Hi-hat: multiple layered square waves produce noise
+    // Hi-hat 1: multiple layered square waves produce noise
     {
       t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
       n: [31],
@@ -64,6 +64,27 @@ s = {
     }, {
       t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
       n: [36],
+    },
+
+    // Hi-hat 2: multiple layered square waves produce noise
+    {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,31,-1,],
+    }, {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,32,-1,],
+    }, {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,33,-1,],
+    }, {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,34,-1,],
+    }, {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,35,-1,],
+    }, {
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      n: [,,36,-1,],
     },
 
     // Bass 1
