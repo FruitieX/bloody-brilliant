@@ -1,5 +1,5 @@
 s = {
-  b: .125, // seconds per row: (BPM / 60) / (rows per beat)
+  b: .15, // seconds per row: (BPM / 60) / (rows per beat)
   r: 128,  // rows per loop
   l: 16,  // loops
 
@@ -38,9 +38,6 @@ s = {
       // notes, -1 = off note
       n: [
         ,,,,42,,-1,,
-        ,,,,42,,-1,,
-        ,,,,42,,-1,,
-        ,,,42,,,,-1,
       ],
       m: 1, // muted for this many loops
     },
@@ -71,18 +68,18 @@ s = {
       t: 'square', // oscillator type
       a: 0.02, // attack time
       v: 0.1, // volume
-      V: 0, // decayed volume at end of note
-      f: 1, // low-pass filter frequency in kHz
-      F: 10, // decayed low-pass filter frequency in kHz
+      V: 0.1, // decayed volume at end of note
+      f: 4, // low-pass filter frequency in kHz
+      F: 4, // decayed low-pass filter frequency in kHz
       M: 5, // muted after this many loops
-      m: 2, // muted for this many loops
+      m: 0, // muted for this many loops
 
       // notes, -1 = off note
       n: [
-        33,-1,,33,-1,,33,-1,,33,-1,,33,-1,,, // A4
-        36,-1,,36,-1,,36,-1,,36,-1,,36,-1,,, // C5
-        29,-1,,29,-1,,29,-1,,29,-1,,29,-1,,, // F4
-        28,-1,,28,-1,,28,-1,,28,-1,,28,-1,,, // E4
+        24,-1,,24,-1,,24,-1,,24,-1,,24,-1,,, // A4
+        27,-1,,27,-1,,27,-1,,27,-1,,27,-1,,, // C5
+        20,-1,,20,-1,,20,-1,,20,-1,,20,-1,,, // F4
+        19,-1,,19,-1,,19,-1,,,19,-1,19,-1,,, // E4
       ],
     },
 
@@ -114,20 +111,20 @@ s = {
     // Choir
     {
       t: 'sine', // oscillator type
-      a: 1, // attack time
-      v: 0.2, // volume
+      a: 0.1, // attack time
+      v: 0.1, // volume
       V: 0.1, // decayed volume at end of note
-      f: 10, // low-pass filter frequency in kHz
+      f: 1, // low-pass filter frequency in kHz
       F: 1, // decayed low-pass filter frequency in kHz
-      m: .5, // muted for this many loops
+      m: 0, // muted for this many loops
       M: 6, // muted after this many loops
 
       // notes, -1 = off note
       n: [
-        45,,,,,,,,,,,,,,,, // A6
-        43,,,,,,,,,,,,,,,, // G6
-        48,,,,,,,,,,,,,,,, // C7
-        47,,,,,,,,,,,,,,,, // B6
+        48,,,,,,,,,,,,,,,, // A6
+        46,,,,,,,,,,,,,,,, // G6
+        51,,,,,,,,,,,,,,,, // C7
+        50,,,,,,,,,,,,,,,, // B6
       ],
     }
   ]
