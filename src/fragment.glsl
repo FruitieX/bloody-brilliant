@@ -200,9 +200,9 @@ vec4 vessel(vec3 pos, float laser) {
   pR(pos.yz, PI/2.);
   res = opU(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col));
   pR(pos.xz, PI/2.);
-  // pos += vec3(.1, .1, 0.);
-  pos.x += .1;
-  pos.y += .1;
+  pos += vec3(.1, .1, 0.);
+  //pos.x += .1;
+  //pos.y += .1;
   res = opU(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col));
 
   if (laser > 0.) {
