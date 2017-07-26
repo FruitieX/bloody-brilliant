@@ -20,8 +20,7 @@ s = {
 
       // notes, -1 = off note
       n: [
-        40,,,36,
-        ,,-1,,
+        40,,,36,,,-1,,
       ],
     },
 
@@ -72,59 +71,63 @@ s = {
       t: 'square', // oscillator type
       a: 0.02, // attack time
       v: 0.1, // volume
-      V: 0.2, // decayed volume at end of note
-      f: 0.05, // low-pass filter frequency in kHz
+      V: 0, // decayed volume at end of note
+      f: 1, // low-pass filter frequency in kHz
       F: 10, // decayed low-pass filter frequency in kHz
       M: 5, // muted after this many loops
-
-      // notes, -1 = off note
-      n: [
-        24,,,,,,,, 24,,,,,,,, 27,,,,,,,, 27,,,,,,,, 20,,,,,,,, 20,,,,,,,, 19,,,,,,,, 19,,,,,,,,
-        24,,,,,,,, 24,,,,,,,, 27,,,,,,,, 27,,,,,,,, 20,,,,,,,, 20,,,,,,,, 17,,,,,,,, 17,,,,,,,,
-      ],
-      m: 1, // muted for this many loops
-    },
-
-    // Bass 2
-    {
-      t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.2, // decayed volume at end of note
-      f: 0.05, // low-pass filter frequency in kHz
-      F: 10, // decayed low-pass filter frequency in kHz
-      M: 5, // muted after this many loops
-
-      // notes, -1 = off note
-      n: [
-        31,,,,,,,, 31,,,,,,,, 34,,,,,,,, 34,,,,,,,, 27,,,,,,,, 27,,,,,,,, 26,,,,,,,, 26,,,,,,,,
-        31,,,,,,,, 31,,,,,,,, 34,,,,,,,, 34,,,,,,,, 34,,,,,,,, 34,,,,,,,, 32,,,,,,,, 32,,,,,,,,
-      ],
       m: 2, // muted for this many loops
+
+      // notes, -1 = off note
+      n: [
+        33,-1,,33,-1,,33,-1,,33,-1,,33,-1,,, // A4
+        36,-1,,36,-1,,36,-1,,36,-1,,36,-1,,, // C5
+        29,-1,,29,-1,,29,-1,,29,-1,,29,-1,,, // F4
+        28,-1,,28,-1,,28,-1,,28,-1,,28,-1,,, // E4
+      ],
     },
 
-    // Lead
+    // // Lead
+    // {
+    //   t: 'square', // oscillator type
+    //   a: 0.01, // attack time
+    //   v: 0.2, // volume
+    //   V: 0.01, // decayed volume at end of note
+    //   f: 10, // low-pass filter frequency in kHz
+    //   F: 1, // decayed low-pass filter frequency in kHz
+    //   m: 3, // muted for this many loops
+    //   M: 6, // muted after this many loops
+    //
+    //   // notes, -1 = off note
+    //   n: [
+    //     36,, 31,, 36,, 31,, 36,, 31,, 36,, 31,,
+    //     39,, 34,, 39,, 34,, 39,, 34,, 39,, 34,,
+    //     32,, 27,, 32,, 27,, 32,, 27,, 32,, 27,,
+    //     31,, 26,, 31,, 26,, 31,, 26,, 31,, 26,,
+    //
+    //     36,, 31,, 36,, 31,, 36,, 31,, 36,, 31,,
+    //     39,, 34,, 39,, 34,, 39,, 34,, 39,, 34,,
+    //     34,, 27,, 34,, 27,, 34,, 27,, 34,, 27,,
+    //     32,, 29,, 32,, 29,, 32,, 29,, 32,, 29,,
+    //   ],
+    // },
+
+    // Choir
     {
-      t: 'square', // oscillator type
-      a: 0.01, // attack time
+      t: 'sine', // oscillator type
+      a: 1, // attack time
       v: 0.2, // volume
-      V: 0.01, // decayed volume at end of note
+      V: 0.1, // decayed volume at end of note
       f: 10, // low-pass filter frequency in kHz
       F: 1, // decayed low-pass filter frequency in kHz
-      m: 3, // muted for this many loops
+      m: .5, // muted for this many loops
       M: 6, // muted after this many loops
 
       // notes, -1 = off note
       n: [
-        36,, 31,, 36,, 31,, 36,, 31,, 36,, 31,,
-        39,, 34,, 39,, 34,, 39,, 34,, 39,, 34,,
-        32,, 27,, 32,, 27,, 32,, 27,, 32,, 27,,
-        31,, 26,, 31,, 26,, 31,, 26,, 31,, 26,,
-
-        36,, 31,, 36,, 31,, 36,, 31,, 36,, 31,,
-        39,, 34,, 39,, 34,, 39,, 34,, 39,, 34,,
-        34,, 27,, 34,, 27,, 34,, 27,, 34,, 27,,
-        32,, 29,, 32,, 29,, 32,, 29,, 32,, 29,,
+        45,,,,,,,,,,,,,,,, // A6
+        43,,,,,,,,,,,,,,,, // G6
+        48,,,,,,,,,,,,,,,, // C7
+        47,,,,,,,,,,,,,,,, // B6
       ],
     }
   ]
