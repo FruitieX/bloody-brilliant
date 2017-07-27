@@ -87,7 +87,7 @@ s = {
       n: [,,36,-1,],
     },
 
-    // Bass 1
+    // Chip base pattern 1
     {
       t: 'square', // oscillator type
       a: 0.02, // attack time
@@ -107,14 +107,34 @@ s = {
       ],
     },
 
-    // Choir
+    // Chip melody chase pattern 1
     {
-      t: 'sine', // oscillator type
-      a: 0.1, // attack time
+      t: 'square', // oscillator type
+      a: 0.02, // attack time
       v: 0.1, // volume
       V: 0.1, // decayed volume at end of note
+      f: 4, // low-pass filter frequency in kHz
+      F: 4, // decayed low-pass filter frequency in kHz
+      M: 5, // muted after this many loops
+      m: 0, // muted for this many loops
+
+      // notes, -1 = off note
+      n: [
+        55,-1,,51,-1,,58,-1,,60,-1,,63,-1,60,-1,
+        55,-1,,58,-1,,60,-1,,62,-1,,60,-1,58,-1,
+        51,-1,,56,-1,,60,-1,,60,-1,,60,-1,62,-1,
+        58,-1,,53,-1,,62,-1,,58,-1,,62,-1,60,-1,
+      ],
+    },
+
+    // Choir
+    {
+      t: 'triangle', // oscillator type
+      a: 0.1, // attack time
+      v: 0.2, // volume
+      V: 0.1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
-      F: 1, // decayed low-pass filter frequency in kHz
+      F: .1, // decayed low-pass filter frequency in kHz
       m: 0, // muted for this many loops
       M: 6, // muted after this many loops
 
