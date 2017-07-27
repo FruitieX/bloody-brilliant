@@ -175,7 +175,7 @@ s = {
       V: 0.1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
-      m: 0, // muted for this many loops
+      m: 1, // muted for this many loops
       M: 6, // muted after this many loops
 
       // notes, -1 = off note
@@ -185,6 +185,27 @@ s = {
         51,,,,,,,,,,,,,,,, // C7
         50,,,,,,,,,,,,,,,, // B6
       ],
-    }
+    },
+
+    // Choir pattern 2
+    {
+      t: 'triangle', // oscillator type
+      a: 0. , // attack time
+      v: 0.2, // volume
+      V: 0.1 , // decayed volume at end of note
+      f: 1, // low-pass filter frequency in kHz
+      F: .1, // decayed low-pass filter frequency in kHz
+      m: 0, // muted for this many loops
+      M: 6, // muted after this many loops
+
+      // notes, -1 = off note
+      n: [
+        36,,,,39,,,,43,,,,39,,,,
+        31,,,,34,,,,38,,,,34,,,,
+        32,,,,36,,,,41,,,,36,,,,
+        34,,,,38,,,,43,,,,38,,,,
+      ],
+    },
   ]
 };
+//console.log(s);
