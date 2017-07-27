@@ -110,8 +110,8 @@ I = s.i.map(i => {
 });
 
 // Program notes
-for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
-  for (r = s.r - 1; r > -1; r--) { // rows (in reverse order)
+for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
+  for (r = 0; r < s.r; r++) { // rows (in reverse order)
     I.map(i => { // for each instrument
       N = i.n[r % i.n.length];
 
@@ -178,14 +178,27 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
         ) * s.b     // * Seconds per row
       );
 
-      // DECAY
+      // TODO: golf?
+      
+      // Previous note was an off note - there's nothing to decay
+      if (i.P == -1) {
+        i.P = N;
+        return;
+      }
+
+      // Store previous note
+      i.P = N;
+
+      // This is the first note - there's nothing to decay
+      if (!r && !l) return;
+
+      // DECAY PREVIOUS NOTE
       i.e.gain.linearRampToValueAtTime(
-        // Volume right before next note, unless this is an off note
-        N == -1 ? 0 : i.V,
+        // Volume of previous note right before this note
+        i.V,
 
         // End time
         (
-          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
@@ -197,7 +210,6 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
 
         // End time
         (
-          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
@@ -211,7 +223,6 @@ for (l = s.l - 1; l > -1; l--) { // loop repetitions (in reverse order)
 
         // End time
         (
-          1 +       // next note
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
