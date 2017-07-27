@@ -95,7 +95,7 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 5, // muted after this many loops
+      M: 2, // muted after this many loops
       m: 0, // muted for this many loops
 
       // notes, -1 = off note
@@ -107,7 +107,7 @@ s = {
       ],
     },
 
-    // Chip melody chase pattern 1
+    // Chip melody pattern 1
     {
       t: 'square', // oscillator type
       a: 0.02, // attack time
@@ -115,8 +115,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 5, // muted after this many loops
-      m: 1, // muted for this many loops
+      M: 1, // muted after this many loops
+      m: 0, // muted for this many loops
 
       // notes, -1 = off note
       n: [
@@ -127,7 +127,7 @@ s = {
       ],
     },
 
-    // Chip melody chase pattern 2
+    // Chip melody pattern 2
     {
       t: 'square', // oscillator type
       a: 0.02, // attack time
@@ -135,8 +135,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 5, // muted after this many loops
-      m: 0, // muted for this many loops
+      M: 1, // muted after this many loops
+      m: 1, // muted for this many loops
 
       // notes, -1 = off note
       n: [
@@ -147,7 +147,27 @@ s = {
       ],
     },
 
-    // Choir
+    // Chip melody pattern 3
+    {
+      t: 'square', // oscillator type
+      a: 0.02, // attack time
+      v: 0.1, // volume
+      V: 0.1, // decayed volume at end of note
+      f: 4, // low-pass filter frequency in kHz
+      F: 4, // decayed low-pass filter frequency in kHz
+      M: 2, // muted after this many loops
+      m: 2, // muted for this many loops
+
+      // notes, -1 = off note
+      n: [
+        48,,43,,48,,43,,48,,43,,48,,43,,
+        51,,46,,51,,46,,51,,46,,51,,46,,
+        44,,39,,44,,39,,44,,39,,44,,39,,
+        43,,38,,43,,38,,43,,38,,43,,38,,
+      ],
+    },
+
+    // Choir pattern 1
     {
       t: 'triangle', // oscillator type
       a: 0.1, // attack time
