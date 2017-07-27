@@ -116,7 +116,7 @@ s = {
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 5, // muted after this many loops
-      m: 0, // muted for this many loops
+      m: 1, // muted for this many loops
 
       // notes, -1 = off note
       n: [
@@ -124,6 +124,26 @@ s = {
         55,-1,,58,-1,,60,-1,,62,-1,,60,-1,58,-1,
         51,-1,,56,-1,,60,-1,,60,-1,,60,-1,62,-1,
         58,-1,,53,-1,,62,-1,,58,-1,,62,-1,60,-1,
+      ],
+    },
+
+    // Chip melody chase pattern 2
+    {
+      t: 'square', // oscillator type
+      a: 0.02, // attack time
+      v: 0.1, // volume
+      V: 0.1, // decayed volume at end of note
+      f: 4, // low-pass filter frequency in kHz
+      F: 4, // decayed low-pass filter frequency in kHz
+      M: 5, // muted after this many loops
+      m: 0, // muted for this many loops
+
+      // notes, -1 = off note
+      n: [
+        67,63,60,67,63,60,67,63,60,67,63,60,67,63,60,67,
+        62,58,55,62,58,55,62,58,55,62,58,55,62,58,55,62,
+        63,60,56,63,60,56,63,60,56,63,60,56,63,60,56,63,
+        65,62,58,65,62,58,65,62,58,65,62,58,65,62,58,65,
       ],
     },
 
