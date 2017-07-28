@@ -356,9 +356,9 @@ vec4 map(vec3 pos) {
 }
 
 void main() {
-  vec3 col = vec3(0.),
-       tot = vec3(0.),
-       ro = vec3(0., 0., 1.),
+  vec3 ro = vec3(0.,0.,1.),
+       tot,
+       col,
        pos;
 
   vec4 res; // = vec3(-1.);
@@ -380,7 +380,7 @@ void main() {
   for(float i = 0.; i < 64.; i++) // 64. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
-  vec2 e = vec2(1e-2, -1e-2);
+  vec2 e = vec2(.01, -0.01);
 
   vec3 nor = normalize(
     e.xyy * map(pos + e.xyy).x +
@@ -409,7 +409,7 @@ void main() {
         + .5 * fre
     );
 
-  tot += pow(
+  tot = pow(
     // fog
     mix(col, vec3(.03, .04, .05), 1. - exp(-.001 * t * t * t)),
 
@@ -418,9 +418,9 @@ void main() {
   )
 
   // fade in
-  * pow(clamp(-(1. - a.z) / 8., 0., 1.), 2.)
+  * pow(min((a.z - 1.) / 8., 1.), 2.)
   // fade out
-  * pow(clamp((150. - a.z) / 8., 0., 1.), 2.); // 150. = demo length in seconds
+  * pow(min((150. - a.z) / 8., 1.), 2.); // 150. = demo length in seconds
 
   gl_FragColor = vec4(tot, 1.); // 4 = AA * AA
 }
