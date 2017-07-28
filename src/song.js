@@ -96,7 +96,8 @@ s = {
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 2, // muted after this many loops
-      m: 0, // muted for this many loops
+      m: 1, // muted for this many loops
+      d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -104,6 +105,27 @@ s = {
         27,-1,,27,-1,,27,-1,,27,-1,,27,-1,,, // C5
         20,-1,,20,-1,,20,-1,,20,-1,,20,-1,,, // F4
         19,-1,,19,-1,,19,-1,,,19,-1,19,-1,,, // E4
+      ],
+    },
+
+    // Chip base pattern 2
+    {
+      t: 'square', // oscillator type
+      a: 0.02, // attack time
+      v: 0.1, // volume
+      V: 0.1, // decayed volume at end of note
+      f: 4, // low-pass filter frequency in kHz
+      F: 4, // decayed low-pass filter frequency in kHz
+      M: 2, // muted after this many loops
+      m: 0, // muted for this many loops
+      d: .1, // slapback delay echo volume
+
+      // notes, -1 = off note
+      n: [
+        24,-1,,12,-1,,19,-1,,19,-1,,24,-1,,,
+        19,-1,,22,-1,,26,-1,,22,-1,,24,-1,,,
+        20,-1,,24,-1,,27,-1,,24,-1,,20,-1,,,
+        22,-1,,17,-1,,17,-1,,22,-1,,22,-1,,,
       ],
     },
 
@@ -116,7 +138,7 @@ s = {
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 1, // muted after this many loops
-      m: 0, // muted for this many loops
+      m: 1, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -206,8 +228,8 @@ s = {
       n: [
         36,,,,39,,,,43,,,,39,,,,
         31,,,,34,,,,38,,,,34,,,,
-        32,,,,36,,,,41,,,,36,,,,
-        34,,,,38,,,,43,,,,38,,,,
+        32,,,,36,,,,39,,,,36,,,,
+        34,,,,38,,,,41,,,,38,,,,
       ],
     },
   ]
