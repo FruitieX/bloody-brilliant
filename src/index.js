@@ -129,11 +129,10 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       N = i.n[r % i.n.length];
 
       // Instrument was just muted: insert off note
-      if (!r && i.M == l - 1) N = -1;
+      if (i.M - 1 < l) N = -1;
       else if (
         // Otherwise don't do anything once instrument is muted
-        i.m > l ||
-        i.M < l ||
+        i.m > l |
         // Or if note is undefined
         !N
       ) return;
