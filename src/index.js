@@ -77,11 +77,14 @@ g.vertexAttribPointer(
 
 A = new AudioContext;
 
+console.log(s.i);
 // Init instruments
 I = s.i.map(i => {
   o = A.createOscillator();
   e = A.createGain();
   l = A.createBiquadFilter();
+  d = A.createDelay();
+  f = A.createGain();
 
   // Set oscillator type
   o.type = i.t;
@@ -91,6 +94,8 @@ I = s.i.map(i => {
 
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;
+  f.gain.value = ("d" in i ? i.d : 0);
+  d.delayTime.value = .25;
 
   // Set filter Q value
   //l.Q.value = 12;
@@ -103,7 +108,16 @@ I = s.i.map(i => {
   // Connect envelope to filter
   e.connect(l);
 
-  // Connect filter to master out
+  // connect to (slapback) delay if key exists
+  if ("d" in i) e.connect(d);
+
+  // connect delay to feedback and back so it echoes out
+  d.connect(f);
+  f.connect(d);
+  // finally, connect delay to filter
+  d.connect(l);
+
+  // Connect filter to master
   l.connect(A.destination);
 
   return Object.assign({ o, e, l }, i);
