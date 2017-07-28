@@ -1,6 +1,6 @@
 s = {
   b: .15, // seconds per row: (BPM / 60) / (rows per beat)
-  r: 128,  // rows per loop
+  r: 64,  // rows per loop
   l: 16,  // loops
 
   // Instruments
@@ -15,7 +15,7 @@ s = {
       f: 1, // low-pass filter frequency in kHz
       F: 0.1, // decayed low-pass filter frequency in kHz
       //m: 0, // muted for this many loops
-      M: 7, // muted after this many loops
+      M: 11, // muted after this many loops
       g: 1, // glide notes to this frequency in Hz (useful for kicks drums)
 
       // notes, -1 = off note
@@ -26,64 +26,64 @@ s = {
 
     // Snare: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,31,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,32,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,33,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,34,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,35,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,36,,-1,,],
     },
 
     // Hi-hat 1: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [31],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [32],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [33],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [34],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [35],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [36],
     },
 
     // Hi-hat 2: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,31,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,32,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,33,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,34,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,35,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 0, M: 4,
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,36,-1,],
     },
 
@@ -95,8 +95,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 2, // muted after this many loops
-      m: 1, // muted for this many loops
+      M: 4, // muted after this many loops
+      m: 2, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -116,8 +116,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 2, // muted after this many loops
-      m: 1, // muted for this many loops
+      M: 6, // muted after this many loops
+      m: 4, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -137,8 +137,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 2, // muted after this many loops
-      m: 0, // muted for this many loops
+      M: 8, // muted after this many loops
+      m: 6, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -158,8 +158,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 1, // muted after this many loops
-      m: 1, // muted for this many loops
+      M: 6, // muted after this many loops
+      m: 4, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -179,8 +179,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 1, // muted after this many loops
-      m: 1, // muted for this many loops
+      M: 8, // muted after this many loops
+      m: 6, // muted for this many loops
       d: .1, // slapback delay echo volume
 
 
@@ -201,8 +201,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
-      M: 2, // muted after this many loops
-      m: 2, // muted for this many loops
+      M: 9, // muted after this many loops
+      m: 8, // muted for this many loops
       d: .1, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -223,7 +223,7 @@ s = {
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
       m: 1, // muted for this many loops
-      M: 6, // muted after this many loops
+      M: 4, // muted after this many loops
 
       // notes, -1 = off note
       n: [
@@ -242,8 +242,8 @@ s = {
       V: 0.1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
-      m: 0, // muted for this many loops
-      M: 6, // muted after this many loops
+      m: 4, // muted for this many loops
+      M: 8, // muted after this many loops
 
       // notes, -1 = off note
       n: [
@@ -251,6 +251,26 @@ s = {
         31,,,,34,,,,38,,,,34,,,,
         32,,,,36,,,,39,,,,36,,,,
         34,,,,38,,,,41,,,,38,,,,
+      ],
+    },
+
+    // Choir pattern 3
+    {
+      t: 'triangle', // oscillator type
+      a: 0.1, // attack time
+      v: 0.2, // volume
+      V: 0.1 , // decayed volume at end of note
+      f: 1, // low-pass filter frequency in kHz
+      F: .1, // decayed low-pass filter frequency in kHz
+      m: 8, // muted for this many loops
+      M: 10, // muted after this many loops
+
+      // notes, -1 = off note
+      n: [
+        48,,,,,,,,,,,,,,,, // A6
+        46,,,,,,,,,,,,,,,, // G6
+        51,,,,,,,,,,,,,,,,  // C7
+        50,,,,,,,,,,,,,,,, // B6
       ],
     },
   ]

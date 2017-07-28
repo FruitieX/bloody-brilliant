@@ -77,7 +77,6 @@ g.vertexAttribPointer(
 
 A = new AudioContext;
 
-console.log(s.i);
 // Init instruments
 I = s.i.map(i => {
   o = A.createOscillator();
