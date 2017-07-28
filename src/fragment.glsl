@@ -271,8 +271,8 @@ vec4 map(vec3 pos) {
   // SCENE 5: Nanobot approaches virus
   else if ((t -= 19.2) < 0.) {
     pR(pos.xy, -.4);
-    pR(pos.xz, -.8 + t / 20.);
-    pos += vec3(sin(-1. + t / 6.), 0.5, 2. + sin(-1. + t / 6.));
+    pR(pos.xz, t / 20. - .8);
+    pos += vec3(sin(t / 6. - 1.), 0.5, 2. + sin(t / 6. - 1.));
 
     temp = pos;
 
@@ -332,7 +332,7 @@ vec4 map(vec3 pos) {
 
     return opBlend(
       res,
-      vessel(pos - vec3(1., 0., -.2), max(0., pow(t, 2.))),
+      vessel(pos - vec3(1., 0., -.2), t*t),
       15.
     );
   }
