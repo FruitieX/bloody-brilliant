@@ -97,7 +97,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 4, // muted after this many loops
       m: 2, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -118,7 +118,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 6, // muted after this many loops
       m: 4, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -139,7 +139,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 8, // muted after this many loops
       m: 6, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -160,7 +160,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 6, // muted after this many loops
       m: 4, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -181,7 +181,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 8, // muted after this many loops
       m: 6, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
 
       // notes, -1 = off note
@@ -203,7 +203,7 @@ s = {
       F: 4, // decayed low-pass filter frequency in kHz
       M: 9, // muted after this many loops
       m: 8, // muted for this many loops
-      d: .1, // slapback delay echo volume
+      d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [

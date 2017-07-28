@@ -5,8 +5,8 @@ c.height = 2160;
 */
 // production, 1080p
 /*
-c.width = 3840;
-c.height = 2160;
+c.width = 1920;
+c.height = 1080;
 */
 
 // debug, 1080p / 2
@@ -93,8 +93,8 @@ I = s.i.map(i => {
 
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;
-  f.gain.value = ("d" in i ? i.d : 0);
-  d.delayTime.value = .25;
+  f.gain.value = i.d || 0;
+  d.delayTime.value = 0.29;
 
   // Set filter Q value
   //l.Q.value = 12;
@@ -108,13 +108,13 @@ I = s.i.map(i => {
   e.connect(l);
 
   // connect to (slapback) delay if key exists
-  if ("d" in i) e.connect(d);
+  l.connect(f);
 
   // connect delay to feedback and back so it echoes out
-  d.connect(f);
   f.connect(d);
+  d.connect(f);
   // finally, connect delay to filter
-  d.connect(l);
+  i.d && d.connect(A.destination);
 
   // Connect filter to master
   l.connect(A.destination);
