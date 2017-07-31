@@ -391,7 +391,7 @@ void main() {
   float amb = nor.y,
         dif = max(dot(nor, lig), 0.),
         //dom = smoothstep(-.1, .1, ref.y),
-        dom = ref.y,
+        // dom = ref.y,
         fre = pow(min(dot(nor, rd) + 1., 1.), 2.),
         spe = pow(dot(ref, lig), 2.);
 
@@ -400,7 +400,7 @@ void main() {
       dif
         + spe * dif
         + pow(.4 * amb, 2.)
-        + pow(.2 * dom, 4.)
+        + pow(.2 * ref.y, 4.)
         + .5 * fre
     );
 
