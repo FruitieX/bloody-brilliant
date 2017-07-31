@@ -198,9 +198,9 @@ vec4 map(vec3 pos) {
 
   // SCENE 1: Inside heart
   if ((t -= 19.2) < 0.) {
-    pos.z -= 1.; pR(pos.xz, t / 6.); pR(pos.xy, t / 5.);
+    pR(pos.xz, t / 6.); pR(pos.xy, t / 5.);
 
-    return heart(pos, 1.);
+    return heart(pos + 1., 1.);
   }
 
   // SCENE 2: Nanobot in blood vein
