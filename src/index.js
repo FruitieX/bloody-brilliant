@@ -94,7 +94,7 @@ I = s.i.map(i => {
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;
   f.gain.value = i.d || 0;
-  d.delayTime.value = 0.3;
+  d.delayTime.value = .3;
 
   // Set filter Q value
   //l.Q.value = 12;

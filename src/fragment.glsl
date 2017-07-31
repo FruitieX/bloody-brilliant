@@ -37,8 +37,8 @@ float sdBloodCell(vec3 p) {
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
 
   return opBlend(
-    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1,.0,.0,.0),
-    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.)),.0,.0,.0),
+    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1,0.,0.,0.),
+    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.)),0.,0.,0.),
     32.
   ).x;
 }
@@ -268,7 +268,7 @@ vec4 map(vec3 pos) {
   else if ((t -= 19.2) < 0.) {
     pR(pos.xy, -.4);
     pR(pos.xz, t / 20. - .8);
-    pos += vec3(sin(t / 6. - 1.), 0.5, 2. + sin(t / 6. - 1.));
+    pos += vec3(sin(t / 6. - 1.), .5, 2. + sin(t / 6. - 1.));
 
     temp = pos;
 
@@ -358,7 +358,7 @@ void main() {
        pos;
 
   vec4 res; // = vec3(-1.);
-  float t = .0; // tmin
+  float t = 0.; // tmin
 
   // ray direction
   vec3 rd =
@@ -376,7 +376,7 @@ void main() {
   for(float i = 0.; i < 64.; i++) // 64. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
-  vec2 e = vec2(.01, -0.01);
+  vec2 e = vec2(.01, -.01);
 
   vec3 nor = normalize(
     e.xyy * map(pos + e.xyy).x +
