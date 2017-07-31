@@ -113,8 +113,9 @@ I = s.i.map(i => {
   // connect delay to feedback and back so it echoes out
   f.connect(d);
   d.connect(f);
+
   // finally, connect delay to filter
-  i.d && d.connect(A.destination);
+  d.connect(A.destination);
 
   // Connect filter to master
   l.connect(A.destination);
@@ -126,14 +127,17 @@ I = s.i.map(i => {
 for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
   for (r = 0; r < s.r; r++) { // rows (in reverse order)
     I.map(i => { // for each instrument
-      if (i.A) {
-        // Arpeggio
-        a = i.n[Math.floor((r / (i.r || 1)) % i.n.length)];
-        N = a[((r % (i.r || 1)) * i.A) % a.length];
-      } else {
+      // Rate divisor defaults to 1
+      i.r = i.r || 1;
+
+      // Note index
+      n = (r / i.r) % i.n.length;
+
+      N = i.A
+        // Arpeggio, ~~ does Math.floor()
+        ? i.n[~~n][((r % i.r) * i.A) % i.n[~~n].length]
         // Normal notes
-        N = i.n[(r / (i.r || 1)) % i.n.length];
-      }
+        : i.n[n];
 
       // Instrument was just muted: insert off note
       if (i.M - 1 < l) N = -1;
