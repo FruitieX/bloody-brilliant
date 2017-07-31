@@ -24,69 +24,6 @@ s = {
       ],
     },
 
-    // Snare: multiple layered square waves produce noise
-    {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,31,,-1,,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,32,,-1,,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,33,,-1,,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,34,,-1,,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,35,,-1,,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
-      n: [,,,,36,,-1,,],
-    },
-
-    // Hi-hat 1: multiple layered square waves produce noise
-    {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [31],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [32],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [33],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [34],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [35],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
-      n: [36],
-    },
-
-    // Hi-hat 2: multiple layered square waves produce noise
-    {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,31,-1,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,32,-1,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,33,-1,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,34,-1,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,35,-1,],
-    }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
-      n: [,,36,-1,],
-    },
-
     // Chip base pattern 1
     {
       t: 'square', // oscillator type
@@ -273,6 +210,23 @@ s = {
         50,,,,,,,,,,,,,,,, // B6
       ],
     },
-  ]
+  ].concat(
+    // Snare: multiple layered square waves produce noise
+    Array(6).fill().map((e, i) => ({
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      n: [,,,,31 + i,,-1,,],
+    }))
+  ).concat(
+    // Hi-hat 1: multiple layered square waves produce noise
+    Array(6).fill().map((e, i) => ({
+      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      n: [31 + i],
+    }))
+  ).concat(
+    // Hi-hat 2: multiple layered square waves produce noise
+    Array(6).fill().map((e, i) => ({
+      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      n: [,,31 + i,-1,],
+    }))
+  )
 };
-//console.log(s);
