@@ -7,9 +7,9 @@ uniform vec4 a;
 
 float PI = 3.14;
 
-vec4 opI( vec4 d1, vec4 d2 ) {
-  return d1.x < d2.x ? d2 : d1;
-}
+// vec4 opI( vec4 d1, vec4 d2 ) {
+//   return d1.x < d2.x ? d2 : d1;
+// }
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   return vec4(
@@ -151,11 +151,15 @@ vec4 vessel(vec3 pos, float laser) {
   vec3 col = vec3(.1);
 
   pR(pos.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col);
+  vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col), temp;
   pR(pos.xz, PI/2.);
   //res = opI(res, vec4(sdTriPrism(pos , vec2(.35)), col));
   pR(pos.zy, PI/2.);
-  res = opI(res, vec4(sdTriPrism(pos, vec2(.15,.25)), col));
+  // inline opI
+  temp = vec4(sdTriPrism(pos, vec2(.15,.25)), col);
+  res = (res.x > temp.x ? res : temp);
+
+  //opI(res, vec4(sdTriPrism(pos, vec2(.15,.25)), col));
   pos.z += .3;
   res = opU(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col));
 
