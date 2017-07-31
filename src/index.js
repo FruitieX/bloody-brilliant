@@ -137,63 +137,40 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
         !N
       ) return;
 
+      // Start time
+      var t = (
+        l * s.r + // Loop index * rows per loop
+        r         // Row index
+      ) * s.b     // * Seconds per row
+      ;
       // ATTACK
       i.e.gain.setValueAtTime(
         // Note starts at silence
-        0,
-
-        // Start time
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
+        0, t
       );
       i.e.gain.linearRampToValueAtTime(
         // Fade to full volume after attack, unless this is an off note
-        N == -1 ? 0 : i.v,
-
-        // Start time
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
-        + .02       // Instrument attack
+        N < 0 ? 0 : i.v, t + .02       // Instrument attack
       );
       i.e.gain.setValueAtTime(
         // Full volume after attack, unless this is an off note
-        N == -1 ? 0 : i.v,
-
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
-        + .02       // Instrument attack
+        N < 0 ? 0 : i.v, t + .02       // Instrument attack
       );
 
       // LOW-PASS FILTER FREQUENCY
       i.l.frequency.setValueAtTime(
-        i.f * 1000,
-
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
+        i.f * 1e3, t
       );
 
       // OSCILLATOR FREQUENCY
       i.o.frequency.setValueAtTime(
-        440 * Math.pow(2, (N - 48) / 12),
-
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
+        440 * Math.pow(2, (N - 48) / 12), t
       );
 
       // TODO: golf?
 
       // Previous note was an off note - there's nothing to decay
-      if (i.P == -1) {
+      if (i.P < 0) {
         i.P = N;
         return;
       }
@@ -207,38 +184,17 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       // DECAY PREVIOUS NOTE
       i.e.gain.linearRampToValueAtTime(
         // Volume of previous note right before this note
-        i.V,
-
-        // End time
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
-        - 1e-3      // - delta
+        i.V, t - 1e-3      // - delta
       );
       i.l.frequency.linearRampToValueAtTime(
         // Low-pass filter frequency right before next note
-        i.F * 1000,
-
-        // End time
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
-        - 1e-3      // - delta
+        i.F * 1e3, t - 1e-3      // - delta
       );
 
       if (!i.g) return; // Only glide notes if glide enabled
       i.o.frequency.exponentialRampToValueAtTime(
         // Oscillator frequency right before next note
-        i.g,
-
-        // End time
-        (
-          l * s.r + // Loop index * rows per loop
-          r         // Row index
-        ) * s.b     // * Seconds per row
-        - 1e-3      // - delta
+        i.g, t - 1e-3      // - delta
       );
     });
   }
