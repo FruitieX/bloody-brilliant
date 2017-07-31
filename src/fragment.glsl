@@ -64,7 +64,7 @@ vec4 heart(vec3 p, float colorMod) {
     + (.9 - a.w * 2.) * .05 * sin(5. * p.x) * sin(5. * p.y) * sin(5. * p.z),
 
     // color
-    sin(vec3(1., .2, .1) * colorMod)
+    vec3(.9, .2, .1) * colorMod
   );
 }
 
@@ -120,7 +120,7 @@ vec4 bloodVein(vec3 p) {
     + 2. * a.w,
 
     // color
-    sin(vec3(1., .1, .1) * (length(sin(sin(p * 2.) + a.z / 10.)) + .5))
+    vec3(.9, .1, .1)
   );
 }
 
