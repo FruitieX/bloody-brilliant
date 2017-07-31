@@ -120,7 +120,7 @@ vec4 bloodVein(vec3 p) {
     + 2. * a.w,
 
     // color
-    vec3(.9, .1, .1)
+    .9, .1, .1
   );
 }
 
