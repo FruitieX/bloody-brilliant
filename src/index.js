@@ -128,8 +128,8 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
     I.map(i => { // for each instrument
       if (i.A) {
         // Arpeggio
-        A = i.n[Math.floor((r / (i.r || 1)) % i.n.length)]
-        N = A[((r % i.r) * i.A) % A.length];
+        a = i.n[Math.floor((r / (i.r || 1)) % i.n.length)];
+        N = a[((r % (i.r || 1)) * i.A) % a.length];
       } else {
         // Normal notes
         N = i.n[(r / (i.r || 1)) % i.n.length];
