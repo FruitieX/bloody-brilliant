@@ -13,10 +13,10 @@ s = {
     {
       // oscillator is sine by default
       //t: 'sine', // oscillator type
-      v: 0.5, // volume
+      v: .5, // volume
       V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
-      F: 0.1, // decayed low-pass filter frequency in kHz
+      F: .1, // decayed low-pass filter frequency in kHz
       M: 14, // muted after this many loops
       g: 1, // glide notes to this frequency in Hz (useful for kicks drums)
       N: 14, // transpose notes down by this much
@@ -30,13 +30,13 @@ s = {
     // Chip bass pattern 1
     {
       t: 'square', // oscillator type
-      v: 0.2, // volume
+      v: .2, // volume
       V: 0, // decayed volume at end of note
       f: 14, // low-pass filter frequency in kHz
       F: 5, // decayed low-pass filter frequency in kHz
       M: 10, // muted after this many loops
       m: 4, // muted for this many loops
-      d: .35, // slapback delay echo volume
+      d: .4, // slapback delay echo volume
       r: 16, // rate divisor
       A: 1, // arp speed
       N: 29, // transpose notes down by this much
@@ -53,7 +53,7 @@ s = {
     // Chip melody pattern 1
     {
       t: 'square', // oscillator type
-      v: 0.1, // volume
+      v: .1, // volume
       V: 0, // decayed volume at end of note
       f: 8, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
@@ -76,7 +76,7 @@ s = {
     // Chip melody pattern 2
     {
       t: 'square', // oscillator type
-      v: 0.1, // volume
+      v: .1, // volume
       V: 0, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
@@ -99,15 +99,15 @@ s = {
     // Chip melody pattern 3
     {
       t: 'square', // oscillator type
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       M: 12, // muted after this many loops
       m: 10, // muted for this many loops
       d: .5, // slapback delay echo volume
       r: 16, // rate divisor
-      A: 0.5, // arp speed
+      A: .5, // arp speed
       N: 11, // transpose notes down by this much
 
       // notes, -1 = off note
@@ -122,13 +122,13 @@ s = {
     // Choir pattern 1
     {
       t: 'square', // oscillator type
-      v: 0.1, // volume
+      v: .1, // volume
       V: 0 , // decayed volume at end of note
       f: 6, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       m: 2, // muted for this many loops
       M: 4, // muted after this many loops
-      d: 0.4,
+      d: .4,
       r: 8, // rate divisor
       N: 3, // transpose notes down by this much
 
