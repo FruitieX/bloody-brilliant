@@ -48,30 +48,30 @@ R = t =>
     3
   );
 
-// vertex shader
-g.shaderSource(S=g.createShader(g.VERTEX_SHADER), require("./vertex.glsl"));
-g.compileShader(S);g.attachShader(P,S);
-
-// fragment shader
-g.shaderSource(S=g.createShader(g.FRAGMENT_SHADER), require("./fragment.glsl"));
-g.compileShader(S);g.attachShader(P,S);
-
-// Log compilation errors
-// if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
-//   throw g.getShaderInfoLog(S);
-// }
-
-g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.style = 'height:1e2vh'));
-
-//c.parentElement.style = 'cursor:none;margin:0;overflow:hidden';
-
-// 1st argument to enableVertexAttribArray used to be 0, but undefined works
-// 1st argument to vertexAttribPointer used to be 0, but undefined works
-g.vertexAttribPointer(
-  g.enableVertexAttribArray(
-    g.bufferData(g.ARRAY_BUFFER, Int8Array.of(-3, 1, 1, -3, 1, 1), g.STATIC_DRAW)
-  ),
-2, g.BYTE, 0, g.linkProgram(P), g.useProgram(P));
+// // vertex shader
+// g.shaderSource(S=g.createShader(g.VERTEX_SHADER), require("./vertex.glsl"));
+// g.compileShader(S);g.attachShader(P,S);
+//
+// // fragment shader
+// g.shaderSource(S=g.createShader(g.FRAGMENT_SHADER), require("./fragment.glsl"));
+// g.compileShader(S);g.attachShader(P,S);
+//
+// // Log compilation errors
+// // if (!g.getShaderParameter(S, 35713)) { // COMPILE_STATUS = 35713
+// //   throw g.getShaderInfoLog(S);
+// // }
+//
+// g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.style = 'height:1e2vh'));
+//
+// //c.parentElement.style = 'cursor:none;margin:0;overflow:hidden';
+//
+// // 1st argument to enableVertexAttribArray used to be 0, but undefined works
+// // 1st argument to vertexAttribPointer used to be 0, but undefined works
+// g.vertexAttribPointer(
+//   g.enableVertexAttribArray(
+//     g.bufferData(g.ARRAY_BUFFER, Int8Array.of(-3, 1, 1, -3, 1, 1), g.STATIC_DRAW)
+//   ),
+// 2, g.BYTE, 0, g.linkProgram(P), g.useProgram(P));
 
 // music
 
@@ -157,7 +157,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
-        + i.a       // Instrument attack
+        + .02       // Instrument attack
       );
       i.e.gain.setValueAtTime(
         // Full volume after attack, unless this is an off note
@@ -167,7 +167,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
           l * s.r + // Loop index * rows per loop
           r         // Row index
         ) * s.b     // * Seconds per row
-        + i.a       // Instrument attack
+        + .02       // Instrument attack
       );
 
       // LOW-PASS FILTER FREQUENCY
@@ -191,7 +191,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       );
 
       // TODO: golf?
-      
+
       // Previous note was an off note - there's nothing to decay
       if (i.P == -1) {
         i.P = N;

@@ -9,8 +9,7 @@ s = {
     {
       // oscillator is sine by default
       //t: 'sine', // oscillator type
-      a: 0.02, // attack time
-      v: 0.5, // volume
+      v: .5, // volume
       V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: 0.1, // decayed low-pass filter frequency in kHz
@@ -26,73 +25,72 @@ s = {
 
     // Snare: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,31,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,32,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,33,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,34,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,35,,-1,,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 5, F: 9, m: 2, M: 8,
       n: [,,,,36,,-1,,],
     },
 
     // Hi-hat 1: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [31],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [32],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [33],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [34],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [35],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: .3, V: 0, f: 8, F: 17, m: 2, M: 8,
       n: [36],
     },
 
     // Hi-hat 2: multiple layered square waves produce noise
     {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,31,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,32,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,33,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,34,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,35,-1,],
     }, {
-      t: 'square', T: 'highpass', a: 0.01, v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: .5, V: 0, f: 5, F: 10, m: 1, M: 8,
       n: [,,36,-1,],
     },
 
     // Chip base pattern 1
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 4, // muted after this many loops
@@ -111,9 +109,8 @@ s = {
     // Chip base pattern 2
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 6, // muted after this many loops
@@ -132,9 +129,8 @@ s = {
     // Chip base pattern 3
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 8, // muted after this many loops
@@ -153,9 +149,8 @@ s = {
     // Chip melody pattern 1
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 6, // muted after this many loops
@@ -174,9 +169,8 @@ s = {
     // Chip melody pattern 2
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 8, // muted after this many loops
@@ -196,9 +190,8 @@ s = {
     // Chip melody pattern 3
     {
       t: 'square', // oscillator type
-      a: 0.02, // attack time
-      v: 0.1, // volume
-      V: 0.1, // decayed volume at end of note
+      v: .1, // volume
+      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 4, // decayed low-pass filter frequency in kHz
       M: 9, // muted after this many loops
@@ -217,9 +210,8 @@ s = {
     // Choir pattern 1
     {
       t: 'triangle', // oscillator type
-      a: 0.1, // attack time
-      v: 0.2, // volume
-      V: 0.1 , // decayed volume at end of note
+      v: .2, // volume
+      V: .1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
       m: 1, // muted for this many loops
@@ -237,9 +229,8 @@ s = {
     // Choir pattern 2
     {
       t: 'triangle', // oscillator type
-      a: 0. , // attack time
-      v: 0.2, // volume
-      V: 0.1 , // decayed volume at end of note
+      v: .2, // volume
+      V: .1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
       m: 4, // muted for this many loops
@@ -257,9 +248,8 @@ s = {
     // Choir pattern 3
     {
       t: 'triangle', // oscillator type
-      a: 0.1, // attack time
-      v: 0.2, // volume
-      V: 0.1 , // decayed volume at end of note
+      v: .2, // volume
+      V: .1 , // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
       m: 8, // muted for this many loops
