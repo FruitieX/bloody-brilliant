@@ -126,7 +126,14 @@ I = s.i.map(i => {
 for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
   for (r = 0; r < s.r; r++) { // rows (in reverse order)
     I.map(i => { // for each instrument
-      N = i.n[r / (i.r || 1) % i.n.length];
+      if (i.A) {
+        // Arpeggio
+        A = i.n[Math.floor((r / (i.r || 1)) % i.n.length)]
+        N = A[((r % i.r) * i.A) % A.length];
+      } else {
+        // Normal notes
+        N = i.n[(r / (i.r || 1)) % i.n.length];
+      }
 
       // Instrument was just muted: insert off note
       if (i.M - 1 < l) N = -1;
@@ -141,8 +148,8 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       t = (
         l * s.r + // Loop index * rows per loop
         r         // Row index
-      ) * s.b     // * Seconds per row
-      ;
+      ) * s.b;    // * Seconds per row
+
       // ATTACK
       i.e.gain.setValueAtTime(
         // Note starts at silence
@@ -166,8 +173,6 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       i.o.frequency.setValueAtTime(
         440 * Math.pow(2, (N - 48) / 12), t
       );
-
-      // TODO: golf?
 
       // Previous note was an off note - there's nothing to decay
       if (i.P < 0) {
