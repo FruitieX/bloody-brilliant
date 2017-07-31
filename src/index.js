@@ -175,7 +175,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
 
       // OSCILLATOR FREQUENCY
       i.o.frequency.setValueAtTime(
-        440 * Math.pow(2, (N - 48) / 12), t
+        440 * Math.pow(2, (N - i.N) / 12), t
       );
 
       // Previous note was an off note - there's nothing to decay
