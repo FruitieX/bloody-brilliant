@@ -328,14 +328,13 @@ vec4 map(vec3 pos) {
 
     return opBlend(
       res,
-      vessel(pos - vec3(1., 0., -.2), t*t),
+      vessel(pos - vec3(1., 0., -.2), 1.),
       15.
     );
   }
 
   // SCENE 7: Nanobot retracts
   else {
-    temp = pos;
 
     pR(pos.xy, 1.);
     pos += vec3(sin(t / 8.), 1., -sin(-2. + t / 8.));
@@ -345,7 +344,7 @@ vec4 map(vec3 pos) {
 
     return opBlend(
       heart(pos, 1.),
-      vessel(temp + vec3(-5. + t, .5, -1.), 0.),
+      vessel(temp - vec3(5. - t, -.5, 1.), 0.),
       15.
     );
   }
