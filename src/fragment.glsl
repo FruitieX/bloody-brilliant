@@ -7,17 +7,13 @@ uniform vec4 a;
 
 float PI = 3.14;
 
-float smin( float a, float b, float k ) {
-  return -log(exp( -k*a ) + exp( -k*b ))/k;
-}
-
 vec4 opI( vec4 d1, vec4 d2 ) {
   return d1.x < d2.x ? d2 : d1;
 }
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   return vec4(
-    smin( d1.x, d2.x, k ),
+    -log( exp(-k * d1.x) + exp(-k * d2.x)) / k,
     (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
   );
 }
@@ -40,11 +36,11 @@ float fCapsule(vec3 p, float r, float c) {
 float sdBloodCell(vec3 p) {
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
 
-  return smin(
-    length(vec2(length(p.xz)-.3,p.y)) - .1,
-    clamp(d.x, d.y, 0.) + length(max(d,0.)),
+  return opBlend(
+    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1,.0,.0,.0),
+    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.)),.0,.0,.0),
     32.
-  );
+  ).x;
 }
 
 float sdTriPrism( vec3 p, vec2 h ) {
