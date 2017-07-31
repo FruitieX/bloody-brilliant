@@ -126,7 +126,7 @@ I = s.i.map(i => {
 for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
   for (r = 0; r < s.r; r++) { // rows (in reverse order)
     I.map(i => { // for each instrument
-      N = i.n[r % i.n.length];
+      N = i.n[r / (i.r || 1) % i.n.length];
 
       // Instrument was just muted: insert off note
       if (i.M - 1 < l) N = -1;
@@ -164,8 +164,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
 
       // OSCILLATOR FREQUENCY
       i.o.frequency.setValueAtTime(
-        // close enough to pow(2, (N - 48) / 12)) ?
-        440 * Math.pow(1.06, N - 48), t
+        440 * Math.pow(2, (N - 48) / 12), t
       );
 
       // TODO: golf?
