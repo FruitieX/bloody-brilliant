@@ -112,7 +112,7 @@ vec4 bloodVein(vec3 p) {
     // tunnel shape
     // the first constant sets size of torus
     // second sets size of middle
-    -length(vec2(length(p.xz)-14.,p.y)) + 3.
+    3. -length(vec2(length(p.xz)-14.,p.y))
 
     // blobby surface
     - .05 * (1. - sin(3. * (p.z - 2. * a.z)))
