@@ -1,6 +1,6 @@
 // TODO: remove in production
 // Offset start pattern with this many loops
-D = 0;
+//D = 6;
 
 s = {
   b: .15, // seconds per row: (BPM / 60) / (rows per beat)
@@ -17,8 +17,7 @@ s = {
       V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: 0.1, // decayed low-pass filter frequency in kHz
-      //m: 0, // muted for this many loops
-      M: 14 - D, // muted after this many loops
+      M: 14, // muted after this many loops
       g: 1, // glide notes to this frequency in Hz (useful for kicks drums)
 
       // notes, -1 = off note
@@ -34,8 +33,8 @@ s = {
       V: 0, // decayed volume at end of note
       f: 14, // low-pass filter frequency in kHz
       F: 5, // decayed low-pass filter frequency in kHz
-      M: 10 - D, // muted after this many loops
-      m: 4 - D, // muted for this many loops
+      M: 10, // muted after this many loops
+      m: 4, // muted for this many loops
       d: .35, // slapback delay echo volume
       r: 16, // rate divisor
       A: 1, // arp speed
@@ -56,8 +55,8 @@ s = {
       V: 0, // decayed volume at end of note
       f: 8, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
-      M: 8 - D, // muted after this many loops
-      m: 6 - D, // muted for this many loops
+      M: 8, // muted after this many loops
+      m: 6, // muted for this many loops
       d: .6, // slapback delay echo volume
       r: 16, // rate divisor
       A: 1/3, // arp speed
@@ -78,8 +77,8 @@ s = {
       V: 0, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
-      M: 10 - D, // muted after this many loops
-      m: 8 - D, // muted for this many loops
+      M: 10, // muted after this many loops
+      m: 8, // muted for this many loops
       d: .5, // slapback delay echo volume
       r: 16, // rate divisor
       A: 1, // arp speed
@@ -100,8 +99,8 @@ s = {
       V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
-      M: 12 - D, // muted after this many loops
-      m: 10 - D, // muted for this many loops
+      M: 12, // muted after this many loops
+      m: 10, // muted for this many loops
       d: .5, // slapback delay echo volume
       r: 16, // rate divisor
       A: 0.5, // arp speed
@@ -122,8 +121,8 @@ s = {
       V: 0 , // decayed volume at end of note
       f: 6, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
-      m: 2 - D, // muted for this many loops
-      M: 4 - D, // muted after this many loops
+      m: 2, // muted for this many loops
+      M: 4, // muted after this many loops
       d: 0.4,
       r: 8, // rate divisor
 
@@ -138,19 +137,19 @@ s = {
   ].concat(
     // Snare: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 5, F: 9, m: 4 - D, M: 10 - D,
+      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 5, F: 9, m: 4, M: 10,
       n: [,,,,31 + i,,-1,,],
     }))
   ).concat(
     // Hi-hat 1: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 8, F: 17, m: 4 - D, M: 11 - D,
+      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 8, F: 17, m: 4, M: 11,
       n: [31 + i],
     }))
   ).concat(
     // Hi-hat 2: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.5, V: 0, f: 5, F: 10, m: 2 - D, M: 10 - D,
+      t: 'square', T: 'highpass', v: 0.5, V: 0, f: 5, F: 10, m: 2, M: 10,
       n: [,,31 + i,-1,],
     }))
   )
