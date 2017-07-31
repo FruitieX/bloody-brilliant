@@ -164,8 +164,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
 
       // OSCILLATOR FREQUENCY
       i.o.frequency.setValueAtTime(
-        // close enough to pow(2, (N - 48) / 12)) ?
-        440 * Math.pow(1.06, N - 48), t
+        440 * Math.pow(2, (N - 48) / 12), t
       );
 
       // TODO: golf?
