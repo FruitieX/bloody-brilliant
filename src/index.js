@@ -126,13 +126,16 @@ I = s.i.map(i => {
 for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
   for (r = 0; r < s.r; r++) { // rows (in reverse order)
     I.map(i => { // for each instrument
+      // Rate divisor defaults to 1
+      i.r = i.r || 1;
+
       if (i.A) {
         // Arpeggio
-        a = i.n[Math.floor((r / (i.r || 1)) % i.n.length)];
-        N = a[((r % (i.r || 1)) * i.A) % a.length];
+        a = i.n[Math.floor((r / i.r) % i.n.length)];
+        N = a[((r % i.r) * i.A) % a.length];
       } else {
         // Normal notes
-        N = i.n[(r / (i.r || 1)) % i.n.length];
+        N = i.n[(r / i.r) % i.n.length];
       }
 
       // Instrument was just muted: insert off note
