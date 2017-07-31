@@ -94,7 +94,7 @@ I = s.i.map(i => {
   // Oscillators start out silent, TODO: unnecessary?
   e.gain.value = 0;
   f.gain.value = i.d || 0;
-  d.delayTime.value = 0.29;
+  d.delayTime.value = 0.3;
 
   // Set filter Q value
   //l.Q.value = 12;
@@ -138,7 +138,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       ) return;
 
       // Start time
-      var t = (
+      t = (
         l * s.r + // Loop index * rows per loop
         r         // Row index
       ) * s.b     // * Seconds per row
@@ -148,12 +148,12 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
         // Note starts at silence
         0, t
       );
-      i.e.gain.linearRampToValueAtTime(
-        // Fade to full volume after attack, unless this is an off note
-        N < 0 ? 0 : i.v, t + .02       // Instrument attack
-      );
       i.e.gain.setValueAtTime(
         // Full volume after attack, unless this is an off note
+        N < 0 ? 0 : i.v, t + .02       // Instrument attack
+      );
+      i.e.gain.linearRampToValueAtTime(
+        // Fade to full volume after attack, unless this is an off note
         N < 0 ? 0 : i.v, t + .02       // Instrument attack
       );
 
