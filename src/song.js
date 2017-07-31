@@ -117,15 +117,15 @@ s = {
       F: 0, // decayed low-pass filter frequency in kHz
       m: 2 - D, // muted for this many loops
       M: 4 - D, // muted after this many loops
-      d: 0.5,
-      r: 4, // rate divisor
+      d: 0.4,
+      r: 8, // rate divisor
 
       // notes, -1 = off note
       n: [
-        48,-1,48,-1, // A6
-        46,-1,46,-1, // G6
-        51,-1,51,-1, // C7
-        50,-1,46,-1, // B6
+        48,48, // A6
+        46,46, // G6
+        51,51, // C7
+        50,46, // B6
       ],
     },
   ].concat(
