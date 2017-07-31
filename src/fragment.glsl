@@ -61,7 +61,7 @@ vec4 heart(vec3 p, float colorMod) {
     (.2 - a.w * .1) * (cos(p.x) + sin(p.y) + sin(p.z))
 
     // blobby surface
-    + (.1 - a.w * .1) * sin(p.x) * sin(p.y) * sin(p.z),
+    + (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z),
 
     // color
     vec3(.9, .2, .1) * colorMod
@@ -82,7 +82,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
   pos.x += 15.; // move rotational origo to center of blood vein
-  pR(pos.xz, -.2 * a.z - .1 * a.w); // give speed to blood wall
+  pR(pos.zx, .2 * a.z + .1 * a.w); // give speed to blood wall
   pModPolar(pos.xz, 12.); // Rotate and duplicate blood wall around torus origo
   pos.x -= 15.;
 
