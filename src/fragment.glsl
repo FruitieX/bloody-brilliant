@@ -37,7 +37,9 @@ float sdBloodCell(vec3 p) {
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
 
   return opBlend(
+    // torus
     vec4(length(vec2(length(p.xz)-.3,p.y)) - .1),
+    // capped cylinder
     vec4(clamp(d.x, d.y, 0.) + length(max(d,0.))),
     32.
   ).x;
@@ -216,7 +218,7 @@ vec4 map(vec3 pos) {
     pR(temp.xy, t/PI);
 
     // rotate
-    pR(pos.xz, 3. * PI / 6.);
+    pR(pos.xz, PI / 2.);
 
     // left-right tilt, up-down tilt
     pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
@@ -252,7 +254,7 @@ vec4 map(vec3 pos) {
     pR(temp.xy, t/PI);
 
     // rotate
-    pR(pos.xz, 3. * PI / 6.);
+    pR(pos.xz, PI / 2.);
 
     // left-right tilt, up-down tilt
     pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
