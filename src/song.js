@@ -37,13 +37,15 @@ s = {
       M: 10 - D, // muted after this many loops
       m: 4 - D, // muted for this many loops
       d: .35, // slapback delay echo volume
+      r: 16, // rate divisor
+      A: 1, // arp speed
 
       // notes, -1 = off note
       n: [
-        24,-1,,24,-1,,24,-1,,24,-1,,24,-1,,, // A4
-        27,-1,,27,-1,,27,-1,,27,-1,,27,-1,,, // C5
-        20,-1,,20,-1,,20,-1,,20,-1,,20,-1,,, // F4
-        22,-1,,22,-1,,22,-1,,,22,-1,22,-1,,, // G4
+        [24,-1,,], // A4
+        [27,-1,,], // C5
+        [20,-1,,], // F4
+        [22,-1,,], // G4
       ],
     },
 
@@ -77,7 +79,7 @@ s = {
       M: 10 - D, // muted after this many loops
       m: 8 - D, // muted for this many loops
       d: .5, // slapback delay echo volume
-      r: 16,
+      r: 16, // rate divisor
       A: 1, // arp speed
 
       // notes, -1 = off note
