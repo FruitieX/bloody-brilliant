@@ -115,10 +115,11 @@ I = s.i.map(i => {
   d.connect(f);
 
   // finally, connect delay to filter
-  d.connect(A.destination);
+  a = A.destination;
+  d.connect(a);
 
   // Connect filter to master
-  l.connect(A.destination);
+  l.connect(a);
 
   return Object.assign({ o, e, l }, i);
 });
