@@ -122,7 +122,7 @@ s = {
       F: 0, // decayed low-pass filter frequency in kHz
       m: 2, // muted for this many loops
       M: 4, // muted after this many loops
-      d: .4,
+      d: .5,
       r: 8, // rate divisor
       N: 3, // transpose notes down by this much
 
@@ -131,7 +131,7 @@ s = {
         3,3, // A6
         1,1, // G6
         6,6, // C7
-        5,1, // B6
+        5,-1, // B6
       ],
     },
   ].concat(
