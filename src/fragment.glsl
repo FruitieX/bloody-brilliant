@@ -357,8 +357,8 @@ vec4 map(vec3 pos) {
 
 void main() {
   vec3 ro = vec3(0.,0.,1.),
-       tot,
-       col,
+       tot = vec3(0.),
+       col = vec3(0.),
        pos;
 
   vec4 res; // = vec3(-1.);
