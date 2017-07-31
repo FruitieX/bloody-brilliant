@@ -1,3 +1,7 @@
+// TODO: remove in production
+// Offset start pattern with this many loops
+D = 0;
+
 s = {
   b: .15, // seconds per row: (BPM / 60) / (rows per beat)
   r: 64,  // rows per loop
@@ -9,12 +13,12 @@ s = {
     {
       // oscillator is sine by default
       //t: 'sine', // oscillator type
-      v: .5, // volume
+      v: 0.5, // volume
       V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: 0.1, // decayed low-pass filter frequency in kHz
       //m: 0, // muted for this many loops
-      M: 11, // muted after this many loops
+      M: 11 - D, // muted after this many loops
       g: 1, // glide notes to this frequency in Hz (useful for kicks drums)
 
       // notes, -1 = off note
@@ -23,16 +27,16 @@ s = {
       ],
     },
 
-    // Chip base pattern 1
+    // Chip bass pattern 1
     {
       t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
-      f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 4, // muted after this many loops
-      m: 2, // muted for this many loops
-      d: .5, // slapback delay echo volume
+      v: 0.2, // volume
+      V: 0, // decayed volume at end of note
+      f: 14, // low-pass filter frequency in kHz
+      F: 5, // decayed low-pass filter frequency in kHz
+      M: 8 - D, // muted after this many loops
+      m: 2 - D, // muted for this many loops
+      d: .35, // slapback delay echo volume
 
       // notes, -1 = off note
       n: [
@@ -43,55 +47,15 @@ s = {
       ],
     },
 
-    // Chip base pattern 2
-    {
-      t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
-      f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 6, // muted after this many loops
-      m: 4, // muted for this many loops
-      d: .5, // slapback delay echo volume
-
-      // notes, -1 = off note
-      n: [
-        24,-1,,12,-1,,19,-1,,19,-1,,24,-1,,,
-        19,-1,,22,-1,,26,-1,,22,-1,,24,-1,,,
-        20,-1,,24,-1,,27,-1,,24,-1,,20,-1,,,
-        22,-1,,17,-1,,17,-1,,22,-1,,22,-1,,,
-      ],
-    },
-
-    // Chip base pattern 3
-    {
-      t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
-      f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 8, // muted after this many loops
-      m: 6, // muted for this many loops
-      d: .5, // slapback delay echo volume
-
-      // notes, -1 = off note
-      n: [
-        24,-1,,,,,,,24,-1,,,,,,,
-        19,-1,,,,,,,19,-1,,,,,,,
-        20,-1,,,,,,,20,-1,,,,,,,
-        22,-1,,,,,,,22,-1,,,,,,,
-      ],
-    },
-
     // Chip melody pattern 1
     {
       t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
-      f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 6, // muted after this many loops
-      m: 4, // muted for this many loops
+      v: 0.15, // volume
+      V: 0, // decayed volume at end of note
+      f: 1, // low-pass filter frequency in kHz
+      F: 8, // decayed low-pass filter frequency in kHz
+      M: 6 - D, // muted after this many loops
+      m: 4 - D, // muted for this many loops
       d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -106,14 +70,13 @@ s = {
     // Chip melody pattern 2
     {
       t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
+      v: 0.1, // volume
+      V: 0, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 8, // muted after this many loops
-      m: 6, // muted for this many loops
+      F: 0, // decayed low-pass filter frequency in kHz
+      M: 8 - D, // muted after this many loops
+      m: 6 - D, // muted for this many loops
       d: .5, // slapback delay echo volume
-
 
       // notes, -1 = off note
       n: [
@@ -127,12 +90,12 @@ s = {
     // Chip melody pattern 3
     {
       t: 'square', // oscillator type
-      v: .1, // volume
-      V: .1, // decayed volume at end of note
+      v: 0.1, // volume
+      V: 0.1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
-      F: 4, // decayed low-pass filter frequency in kHz
-      M: 9, // muted after this many loops
-      m: 8, // muted for this many loops
+      F: 0, // decayed low-pass filter frequency in kHz
+      M: 10 - D, // muted after this many loops
+      m: 8 - D, // muted for this many loops
       d: .5, // slapback delay echo volume
 
       // notes, -1 = off note
@@ -146,76 +109,39 @@ s = {
 
     // Choir pattern 1
     {
-      t: 'triangle', // oscillator type
-      v: .2, // volume
-      V: .1 , // decayed volume at end of note
-      f: 1, // low-pass filter frequency in kHz
-      F: .1, // decayed low-pass filter frequency in kHz
-      m: 1, // muted for this many loops
-      M: 4, // muted after this many loops
+      t: 'square', // oscillator type
+      v: 0.1, // volume
+      V: 0 , // decayed volume at end of note
+      f: 6, // low-pass filter frequency in kHz
+      F: 0, // decayed low-pass filter frequency in kHz
+      m: 1 - D, // muted for this many loops
+      M: 3 - D, // muted after this many loops
+      d: 0.5,
 
       // notes, -1 = off note
       n: [
-        48,,,,,,,,,,,,,,,, // A6
-        46,,,,,,,,,,,,,,,, // G6
-        51,,,,,,,,,,,,,,,,  // C7
-        50,,,,,,,,,,,,,,,, // B6
-      ],
-    },
-
-    // Choir pattern 2
-    {
-      t: 'triangle', // oscillator type
-      v: .2, // volume
-      V: .1 , // decayed volume at end of note
-      f: 1, // low-pass filter frequency in kHz
-      F: .1, // decayed low-pass filter frequency in kHz
-      m: 4, // muted for this many loops
-      M: 8, // muted after this many loops
-
-      // notes, -1 = off note
-      n: [
-        36,,,,39,,,,43,,,,39,,,,
-        31,,,,34,,,,38,,,,34,,,,
-        32,,,,36,,,,39,,,,36,,,,
-        34,,,,38,,,,41,,,,38,,,,
-      ],
-    },
-
-    // Choir pattern 3
-    {
-      t: 'triangle', // oscillator type
-      v: .2, // volume
-      V: .1 , // decayed volume at end of note
-      f: 1, // low-pass filter frequency in kHz
-      F: .1, // decayed low-pass filter frequency in kHz
-      m: 8, // muted for this many loops
-      M: 10, // muted after this many loops
-
-      // notes, -1 = off note
-      n: [
-        48,,,,,,,,,,,,,,,, // A6
-        46,,,,,,,,,,,,,,,, // G6
-        51,,,,,,,,,,,,,,,,  // C7
-        50,,,,,,,,,,,,,,,, // B6
+        48,,-1,,,,,,48,,-1,48,-1,,,, // A6
+        46,,-1,,,,,,46,,-1,46,-1,,,, // G6
+        51,,-1,,,,,,51,,-1,51,-1,,,,  // C7
+        50,,-1,,,,,,46,,-1,46,-1,,,, // B6
       ],
     },
   ].concat(
     // Snare: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 5, F: 9, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 5, F: 9, m: 3 - D, M: 8 - D,
       n: [,,,,31 + i,,-1,,],
     }))
   ).concat(
     // Hi-hat 1: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 8, F: 17, m: 2, M: 8,
+      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 8, F: 17, m: 2 - D, M: 9 - D,
       n: [31 + i],
     }))
   ).concat(
     // Hi-hat 2: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.5, V: 0, f: 5, F: 10, m: 1, M: 8,
+      t: 'square', T: 'highpass', v: 0.5, V: 0, f: 5, F: 10, m: 1 - D, M: 9 - D,
       n: [,,31 + i,-1,],
     }))
   )
