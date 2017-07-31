@@ -61,7 +61,7 @@ vec4 heart(vec3 p, float colorMod) {
     (.2 - a.w * .1) * (cos(p.x) + sin(p.y) + sin(p.z))
 
     // blobby surface
-    + (.04 - a.w * .1) * sin(5. * p.x) * sin(5. * p.y) * sin(5. * p.z),
+    + (.1 - a.w * .1) * sin(p.x) * sin(p.y) * sin(p.z),
 
     // color
     vec3(.9, .2, .1) * colorMod
