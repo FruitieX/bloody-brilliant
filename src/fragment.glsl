@@ -58,10 +58,10 @@ float sdHexPrism( vec3 p, vec2 h ) {
 vec4 heart(vec3 p, float colorMod) {
   return vec4(
     // tunnel shape
-    (1. - a.w * .5) * (cos(p.x) + sin(p.y) + sin(p.z)) / 5.
+    (.2 - a.w * .1) * (cos(p.x) + sin(p.y) + sin(p.z))
 
     // blobby surface
-    + (.9 - a.w * 2.) * .05 * sin(5. * p.x) * sin(5. * p.y) * sin(5. * p.z),
+    + (.04 - a.w * .1) * sin(5. * p.x) * sin(5. * p.y) * sin(5. * p.z),
 
     // color
     vec3(.9, .2, .1) * colorMod
@@ -69,9 +69,9 @@ vec4 heart(vec3 p, float colorMod) {
 }
 
 float pModPolar(inout vec2 p, float repetitions) {
-	float angle = 2.*PI/repetitions,
-      	a = mod(atan(p.y, p.x) + angle/2., angle) - angle/2.,
-      	c = floor(a/angle);
+	float angle = PI/repetitions,
+      	a = mod(atan(p.y, p.x) + angle, angle*2.) - angle,
+      	c = floor(a/angle/2.);
 	p = vec2(cos(a), sin(a))*length(p);
 	// For an odd number of repetitions, fix cell index of the cell in -x direction
 	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
@@ -82,7 +82,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
   pos.x += 15.; // move rotational origo to center of blood vein
-  pR(pos.xz, -(4. * a.z + 2. * a.w) / 20.); // give speed to blood wall
+  pR(pos.xz, -.2 * a.z - .1 * a.w); // give speed to blood wall
   pModPolar(pos.xz, 12.); // Rotate and duplicate blood wall around torus origo
   pos.x -= 15.;
 
