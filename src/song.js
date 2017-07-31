@@ -52,20 +52,22 @@ s = {
     // Chip melody pattern 1
     {
       t: 'square', // oscillator type
-      v: 0.15, // volume
+      v: 0.1, // volume
       V: 0, // decayed volume at end of note
-      f: 1, // low-pass filter frequency in kHz
-      F: 8, // decayed low-pass filter frequency in kHz
+      f: 8, // low-pass filter frequency in kHz
+      F: 0, // decayed low-pass filter frequency in kHz
       M: 8 - D, // muted after this many loops
       m: 6 - D, // muted for this many loops
-      d: .5, // slapback delay echo volume
+      d: .6, // slapback delay echo volume
+      r: 16, // rate divisor
+      A: 1/3, // arp speed
 
       // notes, -1 = off note
       n: [
-        55,-1,,51,-1,,58,-1,,60,-1,,63,-1,60,-1,
-        55,-1,,58,-1,,60,-1,,62,-1,,60,-1,58,-1,
-        51,-1,,56,-1,,60,-1,,60,-1,,60,-1,62,-1,
-        58,-1,,53,-1,,62,-1,,58,-1,,62,-1,60,-1,
+        [55,51,58,60,63,60],
+        [55,58,60,62,60,58],
+        [51,53,58,60,58],
+        [58,53,62,58,62,60],
       ],
     },
 
