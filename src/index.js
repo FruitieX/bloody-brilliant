@@ -10,8 +10,8 @@ c.height = 1080;
 */
 
 // debug, 1080p / 2
-c.width = 960;
-c.height = 540;
+c.width = w = 1920;
+c.height = h = 1080;
 
 // accumulators
 b = 0; // bass avg
@@ -31,8 +31,8 @@ R = t =>
     // a.w = bass
     g.uniform4f(
       g.getUniformLocation(P, 'a', B = Math.pow(0.995, t - T)),
-      c.width,
-      c.height,
+      w,
+      h,
       A.currentTime,
       // framerate independent moving average:
       // https://www.gamedev.net/forums/topic/499983-smooth-framerate-independent-chase-camera/#comment-4261584
@@ -61,7 +61,7 @@ g.compileShader(S);g.attachShader(P,S);
 //   throw g.getShaderInfoLog(S);
 // }
 
-g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer(c.style = 'height:1e2vh'));
+g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer());
 
 //c.parentElement.style = 'cursor:none;margin:0;overflow:hidden';
 
