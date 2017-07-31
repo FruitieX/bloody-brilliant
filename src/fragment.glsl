@@ -75,7 +75,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 	p = vec2(cos(a), sin(a))*length(p);
 	// For an odd number of repetitions, fix cell index of the cell in -x direction
 	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
-	if (abs(c) >= (repetitions/2.)) c = abs(c);
+	// if (abs(c) >= (repetitions/2.)) c = abs(c); // deleting this didn't make any visible changes
 	return c;
 }
 
@@ -377,10 +377,10 @@ void main() {
   vec2 e = vec2(.01, -.01);
 
   vec3 nor = normalize(
-    e.xyy * map(pos + e.xyy).x +
-    e.yyx * map(pos + e.yyx).x +
-    e.yxy * map(pos + e.yxy).x +
-    e.xxx * map(pos + e.xxx).x
+    e.xyy * map(pos + e.xyy).x
+    + e.yyx * map(pos + e.yyx).x
+    + e.yxy * map(pos + e.yxy).x
+    + e.xxx * map(pos + e.xxx).x // this last one could be deleted out without ruining the demo too much?
   ),
   ref = reflect(rd, nor),
 
