@@ -96,7 +96,7 @@ vec4 bloodCellField(vec3 pos) {
   pR(pos.yz, 1.5 + sin(a.z / 10.));
 
   // offset individual blood cell
-  pos.x -= 2.5;
+  pos.x -= 2.2;
 
   return vec4(
     sdBloodCell(pos),
