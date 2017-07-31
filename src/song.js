@@ -14,7 +14,6 @@ s = {
       // oscillator is sine by default
       //t: 'sine', // oscillator type
       v: .5, // volume
-      V: 0, // decayed volume at end of note
       f: 1, // low-pass filter frequency in kHz
       F: .1, // decayed low-pass filter frequency in kHz
       M: 14, // muted after this many loops
@@ -31,7 +30,6 @@ s = {
     {
       t: 'square', // oscillator type
       v: .2, // volume
-      V: 0, // decayed volume at end of note
       f: 14, // low-pass filter frequency in kHz
       F: 5, // decayed low-pass filter frequency in kHz
       M: 10, // muted after this many loops
@@ -54,7 +52,6 @@ s = {
     {
       t: 'square', // oscillator type
       v: .1, // volume
-      V: 0, // decayed volume at end of note
       f: 8, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       M: 8, // muted after this many loops
@@ -77,7 +74,6 @@ s = {
     {
       t: 'square', // oscillator type
       v: .1, // volume
-      V: 0, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       M: 10, // muted after this many loops
@@ -100,7 +96,6 @@ s = {
     {
       t: 'square', // oscillator type
       v: .1, // volume
-      V: .1, // decayed volume at end of note
       f: 4, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       M: 12, // muted after this many loops
@@ -123,7 +118,6 @@ s = {
     {
       t: 'square', // oscillator type
       v: .1, // volume
-      V: 0 , // decayed volume at end of note
       f: 6, // low-pass filter frequency in kHz
       F: 0, // decayed low-pass filter frequency in kHz
       m: 2, // muted for this many loops
@@ -143,7 +137,7 @@ s = {
   ].concat(
     // Snare: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', V: 0, f: 5, N: 30,
+      t: 'square', T: 'highpass', f: 5, N: 30,
 
       n: [,,1 + i,-1,],
 
@@ -152,7 +146,7 @@ s = {
   ).concat(
     // Hi-hat 2: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', V: 0, f: 5, N: 30,
+      t: 'square', T: 'highpass', f: 5, N: 30,
 
       n: [,,1 + i,-1,],
 
@@ -161,7 +155,7 @@ s = {
   ).concat(
     // Hi-hat 1: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', V: 0, f: 5, N: 30,
+      t: 'square', T: 'highpass', f: 5, N: 30,
 
       n: [1 + i],
 

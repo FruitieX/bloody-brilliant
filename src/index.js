@@ -193,7 +193,7 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       // DECAY PREVIOUS NOTE
       i.e.gain.linearRampToValueAtTime(
         // Volume of previous note right before this note
-        i.V, t - 1e-3      // - delta
+        0, t - 1e-3      // - delta
       );
       i.l.frequency.linearRampToValueAtTime(
         // Low-pass filter frequency right before next note
