@@ -125,17 +125,16 @@ vec4 bloodVein(vec3 p) {
 }
 
 vec4 virus(vec3 pos, float size) {
-  vec3 temp = pos;
+  vec4 res = vec4(
+    length(pos) - .5 * size - a.w / 5.,
+    0., 1., 0.
+  );
 
   pModPolar(pos.yz, 7.);
   pModPolar(pos.yx, 7.);
   pos.y -= .5 * size;
 
-  return opBlend(
-    vec4(
-      length(temp) - .5 * size - a.w / 5.,
-      0., 1., 0.
-    ),
+  return opBlend(res,
     vec4(
       fCapsule(
         pos,
