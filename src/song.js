@@ -137,20 +137,29 @@ s = {
   ].concat(
     // Snare: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 5, F: 9, m: 4, M: 10,
-      n: [,,,,31 + i,,-1,,],
-    }))
-  ).concat(
-    // Hi-hat 1: multiple layered square waves produce noise
-    Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.3, V: 0, f: 8, F: 17, m: 4, M: 11,
-      n: [31 + i],
+      t: 'square', T: 'highpass', V: 0, f: 5,
+
+      n: [,,31 + i,-1,],
+
+      F: 10, M: 10, m: 4, v: 0.3, r: 2
     }))
   ).concat(
     // Hi-hat 2: multiple layered square waves produce noise
     Array(6).fill().map((e, i) => ({
-      t: 'square', T: 'highpass', v: 0.5, V: 0, f: 5, F: 10, m: 2, M: 10,
+      t: 'square', T: 'highpass', V: 0, f: 5,
+
       n: [,,31 + i,-1,],
+
+      F: 10, M: 10, m: 2, v: 0.5
+    }))
+  ).concat(
+    // Hi-hat 1: multiple layered square waves produce noise
+    Array(6).fill().map((e, i) => ({
+      t: 'square', T: 'highpass', V: 0, f: 5,
+
+      n: [31 + i],
+
+      F: 17, M: 11, m: 0, v: 0.3, 
     }))
   )
 };
