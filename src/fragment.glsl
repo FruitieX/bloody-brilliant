@@ -420,7 +420,7 @@ void main() {
   // fade in
   * pow(min((a.z - 1.) / 8., 1.), 2.)
   // fade out
-  * pow(min((150. - a.z) / 8., 1.), 2.); // 150. = demo length in seconds
+  * pow(min((130. - a.z) / 8., 1.), 2.); // 130. = demo length in seconds
 
   gl_FragColor = vec4(tot, 1.); // 4 = AA * AA
 }
