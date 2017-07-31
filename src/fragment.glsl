@@ -281,7 +281,7 @@ vec4 map(vec3 pos) {
     );
     res = opBlend(
       res,
-      virus(pos + vec3(.5), 1.),
+      virus(pos + .5, 1.),
       50.
     );
 
