@@ -235,12 +235,12 @@ vec4 map(vec3 pos) {
 
   // SCENE 3: Virus in heart
   else if ((t -= 19.2) < 0.) {
-    pR(pos.yz, 7.);
-    pR(pos.xy, t/20.);
-    pos += vec3(1.);
+    pR(pos.yz, 1.);
+    pR(pos.xy, t/10.);
+    // pos += vec3(1.);
     return opBlend(
-      heart(pos, -t / 19.2),
-      virus(pos + vec3(.5), 1.),
+      heart(pos + 1., -t / 10.),
+      virus(pos + 1.5, 1.),
       50.
     );
   }
