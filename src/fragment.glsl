@@ -37,8 +37,8 @@ float sdBloodCell(vec3 p) {
   vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
 
   return opBlend(
-    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1,0.,0.,0.),
-    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.)),0.,0.,0.),
+    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1),
+    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.))),
     32.
   ).x;
 }
