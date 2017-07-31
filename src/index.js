@@ -133,13 +133,11 @@ for (l = 0; l < s.l; l++) { // loop repetitions (in reverse order)
       // Note index
       n = (r / i.r) % i.n.length;
 
-      if (i.A) {
-        // Arpeggio
-        N = i.n[~~n][((r % i.r) * i.A) % i.n[~~n].length]; // ~~ does Math.floor()
-      } else {
+      N = i.A
+        // Arpeggio, ~~ does Math.floor()
+        ? i.n[~~n][((r % i.r) * i.A) % i.n[~~n].length]
         // Normal notes
-        N = i.n[n];
-      }
+        : i.n[n];
 
       // Instrument was just muted: insert off note
       if (i.M - 1 < l) N = -1;
