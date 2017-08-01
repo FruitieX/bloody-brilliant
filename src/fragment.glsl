@@ -8,7 +8,7 @@ uniform vec4 a;
 float PI = 3.14;
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
-  float h = clamp( 0.5+0.5*(d2.x-d1.x)/k, 0.0, 1.0 );
+  float h = clamp( .5+.5*(d2.x-d1.x)/k, 0., 1. );
   h = mix(d2.x,d1.x,h) - k*h*(1.-h);
   return vec4(h,
     (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
@@ -121,12 +121,12 @@ vec4 virus(vec3 pos, float size) {
     vec4(
       fCapsule(
         pos,
-        .03 * size,
-        .3 * size
+        .01 * size,
+        .4 * size
       ),
       1, .6, 1
     ),
-    .1
+    .2
   );
 }
 
@@ -319,7 +319,7 @@ vec4 map(vec3 heartPos) {
     vesselPos = heartPos;
 
     //vesselPos.x -= 2.;
-    vesselPos.x += -1. + t / 20.;
+    vesselPos.x += sqrt((t + 20.) / 10.) - 2.;
 
     laser = cos(2. + t / 4.);
   }
@@ -335,7 +335,7 @@ vec4 map(vec3 heartPos) {
     // rotate
     pR(vesselPos.xz, PI / 2.);
 
-    vesselPos += vec3(t - 3., -1, 1);
+    vesselPos += vec3(t - 5., -1, 1);
   }
 
   // rotation to blood cells and vein
@@ -349,7 +349,7 @@ vec4 map(vec3 heartPos) {
     // heart & virus
     scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
     vessel(vesselPos, laser),
-    .1
+    .1 + laser > 0. ? .2 : 0.
   );
 }
 
