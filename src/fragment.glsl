@@ -375,7 +375,7 @@ void main() {
       )
     );
 
-  for(float i = 0.; i < 64.; i++) // 64. = maxIterations
+  for(float i = 0.; i < 99.; i++) // 99. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
   vec2 e = vec2(.01, -.01);
