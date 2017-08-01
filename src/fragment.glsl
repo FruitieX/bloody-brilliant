@@ -78,7 +78,7 @@ vec4 bloodCellField(vec3 pos) {
   );
 }
 
-vec4 bloodVein(vec3 p) {
+vec4 bloodVein(vec3 p, float colorMod) {
   vec3 temp = p;
   p += vec3(14, 0, 1.5);
 
@@ -96,7 +96,7 @@ vec4 bloodVein(vec3 p) {
       + 2. * a.w,
 
       // color
-      .9, .1, .1
+      colorMod, .1 * colorMod, .1 * colorMod
     ),
     bloodCellField(temp),
     20.
@@ -137,7 +137,7 @@ vec4 heart(vec3 p, float colorMod) {
         9.
       ).x,
       // color
-      vec3(1, .2, .1) * colorMod
+      colorMod, .2 * colorMod, .1 * colorMod
     ),
     bloodCellField(temp2),
     20.
@@ -245,7 +245,7 @@ vec4 map(vec3 pos) {
     // render blood vein and cells
     return opBlend(
       vessel(pos, 0.),
-      bloodVein(temp),
+      bloodVein(temp, 1.),
       32.
     );
   }
@@ -263,7 +263,7 @@ vec4 map(vec3 pos) {
     );
   }
 
-  // SCENE 4: Nanobot in blood vein, TODO: viruses on walls?
+  // SCENE 4: Nanobot in blood vein, nearing heart
   if ((t -= 19.2) < 0.) {
     // move vessel forward
     pos += vec3(0, .25, .5);
@@ -280,7 +280,7 @@ vec4 map(vec3 pos) {
     // render blood vein and cells
     return opBlend(
       vessel(pos, 0.),
-      bloodVein(temp),
+      bloodVein(temp, -t / 10.),
       32.
     );
   }
