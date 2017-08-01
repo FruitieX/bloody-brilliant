@@ -63,7 +63,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 vec4 heart(vec3 p, float colorMod) {
   vec3 temp = p;
 
-  temp.x -= 4.;
+  temp.x -= 6.;
   pModPolar(temp.yz, 7.);
   pR(temp.xy, 1.);
 
@@ -72,7 +72,7 @@ vec4 heart(vec3 p, float colorMod) {
       // heart
       vec4(
         // tunnel shape
-        .2 * (sin(p.x) + sin(p.y) + sin(p.z))
+        sin(p.x) + sin(p.y) + sin(p.z)
 
         // wow interesting
         //(.2 - a.w * .1) * length(sin(p))
@@ -81,13 +81,13 @@ vec4 heart(vec3 p, float colorMod) {
         //+ (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z)
 
         // heartbeat
-        - .2 * a.w
+        - a.w
       ),
       // muscle tissue stuff
       vec4(
-        fCapsule(temp, .001, 99.)
+        fCapsule(temp, .05, 9.)
       ),
-      5.
+      9.
     ).x,
     // color
     vec3(.9, .2, .1) * colorMod
@@ -191,21 +191,21 @@ vec4 vessel(vec3 pos, float laser) {
     res = opBlend(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.3, -.15), .001, 2.) / 3.,
+        fCapsule(pos - vec3(.1, 2., -.1), .01, 2.) / 3.,
         10., .2, .3
       ),
-      64.
+      99.
     );
 
-    pos.z -= .3;
+    pos.z -= .2;
 
     res = opBlend(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.3, -.15), .001, 2.) / 3.,
+        fCapsule(pos - vec3(.1, 2., -.1), .01, 2.) / 3.,
         10., .2, .3
       ),
-      64.
+      99.
     );
   }
 
@@ -225,7 +225,7 @@ vec4 map(vec3 pos) {
   }
 
   // SCENE 2: Nanobot in blood vein
-  else if ((t -= 19.2) < 0.) {
+  if ((t -= 19.2) < 0.) {
     // move vessel forward
     pos += vec3(0., .25, .5);
 
@@ -251,19 +251,20 @@ vec4 map(vec3 pos) {
   }
 
   // SCENE 3: Virus in heart
-  else if ((t -= 19.2) < 0.) {
+  if ((t -= 19.2) < 0.) {
     pR(pos.yz, 1.);
     pR(pos.xy, t/10.);
-    // pos += vec3(1.);
+
+    pos += 1. - t / 10.;
     return opBlend(
-      heart(pos + 1., -t / 10.),
-      virus(pos + 1.5, 1.),
+      heart(pos, -t / 10.),
+      virus(pos - .4 * a.w, 1.),
       50.
     );
   }
 
   // SCENE 4: Nanobot in blood vein, TODO: viruses on walls?
-  else if ((t -= 19.2) < 0.) {
+  if ((t -= 19.2) < 0.) {
     // move vessel forward
     pos += vec3(0., .25, .5);
 
@@ -289,10 +290,9 @@ vec4 map(vec3 pos) {
   }
 
   // SCENE 5: Nanobot approaches virus
-  else if ((t -= 19.2) < 0.) {
-    pR(pos.xy, -.4);
-    pR(pos.xz, t / 20. - .8);
-    pos += vec3(sin(t / 6. - 1.), .5, 2. + sin(t / 6. - 1.));
+  if ((t -= 19.2) < 0.) {
+    pR(pos.xz, t / 40. - .8);
+    pos += vec3(sin(t / 6. - 1.), 1., 2. + sin(t / 6. - 1.));
 
     temp = pos;
 
@@ -306,21 +306,18 @@ vec4 map(vec3 pos) {
     );
     res = opBlend(
       res,
-      virus(pos + .5, 1.),
+      virus(pos - .4 * a.w, 1.),
       50.
     );
 
     // rotate
     pR(pos.xy, PI / 14.); pR(pos.xz, PI / 20.);
 
-    // left-right tilt, up-down tilt
-    //pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
-
     pos -= vec3(
       8. + sin(t / 10. - 1.5) * 7.,
       //- 3. * sin(min(t, (PI - 1. ) * 8.) / 8.),
       0.,
-      .5
+      1.
     );
 
     return opBlend(
@@ -332,15 +329,13 @@ vec4 map(vec3 pos) {
   }
 
   // SCENE 6: Nanobot attacks virus
-  else if ((t -= 19.2) < 0.) {
-    t += 19.2; // TODO;
+  if ((t -= 19.2) < 0.) {
     pR(pos.yz, .7);
-    pR(pos.xz, -3.);
-    pos += vec3(t / 16. - .5,1.,-1.);
+    pos += 2. + t / 20.;
 
     res = opBlend(
-      heart(pos, max(0., (t - 2.) / 20.)),
-      virus(pos + vec3(.5), 1. / (1. + t / 10.)),
+      heart(pos, max(0., (t + 10.) / 20.)),
+      virus(pos - .4 * a.w, 1. - (t + 20.) / 20.),
       50.
     );
 
@@ -352,26 +347,27 @@ vec4 map(vec3 pos) {
 
     return opBlend(
       res,
-      vessel(pos - vec3(1., 0., -.2), 1.),
+      vessel(pos - vec3(2., 0., 0.), 1.),
       15.
     );
   }
 
   // SCENE 7: Nanobot retracts
-  else {
+  pos += 1. - t / 10.;
+  pos += 1.;
+  temp = pos;
 
-    pR(pos.xy, 1.);
-    pos += vec3(sin(t / 8.), 1., -sin(-2. + t / 8.));
+  // rotate
+  pR(temp.xz, PI / 2.);
 
-    // rotate
-    pR(temp.xz, PI / 2.);
+  temp += vec3(t - 3., -1, 1);
 
-    return opBlend(
-      heart(pos, 1.),
-      vessel(temp - vec3(5. - t, -.5, 1.), 0.),
-      15.
-    );
-  }
+  return opBlend(
+    heart(pos, 1.),
+    // TODO: wat, why do ints work here?
+    vessel(temp, 0.),
+    15.
+  );
 }
 
 void main() {
