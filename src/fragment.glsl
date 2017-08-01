@@ -104,7 +104,7 @@ vec4 bloodVein(vec3 p, float colorMod) {
   );
 }
 
-vec4 virus(vec3 pos, float size) {
+vec4 virus(vec3 pos, float size, float colorMod) {
   vec3 temp = pos;
 
   pModPolar(pos.yz, 7.);
@@ -115,7 +115,7 @@ vec4 virus(vec3 pos, float size) {
     // blob
     vec4(
       length(temp) - .5 * size - a.w / 5.,
-      0, 1, 0
+      0, colorMod, 0
     ),
     // spikes
     vec4(
@@ -124,7 +124,7 @@ vec4 virus(vec3 pos, float size) {
         .01 * size,
         .4 * size
       ),
-      1, .6, 1
+      colorMod, .6 * colorMod, colorMod
     ),
     .2
   );
@@ -142,7 +142,7 @@ vec4 heart(vec3 p, float virusSize, float colorMod) {
 
   return opBlend(
     opBlend(
-      virus(p - .4 * a.w, virusSize),
+      virus(p - .4 * a.w, virusSize, 1. - colorMod),
       // heart
       vec4(
         opBlend(
@@ -187,13 +187,13 @@ vec4 vessel(vec3 pos, float laser) {
   res = (res.x > temp.x ? res : temp);
 
   pos.z += .3;
-  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), .0);
+  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), 0.);
 
   pR(pos.yz, PI/2.);
-  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), .0);
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), 0.);
   pR(pos.xz, PI/2.);
   pos.xy += .1;
-  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), .0);
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), 0.);
 
   if (laser > 0.) {
     // TODO: pos += vec3(.1, 2.3, -.15) ?
@@ -328,7 +328,6 @@ vec4 map(vec3 heartPos) {
   // left-right tilt, up-down tilt
   pR(vesselPos.xz, -PI/12.*cos(t/PI)); pR(vesselPos.yz, PI/16.*sin(t/PI));
 
-  //virus(heartPos - .4 * a.w, virusSize),
   return opBlend(
     // heart & virus
     scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
@@ -400,7 +399,7 @@ void main() {
   )
 
   // fade in
-  //* pow(min((a.z - 1.) / 8., 1.), 2.)
+  * pow(min((a.z - 1.) / 8., 1.), 2.)
   // fade out
   * pow(clamp((135. - a.z) / 8., 0., 1.), 2.); // 135. = demo length in seconds
 
