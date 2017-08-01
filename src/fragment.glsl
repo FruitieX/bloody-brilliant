@@ -79,22 +79,27 @@ vec4 bloodCellField(vec3 pos) {
 }
 
 vec4 bloodVein(vec3 p) {
-  // rotate
-  // pR(p.xy, a/5.);
+  vec3 temp = p;
   p += vec3(14., 0., 1.5);
-  return vec4(
-    // tunnel shape
-    // the first constant sets size of torus
-    // second sets size of middle
-    3. -length(vec2(length(p.xz)-14.,p.y))
 
-    // blobby surface
-    - .05 * (1. - sin(3. * (p.z - 2. * a.z)))
+  return opBlend(
+    // bloodVein
+    vec4(
+      // tunnel shape
+      // the first constant sets size of torus
+      // second sets size of middle
+      3. -length(vec2(length(p.xz)-14.,p.y))
 
-    + 2. * a.w,
+      // blobby surface
+      - .05 * (1. - sin(3. * (p.z - 2. * a.z)))
 
-    // color
-    .9, .1, .1
+      + 2. * a.w,
+
+      // color
+      .9, .1, .1
+    ),
+    bloodCellField(temp),
+    20.
   );
 }
 
@@ -236,12 +241,8 @@ vec4 map(vec3 pos) {
 
     // render blood vein and cells
     return opBlend(
-      opBlend(
-        vessel(pos, 0.),
-        bloodVein(temp),
-        32.
-      ),
-      bloodCellField(temp),
+      vessel(pos, 0.),
+      bloodVein(temp),
       32.
     );
   }
@@ -275,12 +276,8 @@ vec4 map(vec3 pos) {
 
     // render blood vein and cells
     return opBlend(
-      opBlend(
-        vessel(pos, 0.),
-        bloodVein(temp),
-        32.
-      ),
-      bloodCellField(temp),
+      vessel(pos, 0.),
+      bloodVein(temp),
       32.
     );
   }
