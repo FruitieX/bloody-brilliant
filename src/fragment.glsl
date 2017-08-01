@@ -42,13 +42,6 @@ float sdTriPrism( vec3 p, vec2 h ) {
     return max(q.z-h.y,max(q.x+.5*p.y, -p.y)-h.x*.5);
 }
 
-/*
-float sdHexPrism( vec3 p, vec2 h ) {
-    vec3 q = abs(p);
-    return max(q.z-h.y,max(q.x+.5*q.y, q.y)-h.x);
-}
-*/
-
 float pModPolar(inout vec2 p, float repetitions) {
 	float angle = PI/repetitions,
       	a = mod(atan(p.y, p.x) + angle, angle*2.) - angle,
@@ -60,6 +53,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+// TODO: add blood cells into heart()
 vec4 heart(vec3 p, float colorMod) {
   vec3 temp = p;
 
@@ -168,13 +162,11 @@ vec4 vessel(vec3 pos, float laser) {
   pR(pos.xy, PI/2.);
   vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col), temp;
   pR(pos.xz, PI/2.);
-  //res = opI(res, vec4(sdTriPrism(pos , vec2(.35)), col));
   pR(pos.zy, PI/2.);
   // inline opI
   temp = vec4(sdTriPrism(pos, vec2(.15,.25)), col);
   res = (res.x > temp.x ? res : temp);
 
-  //opI(res, vec4(sdTriPrism(pos, vec2(.15,.25)), col));
   pos.z += .3;
   res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), 99.);
 
@@ -182,8 +174,6 @@ vec4 vessel(vec3 pos, float laser) {
   res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), 99.);
   pR(pos.xz, PI/2.);
   pos.xy += .1;
-  //pos.x += .1;
-  //pos.y += .1;
   res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), 99.);
 
   if (laser > 0.) {
@@ -245,6 +235,7 @@ vec4 map(vec3 pos) {
         bloodVein(temp),
         32.
       ),
+      // TODO: move me to heart()
       bloodCellField(temp),
       32.
     );
@@ -284,6 +275,7 @@ vec4 map(vec3 pos) {
         bloodVein(temp),
         32.
       ),
+      // TODO: move me to heart()
       bloodCellField(temp),
       32.
     );
@@ -297,6 +289,7 @@ vec4 map(vec3 pos) {
     temp = pos;
 
     pR(temp.xy, -.1);
+    // TODO: move me to heart()
     res = bloodCellField(temp - vec3(8., 2., 5.));
 
     res = opBlend(
