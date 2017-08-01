@@ -121,8 +121,8 @@ vec4 virus(vec3 pos, float size) {
     vec4(
       fCapsule(
         pos,
-        .01 * size,
-        .5 * size
+        .03 * size,
+        .3 * size
       ),
       1, .6, 1
     ),
@@ -261,7 +261,7 @@ vec4 map(vec3 heartPos) {
 
   if ((t -= 19.2) < 0.) {
     vesselPos += 9.;
-
+    virusSize = 1.;
     pR(heartPos.yz, 1.);
     pR(heartPos.xy, t/10.);
 
