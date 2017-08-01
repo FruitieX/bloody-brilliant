@@ -242,14 +242,8 @@ vec4 map(vec3 heartPos) {
   else
 
   if ((t -= 19.2) < 0.) {
-    // move vessel forward
-    vesselPos += vec3(0, .25, .5);
-
     // select blood vessel scene
     scene = 1.;
-
-    // rotate vessel
-    pR(vesselPos.xz, PI / 2.);
   }
 
   // SCENE 3: Virus in heart
@@ -259,12 +253,12 @@ vec4 map(vec3 heartPos) {
     colorMod = -t / 10.;
     virusSize = 1.;
 
-    vesselPos += 9.;
     virusSize = 1.;
     pR(heartPos.yz, 1.);
     pR(heartPos.xy, t/10.);
 
     heartPos += 1. - t / 10.;
+    vesselPos += 9.;
   }
 
   // SCENE 4: Nanobot in blood vein, nearing heart
@@ -274,14 +268,8 @@ vec4 map(vec3 heartPos) {
     // darken over time
     colorMod = -t / 10.;
 
-    // move vessel forward
-    vesselPos += vec3(0, .25, .5);
-
     // select blood vessel scene
     scene = 1.;
-
-    // rotate vessel
-    pR(vesselPos.xz, PI / 2.);
   }
 
   // SCENE 5: Nanobot approaches virus
@@ -309,9 +297,7 @@ vec4 map(vec3 heartPos) {
     virusSize = 1. - (t + 20.) / 20.;
 
     pR(heartPos.yz, .7);
-    heartPos += 2. + t / 20.;
-
-    vesselPos = heartPos;
+    vesselPos = heartPos += 2. + t / 20.;
 
     vesselPos.x += sqrt((t + 20.) / 10.) - 2.;
 
@@ -330,6 +316,11 @@ vec4 map(vec3 heartPos) {
 
     vesselPos += vec3(t - 5., -1, 1);
   }
+
+  // move vessel forward (only in scene 1)
+  vesselPos += scene * vec3(0, .25, .5);
+  // rotate vessel (only in scene 1)
+  pR(vesselPos.xz, scene * PI / 2.);
 
   // rotation to blood cells and vein
   pR(bloodVeinPos.xy, t/PI);
