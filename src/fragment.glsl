@@ -7,19 +7,11 @@ uniform vec4 a;
 
 float PI = 3.14;
 
-// vec4 opI( vec4 d1, vec4 d2 ) {
-//   return d1.x < d2.x ? d2 : d1;
-// }
-
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   return vec4(
     -log( max(1e-9, exp(-k * d1.x) + exp(-k * d2.x))) / k,
     (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
   );
-}
-
-vec4 opU(vec4 d1, vec4 d2) {
-  return d1.x < d2.x ? d1 : d2;
 }
 
 // Rotate around a coordinate axis (i.e. in a plane perpendicular to that axis) by angle <a>.
@@ -163,34 +155,36 @@ vec4 vessel(vec3 pos, float laser) {
 
   //opI(res, vec4(sdTriPrism(pos, vec2(.15,.25)), col));
   pos.z += .3;
-  res = opU(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col));
+  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), 99.);
 
   pR(pos.yz, PI/2.);
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col));
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), 99.);
   pR(pos.xz, PI/2.);
   pos.xy += .1;
   //pos.x += .1;
   //pos.y += .1;
-  res = opU(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col));
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), 99.);
 
   if (laser > 0.) {
     // TODO: pos += vec3(.1, 2.3, -.15) ?
-    res = opU(
+    res = opBlend(
       res,
       vec4(
         fCapsule(pos - vec3(.1, 2.3, -.15), .001, 2.) / 3.,
         10., .2, .3
-      )
+      ),
+      64.
     );
 
     pos.z -= .3;
 
-    res = opU(
+    res = opBlend(
       res,
       vec4(
         fCapsule(pos - vec3(.1, 2.3, -.15), .001, 2.) / 3.,
         10., .2, .3
-      )
+      ),
+      64.
     );
   }
 
@@ -224,12 +218,14 @@ vec4 map(vec3 pos) {
     pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
 
     // render blood vein and cells
-    return opU(
-      opU(
+    return opBlend(
+      opBlend(
         vessel(pos, 0.),
-        bloodVein(temp)
+        bloodVein(temp),
+        32.
       ),
-      bloodCellField(temp)
+      bloodCellField(temp),
+      32.
     );
   }
 
@@ -260,12 +256,14 @@ vec4 map(vec3 pos) {
     pR(pos.xz, -PI/12.*cos(t/PI)); pR(pos.yz, PI/16.*sin(t/PI));
 
     // render blood vein and cells
-    return opU(
-      opU(
+    return opBlend(
+      opBlend(
         vessel(pos, 0.),
-        bloodVein(temp)
+        bloodVein(temp),
+        32.
       ),
-      bloodCellField(temp)
+      bloodCellField(temp),
+      32.
     );
   }
 
