@@ -111,7 +111,7 @@ vec4 virus(vec3 pos, float size) {
   pModPolar(pos.yx, 7.);
   pos.y -= .5 * size;
 
-  return opBlend(
+  return size == 0. ? vec4(1) : opBlend(
     // blob
     vec4(
       length(temp) - .5 * size - a.w / 5.,
