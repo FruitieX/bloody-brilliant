@@ -98,7 +98,6 @@ vec4 bloodVein(vec3 p) {
   );
 }
 
-// TODO: add blood cells into heart()
 vec4 heart(vec3 p, float colorMod) {
   vec3 temp = p;
 
