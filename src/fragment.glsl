@@ -222,15 +222,14 @@ vec4 vessel(vec3 pos, float laser) {
 }
 
 vec4 map(vec3 heartPos) {
-  float t = a.z;
-  float colorMod = 1.;
-  float laser = 0.;
-  vec3 bloodVeinPos = heartPos;
-  vec3 vesselPos = heartPos;
+  float t = a.z,
+        colorMod = 1.,
+        laser = 0.,
+        scene = 0.,
+        virusSize = 0.;
 
-  float scene = 0.;
-
-  float virusSize = 0.;
+  vec3 bloodVeinPos = heartPos,
+       vesselPos = heartPos;
 
   // SCENE 1: Inside heart
   if ((t -= 19.2) < 0.) {
