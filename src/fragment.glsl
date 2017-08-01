@@ -53,41 +53,6 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-// TODO: add blood cells into heart()
-vec4 heart(vec3 p, float colorMod) {
-  vec3 temp = p;
-
-  temp.x -= 6.;
-  pModPolar(temp.yz, 7.);
-  pR(temp.xy, 1.);
-
-  return vec4(
-    opBlend(
-      // heart
-      vec4(
-        // tunnel shape
-        sin(p.x) + sin(p.y) + sin(p.z)
-
-        // wow interesting
-        //(.2 - a.w * .1) * length(sin(p))
-
-        // blobby surface
-        //+ (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z)
-
-        // heartbeat
-        - a.w
-      ),
-      // muscle tissue stuff
-      vec4(
-        fCapsule(temp, .05, 9.)
-      ),
-      9.
-    ).x,
-    // color
-    vec3(.9, .2, .1) * colorMod
-  );
-}
-
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
   pos.x += 15.; // move rotational origo to center of blood vein
@@ -130,6 +95,48 @@ vec4 bloodVein(vec3 p) {
 
     // color
     .9, .1, .1
+  );
+}
+
+// TODO: add blood cells into heart()
+vec4 heart(vec3 p, float colorMod) {
+  vec3 temp = p;
+
+  temp.x -= 6.;
+  pModPolar(temp.yz, 7.);
+  pR(temp.xy, 1.);
+
+  vec3 temp2 = p - vec3(8., 0., 5.);
+  pR(temp2.yz, .2);
+
+  return opBlend(
+    vec4(
+      // heart
+      opBlend(
+        vec4(
+          // tunnel shape
+          sin(p.x) + sin(p.y) + sin(p.z)
+
+          // wow interesting
+          //(.2 - a.w * .1) * length(sin(p))
+
+          // blobby surface
+          //+ (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z)
+
+          // heartbeat
+          - a.w
+        ),
+        // muscle tissue stuff
+        vec4(
+          fCapsule(temp, .05, 9.)
+        ),
+        9.
+      ).x,
+      // color
+      vec3(.9, .2, .1) * colorMod
+    ),
+    bloodCellField(temp2),
+    20.
   );
 }
 
@@ -235,7 +242,6 @@ vec4 map(vec3 pos) {
         bloodVein(temp),
         32.
       ),
-      // TODO: move me to heart()
       bloodCellField(temp),
       32.
     );
@@ -275,7 +281,6 @@ vec4 map(vec3 pos) {
         bloodVein(temp),
         32.
       ),
-      // TODO: move me to heart()
       bloodCellField(temp),
       32.
     );
@@ -286,21 +291,10 @@ vec4 map(vec3 pos) {
     pR(pos.xz, t / 40. - .8);
     pos += vec3(sin(t / 6. - 1.), 1., 2. + sin(t / 6. - 1.));
 
-    temp = pos;
-
-    pR(temp.xy, -.1);
-    // TODO: move me to heart()
-    res = bloodCellField(temp - vec3(8., 2., 5.));
-
     res = opBlend(
-      res,
       heart(pos, 0.),
-      20.
-    );
-    res = opBlend(
-      res,
       virus(pos - .4 * a.w, 1.),
-      50.
+      20.
     );
 
     // rotate
@@ -308,7 +302,6 @@ vec4 map(vec3 pos) {
 
     pos -= vec3(
       8. + sin(t / 10. - 1.5) * 7.,
-      //- 3. * sin(min(t, (PI - 1. ) * 8.) / 8.),
       0.,
       1.
     );
