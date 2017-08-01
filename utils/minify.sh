@@ -19,7 +19,7 @@ for file in $(ls ../src/*.glsl); do
 done
 
 # concat all js together
-cat ../src/song.js ../src/index.js > temp/temp1.js
+cat ../src/index.js > temp/temp1.js
 
 # vertex shader
 echo "minifying vertex shader..."

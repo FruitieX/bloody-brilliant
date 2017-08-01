@@ -31,7 +31,7 @@ for %%F in ("dist\temp\*.glsl") do echo %%~nxF     %%~zF b
 echo.
 
 REM concat all js together
-cat src\song.js src\index.js > dist\temp\js.js
+cat src\index.js > dist\temp\js.js
 REM .\node_modules\.bin\uglifyjs --ecma 6 dist\temp\all.js > dist\temp\all.min.js
 
 echo | set /p dummyvar=Minifying vertex shader into js...
