@@ -13,7 +13,7 @@ float PI = 3.14;
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
   return vec4(
-    -log( exp(-k * d1.x) + exp(-k * d2.x)) / k,
+    -log( max(1e-9, exp(-k * d1.x) + exp(-k * d2.x))) / k,
     (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
   );
 }
