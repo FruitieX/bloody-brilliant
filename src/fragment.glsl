@@ -49,19 +49,6 @@ float sdHexPrism( vec3 p, vec2 h ) {
 }
 */
 
-vec4 heart(vec3 p, float colorMod) {
-  return vec4(
-    // tunnel shape
-    (.2 - a.w * .1) * (cos(p.x) + sin(p.y) + sin(p.z))
-
-    // blobby surface
-    + (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z),
-
-    // color
-    vec3(.9, .2, .1) * colorMod
-  );
-}
-
 float pModPolar(inout vec2 p, float repetitions) {
 	float angle = PI/repetitions,
       	a = mod(atan(p.y, p.x) + angle, angle*2.) - angle,
@@ -71,6 +58,40 @@ float pModPolar(inout vec2 p, float repetitions) {
 	// (cell index would be e.g. -5 and 5 in the two halves of the cell):
 	// if (abs(c) >= (repetitions/2.)) c = abs(c); // deleting this didn't make any visible changes
 	return c;
+}
+
+vec4 heart(vec3 p, float colorMod) {
+  vec3 temp = p;
+
+  temp.x -= 4.;
+  pModPolar(temp.yz, 7.);
+  pR(temp.xy, 1.);
+
+  return vec4(
+    opBlend(
+      // heart
+      vec4(
+        // tunnel shape
+        .2 * (sin(p.x) + sin(p.y) + sin(p.z))
+
+        // wow interesting
+        //(.2 - a.w * .1) * length(sin(p))
+
+        // blobby surface
+        //+ (.1 - a.w * .4) * sin(p.x) * sin(p.y) * sin(p.z)
+
+        // heartbeat
+        - .2 * a.w
+      ),
+      // muscle tissue stuff
+      vec4(
+        fCapsule(temp, .001, 99.)
+      ),
+      5.
+    ).x,
+    // color
+    vec3(.9, .2, .1) * colorMod
+  );
 }
 
 vec4 bloodCellField(vec3 pos) {
