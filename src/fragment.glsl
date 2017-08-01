@@ -200,10 +200,10 @@ vec4 vessel(vec3 pos, float laser) {
     res = opBlend(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2, -.1), .01, 2.) / 3.,
-        10, .2, .3
-      ),
-    .05
+        fCapsule(pos - vec3(.1, 2.5, -.1), .01, 2.) / 3.,
+        20, .1, .1
+      ) / laser,
+    .1
     );
 
     pos.z -= .2;
@@ -211,10 +211,10 @@ vec4 vessel(vec3 pos, float laser) {
     res = opBlend(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2, -.1), .01, 2.) / 3.,
-        10, .2, .3
-      ),
-      .05
+        fCapsule(pos - vec3(.1, 2.5, -.1), .01, 2.) / 3.,
+        20, .1, .1
+      ) / laser,
+      .1
     );
   }
 
@@ -296,10 +296,10 @@ vec4 map(vec3 heartPos) {
     colorMod = max(0., (t + 10.) / 20.);
     virusSize = 1. - (t + 20.) / 20.;
 
-    pR(heartPos.yz, .7);
+    pR(heartPos.yz, .6);
     vesselPos = heartPos += 2. + t / 20.;
 
-    vesselPos.x += sqrt((t + 20.) / 10.) - 2.;
+    vesselPos.x += sqrt((t + 20.) / 20.) - 2.;
 
     laser = cos(2. + t / 4.);
   }
@@ -333,7 +333,7 @@ vec4 map(vec3 heartPos) {
     // heart & virus
     scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
     vessel(vesselPos, laser),
-    .1 + laser > 0. ? .2 : 0.
+    .1 + max(0., laser) * .3
   );
 }
 
@@ -400,7 +400,7 @@ void main() {
   )
 
   // fade in
-  * pow(min((a.z - 1.) / 8., 1.), 2.)
+  //* pow(min((a.z - 1.) / 8., 1.), 2.)
   // fade out
   * pow(clamp((135. - a.z) / 8., 0., 1.), 2.); // 135. = demo length in seconds
 
