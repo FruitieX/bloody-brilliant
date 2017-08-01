@@ -256,20 +256,24 @@ vec4 map(vec3 heartPos) {
   else
 
   if ((t -= 19.2) < 0.) {
+    colorMod = -t / 10.;
+    virusSize = 1.;
+
     vesselPos += 9.;
     virusSize = 1.;
     pR(heartPos.yz, 1.);
     pR(heartPos.xy, t/10.);
 
-    virusSize = 1.;
     heartPos += 1. - t / 10.;
-    colorMod = -t / 10.;
   }
 
   // SCENE 4: Nanobot in blood vein, nearing heart
   else
 
   if ((t -= 19.2) < 0.) {
+    // darken over time
+    colorMod = -t / 10.;
+
     // move vessel forward
     vesselPos += vec3(0, .25, .5);
 
@@ -278,46 +282,37 @@ vec4 map(vec3 heartPos) {
 
     // rotate vessel
     pR(vesselPos.xz, PI / 2.);
-
-    // darken over time
-    colorMod = -t / 10.;
   }
 
   // SCENE 5: Nanobot approaches virus
   else
 
   if ((t -= 19.2) < 0.) {
+    colorMod = 0.;
+    virusSize = 1.;
+
     pR(heartPos.xz, t / 40. - .8);
     heartPos += vec3(sin(t / 6. - 1.), 1, 2. + sin(t / 6. - 1.));
 
-    vesselPos = heartPos;
-
-    // rotate
-    //pR(vesselPos.xy, PI / 14.); pR(vesselPos.xz, PI / 20.);
-
-    vesselPos -= vec3(
+    vesselPos = heartPos - vec3(
       8. + sin(t / 10. - 1.5) * 8.,
       1.5,
       1
     );
-
-    colorMod = 0.;
-    virusSize = 1.;
   }
 
   // SCENE 6: Nanobot attacks virus
   else
 
   if ((t -= 19.2) < 0.) {
-    pR(heartPos.yz, .7);
-    heartPos += 2. + t / 20.;
-
     colorMod = max(0., (t + 10.) / 20.);
     virusSize = 1. - (t + 20.) / 20.;
 
+    pR(heartPos.yz, .7);
+    heartPos += 2. + t / 20.;
+
     vesselPos = heartPos;
 
-    //vesselPos.x -= 2.;
     vesselPos.x += sqrt((t + 20.) / 10.) - 2.;
 
     laser = cos(2. + t / 4.);
@@ -327,8 +322,7 @@ vec4 map(vec3 heartPos) {
   else
 
   {
-    heartPos += 1. - t / 10.;
-    heartPos += 1.;
+    heartPos += 2. - t / 10.;
     vesselPos = heartPos;
 
     // rotate
@@ -374,7 +368,7 @@ void main() {
       )
     );
 
-  for(float i = 0.; i < 64.; i++) // 99. = maxIterations
+  for(float i = 0.; i < 64.; i++) // 64. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
   vec2 e = vec2(.01, -.01);
