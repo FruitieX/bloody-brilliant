@@ -8,8 +8,9 @@ uniform vec4 a;
 float PI = 3.14;
 
 vec4 opBlend( vec4 d1, vec4 d2, float k ) {
-  return vec4(
-    -log( max(1e-9, exp(-k * d1.x) + exp(-k * d2.x))) / k,
+  float h = clamp( 0.5+0.5*(d2.x-d1.x)/k, 0.0, 1.0 );
+  h = mix(d2.x,d1.x,h) - k*h*(1.-h);
+  return vec4(h,
     (d1.yzw * d2.x + d2.yzw * d1.x) / (d1.x + d2.x)
   );
 }
@@ -33,7 +34,7 @@ float sdBloodCell(vec3 p) {
     vec4(length(vec2(length(p.xz)-.3,p.y)) - .1),
     // capped cylinder
     vec4(clamp(d.x, d.y, 0.) + length(max(d,0.))),
-    32.
+    .1
   ).x;
 }
 
@@ -99,7 +100,7 @@ vec4 bloodVein(vec3 p, float colorMod) {
       colorMod, .1 * colorMod, .1 * colorMod
     ),
     bloodCellField(temp),
-    20.
+    .1
   );
 }
 
@@ -125,7 +126,7 @@ vec4 virus(vec3 pos, float size) {
       ),
       1, .6, 1
     ),
-    9.
+    .1
   );
 }
 
@@ -160,17 +161,17 @@ vec4 heart(vec3 p, float virusSize, float colorMod) {
           ),
           // muscle tissue stuff
           vec4(
-            fCapsule(temp, .05, 9.)
+            fCapsule(temp, .1, 9.)
           ),
-          9.
+          .5
         ).x,
         // color
         colorMod, .2 * colorMod, .1 * colorMod
       ),
-      20.
+      .1
     ),
     bloodCellField(temp2),
-    20.
+    .1
   );
 }
 
@@ -186,13 +187,13 @@ vec4 vessel(vec3 pos, float laser) {
   res = (res.x > temp.x ? res : temp);
 
   pos.z += .3;
-  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), 99.);
+  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), .0);
 
   pR(pos.yz, PI/2.);
-  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), 99.);
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), .0);
   pR(pos.xz, PI/2.);
   pos.xy += .1;
-  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), 99.);
+  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), .0);
 
   if (laser > 0.) {
     // TODO: pos += vec3(.1, 2.3, -.15) ?
@@ -202,7 +203,7 @@ vec4 vessel(vec3 pos, float laser) {
         fCapsule(pos - vec3(.1, 2, -.1), .01, 2.) / 3.,
         10, .2, .3
       ),
-      99.
+    .05
     );
 
     pos.z -= .2;
@@ -213,7 +214,7 @@ vec4 vessel(vec3 pos, float laser) {
         fCapsule(pos - vec3(.1, 2, -.1), .01, 2.) / 3.,
         10, .2, .3
       ),
-      99.
+      .05
     );
   }
 
@@ -355,7 +356,7 @@ vec4 map(vec3 heartPos) {
     // heart & virus
     scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
     vessel(vesselPos, laser),
-    20.
+    .1
   );
 }
 
@@ -381,7 +382,7 @@ void main() {
       )
     );
 
-  for(float i = 0.; i < 99.; i++) // 99. = maxIterations
+  for(float i = 0.; i < 64.; i++) // 99. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
   vec2 e = vec2(.01, -.01);
@@ -415,7 +416,7 @@ void main() {
 
   tot = pow(
     // fog
-    mix(col, vec3(.03, .04, .05), 1. - exp(-.001 * t * t * t)),
+    mix(col, vec3(.05), 1. - exp(-.001 * t * t * t)),
 
   	// gamma
     vec3(.6, .5, .4)
