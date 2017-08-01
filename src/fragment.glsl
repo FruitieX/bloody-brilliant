@@ -430,5 +430,8 @@ void main() {
   // fade out
   * pow(clamp((135. - a.z) / 8., 0., 1.), 2.); // 135. = demo length in seconds
 
+  // vignette
+  //* pow(1. - .001 * length((2. * gl_FragCoord.xy - a.xy)), 2.);
+
   gl_FragColor = vec4(tot, 1.); // 4 = AA * AA
 }
