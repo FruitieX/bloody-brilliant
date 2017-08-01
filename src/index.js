@@ -355,7 +355,7 @@ r(s.l, l => // loop repetitions
       i.P = N;
 
       // This is the first note - there's nothing to decay
-      if (!r && !l) return;
+      if (!t) return;
 
       // DECAY PREVIOUS NOTE
       i.e.gain.linearRampToValueAtTime(
