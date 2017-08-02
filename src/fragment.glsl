@@ -26,18 +26,6 @@ float fCapsule(vec3 p, float r, float c) {
 	return mix(length(p.xz) - r, length(vec3(p.x, abs(p.y) - c, p.z)) - r, step(c, abs(p.y)));
 }
 
-float sdBloodCell(vec3 p) {
-  vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.3,.06);
-
-  return opBlend(
-    // torus
-    vec4(length(vec2(length(p.xz)-.3,p.y)) - .1),
-    // capped cylinder
-    vec4(clamp(d.x, d.y, 0.) + length(max(d,0.))),
-    .1
-  ).x;
-}
-
 float sdTriPrism( vec3 p, vec2 h ) {
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x+.5*p.y, -p.y)-h.x*.5);
@@ -54,7 +42,6 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
-// TODO: inline
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
   pos.x += 15.; // move rotational origo to center of blood vein
@@ -74,8 +61,16 @@ vec4 bloodCellField(vec3 pos) {
   // offset individual blood cell
   pos.x -= 2.2;
 
+  vec2 d = abs(vec2(length(pos.xz), pos.y)) - vec2(.3,.06);
+
   return vec4(
-    sdBloodCell(pos),
+    opBlend(
+      // torus
+      vec4(length(vec2(length(pos.xz) - .3, pos.y)) - .1),
+      // capped cylinder
+      vec4(clamp(d.x, d.y, 0.) + length(max(d, 0.))),
+      .1
+    ).x,
     1, .1, .1
   );
 }
