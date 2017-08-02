@@ -142,7 +142,7 @@ vec4 heart(vec3 p, float virusSize, float colorMod) {
 
   return opBlend(
     opBlend(
-      virus(p - .4 * a.w, virusSize, 1. - colorMod),
+      virus(p - .4 * a.w, virusSize, .5 - colorMod),
       // heart
       vec4(
         opBlend(
@@ -404,7 +404,7 @@ void main() {
   * pow(clamp((135. - a.z) / 8., 0., 1.), 2.); // 135. = demo length in seconds
 
   // vignette
-  //* pow(1. - .001 * length((2. * gl_FragCoord.xy - a.xy)), 2.);
+  // * pow(1. - .001 * length((2. * gl_FragCoord.xy - a.xy)), 2.);
 
   gl_FragColor = vec4(tot, 1); // 4 = AA * AA
 }
