@@ -54,6 +54,7 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+// TODO: inline
 vec4 bloodCellField(vec3 pos) {
   // set up the correct rotation axis
   pos.x += 15.; // move rotational origo to center of blood vein
@@ -80,6 +81,7 @@ vec4 bloodCellField(vec3 pos) {
 }
 
 vec4 bloodVein(vec3 p, float colorMod) {
+  colorMod = max(.1, colorMod);
   vec3 temp = p;
   p += vec3(14, 0, 1.5);
 
@@ -105,13 +107,15 @@ vec4 bloodVein(vec3 p, float colorMod) {
 }
 
 vec4 virus(vec3 pos, float size, float colorMod) {
+  colorMod = max(.1, colorMod);
   vec3 temp = pos;
 
   pModPolar(pos.yz, 7.);
   pModPolar(pos.yx, 7.);
   pos.y -= .5 * size;
 
-  return size == 0. ? vec4(1) : opBlend(
+  // return size == 0. ? vec4(1) : opBlend(
+  return opBlend(
     // blob
     vec4(
       length(temp) - .5 * size - a.w / 5.,
@@ -122,7 +126,7 @@ vec4 virus(vec3 pos, float size, float colorMod) {
       fCapsule(
         pos,
         .01 * size,
-        .4 * size
+        .3 * size
       ),
       colorMod, .6 * colorMod, colorMod
     ),
@@ -131,18 +135,19 @@ vec4 virus(vec3 pos, float size, float colorMod) {
 }
 
 vec4 heart(vec3 p, float virusSize, float colorMod) {
+  colorMod = max(.05, colorMod);
   vec3 temp = p;
 
   temp.x -= 6.;
   pModPolar(temp.yz, 7.);
   pR(temp.xy, 1.);
 
-  vec3 temp2 = p - vec3(8, 0, 5);
+  vec3 temp2 = p - vec3(9, 0, 5);
   pR(temp2.yz, .2);
 
   return opBlend(
     opBlend(
-      virus(p - .4 * a.w, virusSize, .5 - colorMod),
+      virus(p - .4 * a.w, virusSize, max(0., .8 - colorMod)),
       // heart
       vec4(
         opBlend(
@@ -163,7 +168,7 @@ vec4 heart(vec3 p, float virusSize, float colorMod) {
           vec4(
             fCapsule(temp, .1, 9.)
           ),
-          .5
+          .3
         ).x,
         // color
         colorMod, .2 * colorMod, .1 * colorMod
@@ -179,42 +184,32 @@ vec4 vessel(vec3 pos, float laser) {
   vec3 col = vec3(.1);
 
   pR(pos.xy, PI/2.);
-  vec4 res = vec4(sdTriPrism(pos , vec2(.25,.15)), col), temp;
+  vec4 res = vec4(sdTriPrism(pos , vec2(.2)), col), temp;
   pR(pos.xz, PI/2.);
   pR(pos.zy, PI/2.);
   // inline opI
-  temp = vec4(sdTriPrism(pos, vec2(.15,.25)), col);
+  temp = vec4(sdTriPrism(pos, vec2(.2)), col);
   res = (res.x > temp.x ? res : temp);
 
-  pos.z += .3;
-  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.15,.2)), col), 0.);
+  pos.z += .4;
+
+  col += .4;
+
+  res = opBlend(res, vec4(sdTriPrism(pos, vec2(.2)), col), 0.);
 
   pR(pos.yz, PI/2.);
+  pos.y -= .05;
   res = opBlend(res, vec4(sdTriPrism(pos , vec2(.4,.01)), col), 0.);
-  pR(pos.xz, PI/2.);
-  pos.xy += .1;
-  res = opBlend(res, vec4(sdTriPrism(pos , vec2(.2,.01)), col), 0.);
 
-  if (laser > 0.) {
+  if (laser > .2) {
     // TODO: pos += vec3(.1, 2.3, -.15) ?
     res = opBlend(
       res,
       vec4(
-        fCapsule(pos - vec3(.1, 2.5, -.1), .01, 2.) / 3.,
+        fCapsule(pos - vec3(0., 2.5, 0.), .01, 2.) / 3.,
         20, .1, .1
       ) / laser,
-    .1
-    );
-
-    pos.z -= .2;
-
-    res = opBlend(
-      res,
-      vec4(
-        fCapsule(pos - vec3(.1, 2.5, -.1), .01, 2.) / 3.,
-        20, .1, .1
-      ) / laser,
-      .1
+    .05
     );
   }
 
@@ -225,6 +220,7 @@ vec4 map(vec3 heartPos) {
   float t = a.z,
         colorMod = 1.,
         laser = 0.,
+        rotateVessel = 1.,
         scene = 0.,
         virusSize = 0.;
 
@@ -293,15 +289,24 @@ vec4 map(vec3 heartPos) {
   else
 
   if ((t -= 19.2) < 0.) {
-    colorMod = max(0., (t + 10.) / 20.);
-    virusSize = 1. - (t + 20.) / 20.;
+    colorMod = max(0., 2. * (t + 10.) / 20.);
+    virusSize = 1. - max(0., 2. * (t + 10.) / 20.);
+    rotateVessel = 0.;
 
-    pR(heartPos.yz, .6);
-    vesselPos = heartPos += 2. + t / 20.;
+    pR(heartPos.yz, t / 20. + 7.);
+    pR(heartPos.xz, .2);
+    heartPos += 2. + t / 20.;
 
-    vesselPos.x += sqrt((t + 20.) / 20.) - 2.;
+    heartPos.y -= 1.;
 
-    laser = cos(2. + t / 4.);
+    vesselPos = heartPos;
+
+    pR(vesselPos.xz, t / 20. + 1.);
+    vesselPos.x -= 2.;
+
+    //vesselPos.x += sqrt((t + 20.) / 20.) - 2.;
+
+    laser = cos(2. + t / 5.);
   }
 
   // SCENE 7: Nanobot retracts
@@ -326,13 +331,13 @@ vec4 map(vec3 heartPos) {
   pR(bloodVeinPos.xy, t/PI);
 
   // left-right tilt, up-down tilt
-  pR(vesselPos.xz, -PI/12.*cos(t/PI)); pR(vesselPos.yz, PI/16.*sin(t/PI));
+  pR(vesselPos.xz, rotateVessel*-PI/12.*cos(t/PI)); pR(vesselPos.yz, rotateVessel*PI/16.*sin(t/PI));
 
   return opBlend(
     // heart & virus
     scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
     vessel(vesselPos, laser),
-    .1 + max(0., laser) * .3
+    .1 + laser / 4.
   );
 }
 
@@ -358,7 +363,7 @@ void main() {
       )
     );
 
-  for(float i = 0.; i < 64.; i++) // 64. = maxIterations
+  for(float i = 0.; i < 50.; i++) // 50. = maxIterations
     t += (res = map(pos = ro + rd * t)).x;
 
   vec2 e = vec2(.01, -.01);
