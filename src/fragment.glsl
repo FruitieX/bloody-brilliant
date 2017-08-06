@@ -211,7 +211,7 @@ vec4 vessel(vec3 pos, float laser) {
   return res;
 }
 
-vec4 map(vec3 heartPos) {
+vec4 map(vec3 pos) {
   float t = a.z,
         colorMod = 1.,
         laser = 0.,
@@ -219,121 +219,143 @@ vec4 map(vec3 heartPos) {
         scene = 0.,
         virusSize = 0.;
 
-  vec3 bloodVeinPos = heartPos,
-       vesselPos = heartPos;
+  // vec3 bloodVeinPos = heartPos,
+  //      vesselPos = heartPos;
+  // wave normal
+  vec4 n = normalize(vec4(0.,1.,1.,0.));
 
-  // SCENE 1: Inside heart
-  if ((t -= 19.2) < 0.) {
-    pR(heartPos.xz, t / 6.); pR(heartPos.xy, t / 5.);
-    heartPos += 1.;
-    vesselPos += 9.;
-  }
+  vec2 onezero = vec2(1.,0.);
+  vec3 wpos = pos, spos = pos;
+  wpos.z += 10.;
+  spos.x -= t / 20.;
 
-  // SCENE 2: Nanobot in blood vein
-  else
+  vec4 sphere = vec4(length(spos) - .2, 1.,0.,0.);
 
-  if ((t -= 19.2) < 0.) {
-    // select blood vessel scene
-    scene = 1.;
-  }
-
-  // SCENE 3: Virus in heart
-  else
-
-  if ((t -= 19.2) < 0.) {
-    colorMod = -t / 10.;
-    virusSize = 1.;
-
-    virusSize = 1.;
-    pR(heartPos.yz, 1.);
-    pR(heartPos.xy, t/10.);
-
-    heartPos += 1. - t / 10.;
-    vesselPos += 9.;
-  }
-
-  // SCENE 4: Nanobot in blood vein, nearing heart
-  else
-
-  if ((t -= 19.2) < 0.) {
-    // darken over time
-    colorMod = -t / 10.;
-
-    // select blood vessel scene
-    scene = 1.;
-  }
-
-  // SCENE 5: Nanobot approaches virus
-  else
-
-  if ((t -= 19.2) < 0.) {
-    colorMod = 0.;
-    virusSize = 1.;
-
-    pR(heartPos.xz, t / 40. - .8);
-    heartPos += vec3(sin(t / 6. - 1.), 1, 2. + sin(t / 6. - 1.));
-
-    vesselPos = heartPos - vec3(
-      8. + sin(t / 10. - 1.5) * 8.,
-      1.5,
-      1
+  // wave
+  vec4 res = vec4(
+    dot(wpos, n.xyz)
+    // + sin(pos.x + t) * .5
+    + pow((0.5 + 0.5 * sin(wpos.x * 2. * .3 - t * .5)), 5.0)
+    + sin(pos.y + t) * .5
+    - n.w,
+    vec3(0., .2, .9)
     );
-  }
 
-  // SCENE 6: Nanobot attacks virus
-  else
+  res = opBlend(sphere, res, 0.);
+  return res;
 
-  if ((t -= 19.2) < 0.) {
-    colorMod = max(0., 2. * (t + 10.) / 20.);
-    virusSize = 1. - max(0., 2. * (t + 10.) / 20.);
-    rotateVessel = 0.;
+  // // SCENE 1: Inside heart
+  // if ((t -= 19.2) < 0.) {
+  //   pR(heartPos.xz, t / 6.); pR(heartPos.xy, t / 5.);
+  //   heartPos += 1.;
+  //   vesselPos += 9.;
+  // }
+  //
+  // // SCENE 2: Nanobot in blood vein
+  // else
+  //
+  // if ((t -= 19.2) < 0.) {
+  //   // select blood vessel scene
+  //   scene = 1.;
+  // }
+  //
+  // // SCENE 3: Virus in heart
+  // else
+  //
+  // if ((t -= 19.2) < 0.) {
+  //   colorMod = -t / 10.;
+  //   virusSize = 1.;
+  //
+  //   virusSize = 1.;
+  //   pR(heartPos.yz, 1.);
+  //   pR(heartPos.xy, t/10.);
+  //
+  //   heartPos += 1. - t / 10.;
+  //   vesselPos += 9.;
+  // }
+  //
+  // // SCENE 4: Nanobot in blood vein, nearing heart
+  // else
+  //
+  // if ((t -= 19.2) < 0.) {
+  //   // darken over time
+  //   colorMod = -t / 10.;
+  //
+  //   // select blood vessel scene
+  //   scene = 1.;
+  // }
+  //
+  // // SCENE 5: Nanobot approaches virus
+  // else
+  //
+  // if ((t -= 19.2) < 0.) {
+  //   colorMod = 0.;
+  //   virusSize = 1.;
+  //
+  //   pR(heartPos.xz, t / 40. - .8);
+  //   heartPos += vec3(sin(t / 6. - 1.), 1, 2. + sin(t / 6. - 1.));
+  //
+  //   vesselPos = heartPos - vec3(
+  //     8. + sin(t / 10. - 1.5) * 8.,
+  //     1.5,
+  //     1
+  //   );
+  // }
+  //
+  // // SCENE 6: Nanobot attacks virus
+  // else
+  //
+  // if ((t -= 19.2) < 0.) {
+  //   colorMod = max(0., 2. * (t + 10.) / 20.);
+  //   virusSize = 1. - max(0., 2. * (t + 10.) / 20.);
+  //   rotateVessel = 0.;
+  //
+  //   pR(heartPos.yz, t / 20. + 7.);
+  //   pR(heartPos.xz, .2);
+  //   heartPos += 2. + t / 20.;
+  //
+  //   heartPos.y -= 1.;
+  //
+  //   vesselPos = heartPos;
+  //
+  //   pR(vesselPos.xz, t / 20. + 1.);
+  //   vesselPos.x -= 2.;
+  //
+  //   //vesselPos.x += sqrt((t + 20.) / 20.) - 2.;
+  //
+  //   laser = cos(2. + t / 5.);
+  // }
+  //
+  // // SCENE 7: Nanobot retracts
+  // else
+  //
+  // {
+  //   heartPos += 2. - t / 10.;
+  //   vesselPos = heartPos;
+  //
+  //   // rotate
+  //   pR(vesselPos.xz, PI / 2.);
+  //
+  //   vesselPos += vec3(t - 5., -1, 1);
+  // }
+  //
+  // // move vessel forward (only in scene 1)
+  // vesselPos += scene * vec3(0, .25, .5);
+  // // rotate vessel (only in scene 1)
+  // pR(vesselPos.xz, scene * PI / 2.);
+  //
+  // // rotation to blood cells and vein
+  // pR(bloodVeinPos.xy, t/PI);
+  //
+  // // left-right tilt, up-down tilt
+  // pR(vesselPos.xz, rotateVessel*-PI/12.*cos(t/PI)); pR(vesselPos.yz, rotateVessel*PI/16.*sin(t/PI));
 
-    pR(heartPos.yz, t / 20. + 7.);
-    pR(heartPos.xz, .2);
-    heartPos += 2. + t / 20.;
-
-    heartPos.y -= 1.;
-
-    vesselPos = heartPos;
-
-    pR(vesselPos.xz, t / 20. + 1.);
-    vesselPos.x -= 2.;
-
-    //vesselPos.x += sqrt((t + 20.) / 20.) - 2.;
-
-    laser = cos(2. + t / 5.);
-  }
-
-  // SCENE 7: Nanobot retracts
-  else
-
-  {
-    heartPos += 2. - t / 10.;
-    vesselPos = heartPos;
-
-    // rotate
-    pR(vesselPos.xz, PI / 2.);
-
-    vesselPos += vec3(t - 5., -1, 1);
-  }
-
-  // move vessel forward (only in scene 1)
-  vesselPos += scene * vec3(0, .25, .5);
-  // rotate vessel (only in scene 1)
-  pR(vesselPos.xz, scene * PI / 2.);
-
-  // rotation to blood cells and vein
-  pR(bloodVeinPos.xy, t/PI);
-
-  // left-right tilt, up-down tilt
-  pR(vesselPos.xz, rotateVessel*-PI/12.*cos(t/PI)); pR(vesselPos.yz, rotateVessel*PI/16.*sin(t/PI));
-
-  return opBlend(
-    // heart & virus
-    scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
-    vessel(vesselPos, laser),
-    .1 + laser / 4.
-  );
+  // return opBlend(
+  //   // heart & virus
+  //   scene == 0. ? heart(heartPos, virusSize, colorMod) : bloodVein(bloodVeinPos, colorMod),
+  //   vessel(vesselPos, laser),
+  //   .1 + laser / 4.
+  // );
 }
 
 void main() {
@@ -392,17 +414,17 @@ void main() {
 
   tot = pow(
     // fog
-    mix(col, vec3(.05), 1. - exp(-.001 * t * t * t)),
+    mix(col, vec3(.01), 1. - exp(-.001 * t * t * t)),
 
   	// gamma
     vec3(.6, .5, .4)
   )
 
-  // fade in
-  * pow(min((a.z - 1.) / 8., 1.), 2.)
-  // fade out
-  * pow(clamp((135. - a.z) / 8., 0., 1.), 2.); // 135. = demo length in seconds
-
+  // // fade in
+  // * pow(min((a.z - 1.) / 8., 1.), 2.)
+  // // fade out
+  // * pow(clamp((135. - a.z) / 8., 0., 1.), 2.) // 135. = demo length in seconds
+  ;
   // vignette
   // * pow(1. - .001 * length((2. * gl_FragCoord.xy - a.xy)), 2.);
 
