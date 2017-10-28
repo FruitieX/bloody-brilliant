@@ -59,6 +59,37 @@ vec4 wave(vec3 pos) {
   );
 }
 
+float origin_vector(vec3 p) {
+  p.x += .2;
+  vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.01,.2);
+  return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+}
+vec4 origin_drawer(vec3 p) {
+  // don't modify the current p
+  vec3 tmp_pos = p;
+  // move to origo
+  tmp_pos.y -= .2;
+  tmp_pos.x -= .2;
+  pR(tmp_pos.xy, PI / 2.);
+
+  vec4 res,x,y,z;
+  // x-axis
+  x = vec4(origin_vector(tmp_pos.xyz), vec3(0.,0.,1.));
+  // rotate to y-oxis
+  pR(tmp_pos.xy, -PI/2.);
+  y = vec4(origin_vector(tmp_pos.xyz), vec3(1.,0.,0.));
+  // rotate to z-axis
+  pR(tmp_pos.zy, PI/2.);
+  // move axis to origo
+  tmp_pos.y += .2;
+  tmp_pos.z += .2;
+  z = vec4(origin_vector(tmp_pos.xyz), vec3(0.,1.,0.));
+  res = x;
+  res = opBlend(y,res,0.);
+  res = opBlend(z,res,0.);
+  return res;
+}
+
 vec4 map(vec3 pos) {
   float t = a.z,
         colorMod = 1.,
@@ -72,11 +103,13 @@ vec4 map(vec3 pos) {
   // wpos.z += 10.;
   spos.x -= t / 20.;
 
-  vec4 sphere = vec4(length(spos) - .2, 1.,0.,0.);
+  vec4 sphere = vec4(length(spos) - .05, 1.,0.,0.);
 
   // wave
-  vec4 res = wave(wpos + 5.);
+  vec4 res = origin_drawer(pos);
+  // vec4 res = wave(wpos + 5.);
 
+  res = opBlend(wave(wpos + 5.), res, 0.);
   res = opBlend(sphere, res, 0.);
   return res;
 
