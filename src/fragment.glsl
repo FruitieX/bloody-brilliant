@@ -38,6 +38,27 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+vec4 wave(vec3 pos) {
+  // wave normal
+  vec3 n = normalize(vec3(0.,1.,1.));
+  // tilt the wave normal here
+  // n.y += .5 ;//* sin(a.z);
+  float r = 1.;
+  // texture
+  vec3 c = cos(pos);
+  float tan_component = tan(pos.x);
+  // float cos_component = cos(pos.x);
+  float sin_component = .5 + sin(pos.x);
+  c = vec3(0., .2, .9);
+  // n.z += sin(a.z);
+  return vec4(dot(pos, n)
+  // + sin(pos.x + t) * .5
+  + pow((0.5 + 0.5 * sin(pos.x * 2. * .3 - a.z * .5)), 5.0)
+  ,
+  (mod(pos.y, 1.) == sin_component ? vec3(1.) : c)
+  );
+}
+
 vec4 map(vec3 pos) {
   float t = a.z,
         colorMod = 1.,
@@ -46,25 +67,15 @@ vec4 map(vec3 pos) {
         scene = 0.,
         virusSize = 0.;
 
-  // wave normal
-  vec4 n = normalize(vec4(0.,1.,1.,0.));
-
   vec2 onezero = vec2(1.,0.);
   vec3 wpos = pos, spos = pos;
-  wpos.z += 10.;
+  // wpos.z += 10.;
   spos.x -= t / 20.;
 
   vec4 sphere = vec4(length(spos) - .2, 1.,0.,0.);
 
   // wave
-  vec4 res = vec4(
-    dot(wpos, n.xyz)
-    // + sin(pos.x + t) * .5
-    + pow((0.5 + 0.5 * sin(wpos.x * 2. * .3 - t * .5)), 5.0)
-    + sin(pos.y + t) * .5
-    - n.w,
-    vec3(0., .2, .9)
-    );
+  vec4 res = wave(wpos);
 
   res = opBlend(sphere, res, 0.);
   return res;
