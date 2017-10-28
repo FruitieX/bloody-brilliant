@@ -53,7 +53,7 @@ vec4 wave(vec3 pos) {
   // n.z += sin(a.z);
   return vec4(dot(pos, n)
   // + sin(pos.x + t) * .5
-  + pow((0.5 + 0.5 * sin(pos.x * 2. * .3 - a.z * .5)), 5.0)
+  // + pow((0.5 + 0.5 * sin(pos.x * 2. * .3 - a.z * .5)), 5.0)
   ,
   (mod(pos.y, 1.) == sin_component ? vec3(1.) : c)
   );
@@ -75,7 +75,7 @@ vec4 map(vec3 pos) {
   vec4 sphere = vec4(length(spos) - .2, 1.,0.,0.);
 
   // wave
-  vec4 res = wave(wpos);
+  vec4 res = wave(wpos + 5.);
 
   res = opBlend(sphere, res, 0.);
   return res;
