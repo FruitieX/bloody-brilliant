@@ -38,6 +38,58 @@ float pModPolar(inout vec2 p, float repetitions) {
 	return c;
 }
 
+vec4 wave(vec3 pos) {
+  // wave normal
+  vec3 n = normalize(vec3(0.,1.,1.));
+  // tilt the wave normal here
+  // n.y += .5 ;//* sin(a.z);
+  float r = 1.;
+  // texture
+  vec3 c = cos(pos);
+  float tan_component = tan(pos.x);
+  // float cos_component = cos(pos.x);
+  float sin_component = .5 + sin(pos.x);
+  c = vec3(0., .2, .9);
+  // n.z += sin(a.z);
+  return vec4(dot(pos, n)
+  // + sin(pos.x + t) * .5
+  // + pow((0.5 + 0.5 * sin(pos.x * 2. * .3 - a.z * .5)), 5.0)
+  ,
+  (mod(pos.y, 1.) == sin_component ? vec3(1.) : c)
+  );
+}
+
+float origin_vector(vec3 p) {
+  p.x += .2;
+  vec2 d = abs(vec2(length(p.xz),p.y)) - vec2(.01,.2);
+  return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+}
+vec4 origin_drawer(vec3 p) {
+  // don't modify the current p
+  vec3 tmp_pos = p;
+  // move to origo
+  tmp_pos.y -= .2;
+  tmp_pos.x -= .2;
+  pR(tmp_pos.xy, PI / 2.);
+
+  vec4 res,x,y,z;
+  // x-axis
+  x = vec4(origin_vector(tmp_pos.xyz), vec3(0.,0.,1.));
+  // rotate to y-oxis
+  pR(tmp_pos.xy, -PI/2.);
+  y = vec4(origin_vector(tmp_pos.xyz), vec3(1.,0.,0.));
+  // rotate to z-axis
+  pR(tmp_pos.zy, PI/2.);
+  // move axis to origo
+  tmp_pos.y += .2;
+  tmp_pos.z += .2;
+  z = vec4(origin_vector(tmp_pos.xyz), vec3(0.,1.,0.));
+  res = x;
+  res = opBlend(y,res,0.);
+  res = opBlend(z,res,0.);
+  return res;
+}
+
 vec4 map(vec3 pos) {
   float t = a.z,
         colorMod = 1.,
@@ -46,26 +98,18 @@ vec4 map(vec3 pos) {
         scene = 0.,
         virusSize = 0.;
 
-  // wave normal
-  vec4 n = normalize(vec4(0.,1.,1.,0.));
-
   vec2 onezero = vec2(1.,0.);
   vec3 wpos = pos, spos = pos;
-  wpos.z += 10.;
+  // wpos.z += 10.;
   spos.x -= t / 20.;
 
-  vec4 sphere = vec4(length(spos) - .2, 1.,0.,0.);
+  vec4 sphere = vec4(length(spos) - .05, 1.,0.,0.);
 
   // wave
-  vec4 res = vec4(
-    dot(wpos, n.xyz)
-    // + sin(pos.x + t) * .5
-    + pow((0.5 + 0.5 * sin(wpos.x * 2. * .3 - t * .5)), 5.0)
-    + sin(pos.y + t) * .5
-    - n.w,
-    vec3(0., .2, .9)
-    );
+  vec4 res = origin_drawer(pos);
+  // vec4 res = wave(wpos + 5.);
 
+  res = opBlend(wave(wpos + 5.), res, 0.);
   res = opBlend(sphere, res, 0.);
   return res;
 
