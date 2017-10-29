@@ -103,14 +103,14 @@ vec4 map(vec3 pos) {
   // wpos.z += 10.;
   spos.x -= t / 20.;
 
-  vec4 sphere = vec4(length(spos) - .05, 1.,0.,0.);
+  // vec4 sphere = vec4(length(spos) - .05, 1.,0.,0.);
 
   // wave
   vec4 res = origin_drawer(pos);
   // vec4 res = wave(wpos + 5.);
 
   res = opBlend(wave(wpos + 5.), res, 0.);
-  res = opBlend(sphere, res, 0.);
+  // res = opBlend(sphere, res, 0.);
   return res;
 
   // // SCENE 1: Inside heart
